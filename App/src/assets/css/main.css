@@ -1,0 +1,57 @@
+html, 
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    font-family: 'Baloo 2', cursive;
+    /* font-family: 'Khula', sans-serif; */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
+}
+
+.primary {
+    background-color: rgb(48,93,154);
+}
+.primary-txt {
+    color: rgb(37, 44, 122);
+}
+.secondary {
+    background-color: #15aabf;
+    background-color: #ffd43b;
+    background-color: #ff6579;
+    background-color: #82c91e;
+}
+.secondary.hover:hover {
+    background-color: #e9c132;
+    background-color: #e75d6f;
+    background-color: #78b91d;
+}
+.secondary-txt {
+    color: #15aabf;
+    color: #ffd43b;
+    color: #ff6579;
+    color: #82c91e;
+}
+.secondary-txt.hover:hover {
+    color: #e9c132;
+    color: #e75d6f;
+    color: #78b91d;
+}
+
+.secondary-border {
+    border: solid 1px #15aabf;
+    border: solid 1px #ffd43b;
+    border: solid 1px #ff6579;
+    border: solid 1px #82c91e;
+}
+
+.tertiary {
+    background-color: #fb4b4b;
+}
+.tertiary-txt,
+.tertiary-txt_hover:hover {
+    color: #fb4b4b;
+}
