@@ -1,7 +1,7 @@
 <template>
   <div class="setQuantity secondary-border">
       <button @click="less">-</button>
-      <div>{{ quantity }}</div>
+      <div>{{ dataProduct.quantity }}</div>
       <button @click="more">+</button>
   </div>
 </template>
@@ -17,24 +17,14 @@ export default {
         },
     },
 
-    data() {
-        return {
-            /* V1 */
-            //quantity: this.dataProduct.qte
-
-            /* V2 */
-            quantity: this.dataProduct.quantity
-        }
-    },
-
     methods: {
         less() {
             // Envoi au composant parent de la quantité sélectionnée
-            this.$emit('event-set-quantity', { id: this.dataProduct.id, qte: this.quantity -= 1 });
+            this.$emit('event-set-quantity', this.dataProduct.quantity -= 1);
         },
         more() {
             // Envoi au composant parent de la quantité sélectionnée
-            this.$emit('event-set-quantity', { id: this.dataProduct.id, qte: this.quantity += 1 });
+            this.$emit('event-set-quantity', this.dataProduct.quantity += 1);
         }
     }
 }
