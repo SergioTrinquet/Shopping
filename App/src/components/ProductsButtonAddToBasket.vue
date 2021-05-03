@@ -28,8 +28,8 @@ export default {
     methods: {
         AddToBasket() {     //console.warn(">>>>>>>>>>", this.dataProduct); //TEST
             // Transfert donnée 'Quantity' au composant parent
-            /* V1 */ //this.$emit('event-set-quantity', { id: this.dataProduct, qte: 1 });
-            /* V2 */ this.$emit('event-set-quantity', { id: this.dataProduct.id, qte: 1 });
+            /* V1 */ //this.$emit('event-set-quantity', 1);
+            /* V2 */ this.$emit('event-set-quantity',  1);
         }
     }
 }
