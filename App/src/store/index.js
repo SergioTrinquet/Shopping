@@ -44,7 +44,7 @@ export default new Vuex.Store({
       let present = false;
       if(typeof state.basket[payload.produit.id] != 'undefined') {
         present = true;
-      };
+      }
 
       // Si article pas déjà présent dans panier
       if(present == false) {
@@ -159,7 +159,7 @@ export default new Vuex.Store({
     // Signale si un composant parmi la liste ci-dessous est ouvert
     areComponentsOpen(state) {
       return state.display_margin_departments || state.display_margin_basket;
-    }
+    },
   },
 
   modules: {
