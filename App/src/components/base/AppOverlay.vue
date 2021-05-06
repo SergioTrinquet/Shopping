@@ -1,7 +1,7 @@
 <template>
     <div 
         class="overlay"  
-        :class="display ? 'display' : ''"
+        :class="{'display': display, 'top': onTop}"
     >
         <slot />
     </div>
@@ -15,6 +15,9 @@ export default {
         display: {
             type: Boolean,
             required: true
+        },
+        onTop: {
+            type: Boolean
         }
     }
 }
@@ -31,5 +34,8 @@ export default {
     .overlay.display {
         width: 100%;
         background-color: rgba(0, 0, 0, 0.50);
+    }
+    .overlay.top {
+        z-index: 1001;
     }
 </style>
