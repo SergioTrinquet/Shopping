@@ -8,7 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     loading: false,
-    msg_error: null,
+    data_error: null,
     display_margin_departments: false,
     display_margin_basket: false,
     departments: [], // Qd dynamique, sera alimentée via mongoDB
@@ -21,7 +21,7 @@ export default new Vuex.Store({
       state.loading = payload;
     },
     SET_MESSAGE_ERROR(state, payload) {
-      state.msg_error = payload;
+      state.data_error = payload;
     },
     SET_DISPLAY_MARGIN_DEPARTMENTS(state, payload) {
       state.display_margin_departments = payload;
@@ -42,22 +42,22 @@ export default new Vuex.Store({
       
       // Test si déjà existence de l'article dans le panier
       let present = false;
-      if(typeof state.basket[payload.produit.id] != 'undefined') {
+      if(typeof state.basket[payload.produit._id] != 'undefined') {
         present = true;
       }
 
       // Si article pas déjà présent dans panier
       if(present == false) {
         let produitAvecQuantite = {...payload.produit, ...{qte: payload.quantite}}
-        state.basket[payload.produit.id] = produitAvecQuantite;
+        state.basket[payload.produit._id] = produitAvecQuantite;
       }
 
       // Si article déjà présent avant dans panier
       if(present == true) {
         if(payload.quantite > 0) {
-          state.basket[payload.produit.id].qte = payload.quantite;
+          state.basket[payload.produit._id].qte = payload.quantite;
         } else {
-          delete state.basket[payload.produit.id];
+          delete state.basket[payload.produit._id];
         }
       }
 
@@ -78,12 +78,11 @@ export default new Vuex.Store({
 
       return axios.get('/api/get_rayons')
         .then((res) => {
-          //console.log(res.data); //TEST
           commit('SET_DEPARTMENTS', res.data);
         })
         .catch((err) => {
-          console.error(err);
-          commit('SET_MESSAGE_ERROR', err.message);
+          console.error(err.response);
+          commit('SET_MESSAGE_ERROR', err.response);
         })
         .finally(() => commit('SET_LOADING', false));
     },
@@ -100,8 +99,8 @@ export default new Vuex.Store({
           commit('SET_PRODUCTS', res.data);
         })
         .catch((err) => {
-          console.error(err);
-          commit('SET_MESSAGE_ERROR', err.message);
+          console.error(err.response);
+          commit('SET_MESSAGE_ERROR', err.response);
         })
         .finally(() => commit('SET_LOADING', false));
     },
