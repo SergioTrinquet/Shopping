@@ -14,10 +14,14 @@
             <div class="content" v-else>
                 <div class="status">{{ message.statusText }} (Code {{ message.status }})</div>
                 <div class="titre">{{ message.data.titre }}</div>
-                <div class="message">{{ message.data.message }}</div>
-                <div>
-                    <div class="stackTitle">Détails</div>
-                    <div class="stack">{{ message.data.stack }}</div>
+                <div class="details">
+                    <div class="message">{{ message.data.message }}</div>
+                    <div>
+                        <div class="stackTitle" @click="displayStack = !displayStack">
+                            <font-awesome-icon :icon="displayStack ? 'minus-circle' : 'plus-circle'" /> Plus de détails ici
+                        </div>
+                        <div class="stack" :class="{'display':displayStack}">{{ message.data.stack }}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -30,13 +34,15 @@ export default {
 
     props: {
         message: {
+            //type: String || Object,
             required: true
         }
     },
 
     data() {
         return {
-            closeEncart: false
+            closeEncart: false,
+            displayStack: false
         }
     },
 
@@ -90,17 +96,40 @@ export default {
 }
 
 .status {
-    font-style: italic;
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: normal;
+}
+.titre {
+    line-height: 16px;
 }
 .stackTitle {
     text-decoration: underline dotted 1px #fff;
-    line-height: 16px;
-    margin-top: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.stackTitle svg {
+    margin-right: 3px;
+    font-size: 12px;
+}
+.details {
+    padding: 10px 15px;
+    background-color: rgba(255,255,255,0.12);
+    border-radius: 3px;
+    margin: 15px 10px 10px 10px;
+    box-shadow: inset 4px 0px 0 0px #fff;
+    font-style: italic;
+}
+.message {
+    font-size: 15px;
 }
 .stack {
     font-style: italic;
     font-size: 14px;
     line-height: 17px;
+    margin: 0 10px 0 0;
+    display: none;
+}
+.stack.display {
+    display: block;
 }
 </style>
