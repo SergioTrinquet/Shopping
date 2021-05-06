@@ -1,5 +1,8 @@
 <template>
-  <app-overlay :display="message !== null && closeEncart == false">
+    <app-overlay 
+        :display="message !== null && closeEncart == false" 
+        :onTop="true"
+    >
         <div class="encartErreur">
             <!-- {{ "closeEncart => " + closeEncart }} - {{ message !== null && closeEncart == false }} --> <!-- TEST -->
             <font-awesome-icon icon="times" id="close" @click="closeEncart = true" />
@@ -7,9 +10,18 @@
                 <font-awesome-icon icon="exclamation-circle" />
                 ERREUR
             </div>
-           <div class="content">{{ message }}</div>
+            <div class="content" v-if="!isObject">{{ message }}</div>
+            <div class="content" v-else>
+                <div class="status">{{ message.statusText }} (Code {{ message.status }})</div>
+                <div class="titre">{{ message.data.titre }}</div>
+                <div class="message">{{ message.data.message }}</div>
+                <div>
+                    <div class="stackTitle">Détails</div>
+                    <div class="stack">{{ message.data.stack }}</div>
+                </div>
+            </div>
         </div>
-  </app-overlay>
+    </app-overlay>
 </template>
 
 <script>
@@ -26,6 +38,13 @@ export default {
         return {
             closeEncart: false
         }
+    },
+
+    computed: {
+        // Si 'message' est un objet, signifie que erreur coté Node.js, et on change l'interface car plusieurs champs à afficher au lieu d'un seul
+        isObject() {
+            return (typeof this.message === "object" ? true : false);
+        }
     }
 }
 </script>
@@ -38,11 +57,15 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
     box-sizing: border-box;
+    max-height: 80vh;
     background-color: #ff5858;
     color: #fff;
     border-radius: 5px;
     padding: 20px 30px;
     font-weight: bold;
+}
+.overlay:not(.display) .encartErreur {
+    display: none;
 }
 
 .encartErreur .header {
@@ -51,6 +74,8 @@ export default {
 }
 .encartErreur .content {
     margin: 10px 0 0 0;
+    overflow-y: auto;
+    max-height: calc(80vh - 80px); /* Voir si pas meilleure façon de faire */
 }
 
 #close {
@@ -62,5 +87,20 @@ export default {
 }
 #close:hover {
     transform: rotate(180deg);
+}
+
+.status {
+    font-style: italic;
+    font-size: 15px;
+}
+.stackTitle {
+    text-decoration: underline dotted 1px #fff;
+    line-height: 16px;
+    margin-top: 10px;
+}
+.stack {
+    font-style: italic;
+    font-size: 14px;
+    line-height: 17px;
 }
 </style>
