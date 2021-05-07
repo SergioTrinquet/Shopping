@@ -2,7 +2,7 @@
   <div id="app">
 
     <AppLoader :loading="loading" v-if="loading" /><!-- Loader général -->
-    <AppErrorMsg :message="msgError" v-if="msgError != null" /><!-- Encart msg d'erreur général -->
+    <AppErrorMsg :message="dataError" v-if="dataError != null" /><!-- Encart msg d'erreur général -->
 
     <div id="nav">
       <div id="MenuRayons" class="secondary" @click="marginDepartments">
@@ -69,8 +69,8 @@
       loading() {
         return this.$store.state.loading;
       },
-      msgError() {
-        return this.$store.state.msg_error;
+      dataError() {
+        return this.$store.state.data_error;
       },
       displayMarginDepartments() {
         return this.$store.state.display_margin_departments;
