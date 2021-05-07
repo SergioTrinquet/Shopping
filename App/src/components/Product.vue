@@ -1,26 +1,28 @@
 <template>
-    <div>
+    <div>   <!-- {{ dataProduct }} -->
         <div>
             <span class="intitule primary-txt">{{ dataProduct.intitule }}</span>
-            <span class="marque" v-if="dataProduct.marque != null"> - {{ dataProduct.marque }}</span>
+            <span class="marque" v-if="dataProduct.marque != '-'"> - {{ dataProduct.marque }}</span>
         </div>
         <div class="descriptif">{{ dataProduct.descriptif }}</div>
         <div class="prixUnite">{{ dataProduct.prix_unite }} € / {{ dataProduct.unite }}</div>
-        <img alt="photo" :src="'../assets/imgs/' + dataProduct.nom_image + '.jpg'" class="illustration" />
+        <img alt="photo" :src="require('../assets/imgs/' + dataProduct.nom_image + '.jpg')" class="illustration" />
+        <!-- <img alt="photo" :src="require(dataProduct.imgPath)" class="illustration" /> -->
         <div class="origine">Origine: {{ dataProduct.origine }}</div>
         <div class="bottom">
             <div class="prix tertiary-txt">{{ dataProduct.prix }} €</div>
-            <!-- NOTE :  Si 'dataProduct.id' se trouve dans 'basket', on récupère sa quantité -->
+            <!-- NOTE :  Si 'dataProduct._id' se trouve dans 'basket', on récupère sa quantité -->
             <!-- <component 
-                :is="typeof basket[dataProduct.id] != 'undefined' ? 'buttonsSetQuantity' : 'buttonAddToBasket'"
-                :dataProduct="basket[dataProduct.id] || dataProduct.id"
+                :is="typeof basket[dataProduct._id] != 'undefined' ? 'buttonsSetQuantity' : 'buttonAddToBasket'"
+                :dataProduct="basket[dataProduct._id] || dataProduct._id"
                 @event-set-quantity="displayGoodComponent($event)"
             /> -->
             <component 
-                :is="typeof basket[dataProduct.id] != 'undefined' ? 'buttonsSetQuantity' : 'buttonAddToBasket'"
-                :dataProduct="{ id: dataProduct.id, quantity: typeof basket[dataProduct.id] != 'undefined' ? basket[dataProduct.id].qte : 0 }"
+                :is="typeof basket[dataProduct._id] != 'undefined' ? 'buttonsSetQuantity' : 'buttonAddToBasket'"
+                :dataProduct="{ id: dataProduct._id, quantity: typeof basket[dataProduct._id] != 'undefined' ? basket[dataProduct._id].qte : 0 }"
                 @event-set-quantity="displayGoodComponent($event)"
             />
+            <!-- {{ basket[dataProduct._id].qte }} -->
         </div>
     </div>
 </template>
@@ -51,10 +53,10 @@ export default {
     },
 
     methods: {
-        displayGoodComponent(data) {
-            console.log("Quantité commandée", data); //TEST
+        displayGoodComponent(qte) {
+            console.log("Quantité commandée", qte); //TEST
             // Enregistrement de la quantité saisie dans Panier
-            this.$store.commit('SET_QUANTITY_TO_BASKET', {produit: this.dataProduct, quantite: data.qte});
+            this.$store.commit('SET_QUANTITY_TO_BASKET', {produit: this.dataProduct, quantite: qte});
         }
     }
     
@@ -85,5 +87,9 @@ export default {
 .bottom {
     display: flex;
     justify-content: space-between;
+}
+
+.illustration {
+    width: 100%;
 }
 </style>
