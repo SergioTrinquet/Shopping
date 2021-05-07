@@ -8,8 +8,8 @@
             <div 
                 class="rayon"
                 v-for="department in departments" 
-                :key="department.id"
-                @click="displayProducts(department.id)"
+                :key="department._id"
+                @click="displayProducts(department._id)"
             >
                 <span class="primary-txt">{{ department.intitule | uppercase }}</span>
                 <font-awesome-icon icon="chevron-right" class="secondary-txt" />

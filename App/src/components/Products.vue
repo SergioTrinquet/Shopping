@@ -9,9 +9,9 @@
       <div class="containerProductItems">
           <!-- Liste Produits -->
           <div 
-            v-for="produit in products" :key="produit.id" 
+            v-for="produit in products" :key="produit._id" 
             class="productItem" 
-            :class="typeof basket[produit.id] != 'undefined' ? 'ordered' : ''"
+            :class="typeof basket[produit._id] != 'undefined' ? 'ordered' : ''"
           >
             <Product :dataProduct="produit" />
           </div>
@@ -47,9 +47,9 @@ export default {
       this.$store.commit("SET_DISPLAY_MARGIN_DEPARTMENTS", false);
     }
 
-    , basket(val) {
+    /* , basket(val) {
       console.log("watch 'basket'", val); //TEST
-    }
+    } */
   }
 
 }

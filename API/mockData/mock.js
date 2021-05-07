@@ -1,16 +1,16 @@
 module.exports = {
         rayons: [
-            { id: 1, intitule: "fruits et légumes" },
-            { id: 2, intitule: "viandes et poissons" },
-            { id: 3, intitule: "pains et pâtisseries" },
-            { id: 4, intitule: "frais" },
-            { id: 5, intitule: "surgelés" },
-            { id: 6, intitule: "épicerie salée" },
-            { id: 7, intitule: "épicerie sucrée" },
-            { id: 8, intitule: "boissons" },
-            { id: 9, intitule: "bébé" },
-            { id: 10, intitule: "entretien et nettoyage" },
-            { id: 11, intitule: "animalerie" }
+            { _id: 1, intitule: "fruits et légumes" },
+            { _id: 2, intitule: "viandes et poissons" },
+            { _id: 3, intitule: "pains et pâtisseries" },
+            { _id: 4, intitule: "frais" },
+            { _id: 5, intitule: "surgelés" },
+            { _id: 6, intitule: "épicerie salée" },
+            { _id: 7, intitule: "épicerie sucrée" },
+            { _id: 8, intitule: "boissons" },
+            { _id: 9, intitule: "bébé" },
+            { _id: 10, intitule: "entretien et nettoyage" },
+            { _id: 11, intitule: "animalerie" }
         ],
 
         filtres: [
@@ -20,16 +20,16 @@ module.exports = {
             },
             {
                 libelle: "label qualité",
-                valeurs: [{id: 1, lettre: "Bio"}, {id: 2, lettre: "Origine France"}]
+                valeurs: [{id: 1, label: "Bio"}, {id: 2, label: "Origine France"}]
             }
         ],
 
         produits: [
             {
-                id: "1_f&l",
+                _id: "1_f&l",
                 intitule: "bananes",
                 descriptif: "Lot de 1kg",
-                marque: null,
+                marque: "-",
                 /* conditionnement: "1kg", */
                 prix_unite: "3.80",
                 unite: "kg",
@@ -42,10 +42,10 @@ module.exports = {
                 promotion: "-30%"
             },
             {
-                id: "2_f&l",
+                _id: "2_f&l",
                 intitule: "oranges",
                 descriptif: "Filet de 2kg",
-                marque: null,
+                marque: "-",
                 /* conditionnement: "2kg", */
                 prix_unite: "4.50",
                 unite: "kg",
@@ -58,10 +58,10 @@ module.exports = {
                 promotion: "-10%"
             },
             {
-                id: "3_f&l",
+                _id: "3_f&l",
                 intitule: "champignons",
                 descriptif: "Lot de 300g",
-                marque: null,
+                marque: "-",
                 /* conditionnement: "2kg", */
                 prix_unite: "17",
                 unite: "kg",
@@ -76,7 +76,7 @@ module.exports = {
 
 
             {
-                id: "1_v&p",
+                _id: "1_v&p",
                 intitule: "Coq'ailes",
                 descriptif: "Manchons de poulet nature - 500g",
                 marque: "MAITRE COQ",
@@ -92,7 +92,7 @@ module.exports = {
                 promotion: null
             },
             {
-                id: "2_v&p",
+                _id: "2_v&p",
                 intitule: "Viande hachée pur boeuf 5%",
                 descriptif: "la barquette de 350g",
                 marque: "MG CARREFOUR BIO",
