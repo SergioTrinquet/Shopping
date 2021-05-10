@@ -13,16 +13,21 @@
             <div class="content" v-if="!isObject">{{ message }}</div>
             <div class="content" v-else>
                 <div class="status">{{ message.statusText }} (Code {{ message.status }})</div>
-                <div class="titre">{{ message.data.titre }}</div>
-                <div class="details">
-                    <div class="message">{{ message.data.message }}</div>
-                    <div>
-                        <div class="stackTitle" @click="displayStack = !displayStack">
-                            <font-awesome-icon :icon="displayStack ? 'minus-circle' : 'plus-circle'" /> Plus de détails ici
+
+                <div v-if="typeof message.data =='string'">{{ message.data }}</div>
+                <div v-if="typeof message.data =='object'">
+                    <div class="titre">{{ message.data.titre }}</div>
+                    <div class="details">
+                        <div class="message">{{ message.data.message }}</div>
+                        <div v-if="'stack' in message.data">
+                            <div class="stackTitle" @click="displayStack = !displayStack">
+                                <font-awesome-icon :icon="displayStack ? 'minus-circle' : 'plus-circle'" /> Plus de détails ici
+                            </div>
+                            <div class="stack" :class="{'display':displayStack}">{{ message.data.stack }}</div>
                         </div>
-                        <div class="stack" :class="{'display':displayStack}">{{ message.data.stack }}</div>
                     </div>
                 </div>
+
             </div>
         </div>
     </app-overlay>
