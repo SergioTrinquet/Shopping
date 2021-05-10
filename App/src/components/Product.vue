@@ -1,14 +1,15 @@
 <template>
     <div>   <!-- {{ dataProduct }} -->
-        <div>
-            <span class="intitule primary-txt">{{ dataProduct.intitule }}</span>
-            <span class="marque" v-if="dataProduct.marque != '-'"> - {{ dataProduct.marque }}</span>
+        <div class="intitule primary-txt">{{ dataProduct.intitule }}</div>
+        <div class="marque" v-if="dataProduct.marque != ''">{{ dataProduct.marque }}</div>
+        <div class="bloc">
+            <div class="descriptif">{{ dataProduct.descriptif }}</div>
+            <div class="prixUnite">{{ dataProduct.prix_unite }} € / {{ dataProduct.unite }}</div>
         </div>
-        <div class="descriptif">{{ dataProduct.descriptif }}</div>
-        <div class="prixUnite">{{ dataProduct.prix_unite }} € / {{ dataProduct.unite }}</div>
-        <img alt="photo" :src="require('../assets/imgs/' + dataProduct.nom_image + '.jpg')" class="illustration" />
+        <img alt="photo" :src="require('@/assets/imgs/' + dataProduct.nom_image + '.jpg')" class="illustration" />
         <!-- <img alt="photo" :src="require(dataProduct.imgPath)" class="illustration" /> -->
-        <div class="origine">Origine: {{ dataProduct.origine }}</div>
+        <div class="origine" v-if="dataProduct.origine != ''">Origine: {{ dataProduct.origine }}</div>
+        <div class="promotion tertiary-txt">{{ promotion(dataProduct._id) }}</div>
         <div class="bottom">
             <div class="prix tertiary-txt">{{ dataProduct.prix }} €</div>
             <!-- NOTE :  Si 'dataProduct._id' se trouve dans 'basket', on récupère sa quantité -->
@@ -50,6 +51,10 @@ export default {
         basket() {
             return this.$store.state.basket;
         }
+
+        , promotion() {
+            return this.$store.getters.getPromotion;
+        }
     },
 
     methods: {
@@ -67,12 +72,20 @@ export default {
 .intitule {
     font-weight: bold;
     font-size: 20px;
+    line-height: 18px;
     text-transform: capitalize;
+}
+.marque {
+    font-weight: bold;
+    color: rgb(37, 44, 122, 0.7);
+}
+.bloc {
+    margin: 6px 0 10px 0;
+    line-height: 14px;
 }
 .descriptif,
 .prixUnite {
     font-size: 14px;
-    line-height: 17px;
 }
 
 .prix {
@@ -81,7 +94,15 @@ export default {
 }
 
 .origine {
+    font-size: 14px;
     font-style: italic;
+}
+.promotion {
+    font-size: 13px;
+    font-weight: bold;
+    background-color: #fded69;
+    display: inline-block;
+    padding: 0 3px;
 }
 
 .bottom {
