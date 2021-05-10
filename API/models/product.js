@@ -21,11 +21,21 @@ const productSchema = new Schema({
     },
     origine: String,
     nom_image: String,
-    rayon: {type: Schema.Types.ObjectId, ref: 'Department'},
+    rayon: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Department'
+    },
     nutriscore: nutriscoreSchema,
     label_qualite: labelQualiteSchema,
-    promotion: String
+    promotion: new Schema({
+        pourcent: Boolean,
+        info: String
+    }),
 }, { timestamps: true });
+
+productSchema.virtual('imgPath').get(() => {
+    return "../assets/imgs/" + this.nom_image + '.jpg';
+})
 
 const Product = mongoose.model('Product', productSchema);
 
