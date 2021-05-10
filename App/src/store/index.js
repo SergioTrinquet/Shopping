@@ -189,11 +189,6 @@ export default new Vuex.Store({
       let response = "";
       //if("pourcent" in promotion) {}
       if(product.promotion !== null) {
-        /* if(product.promotion.pourcent) {
-          response = `PROMO: -${product.promotion.info}%`;
-        } else {
-          response = product.promotion.info;
-        } */
         response = product.promotion.pourcent ? 
                         `PROMO: -${product.promotion.info}%` : 
                         product.promotion.info;
