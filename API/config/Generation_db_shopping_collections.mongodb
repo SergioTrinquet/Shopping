@@ -1,0 +1,87 @@
+// MongoDB Playground
+// To disable this template go to Settings | MongoDB | Use Default Template For Playground.
+// Make sure you are connected to enable completions and to be able to run a playground.
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// Select the database to use.
+use('db_shopping');
+
+// The drop() command destroys all data from a collection.
+// Make sure you run it against the correct database and collection.
+db.products.drop();
+
+// Insert a few documents into the sales collection.
+db.products.insertMany([
+    {
+        "intitule":"bananes",
+        "descriptif":"Lot de 1kg",
+        "marque":"",
+        "prix_unite": NumberDecimal("3.80"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.80"),
+        "origine":"France",
+        "nom_image":"bananes_1kg",
+        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+        "label_qualite":{},
+        "promotion":{
+            "pourcent": true,
+            "info": "30"
+        }
+    },
+    {
+        "intitule":"Pâtes Fusilli",
+        "descriptif":"Boite de 500g",
+        "marque":"BARILLA",
+        "prix_unite": NumberDecimal("4.40"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.20"),
+        "origine":"Italie",
+        "nom_image":"Pates_fusilli_BARILLA_500g",
+        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+        "label_qualite":{
+            "_id": ObjectId("609312b857e57fc3606563d5"),
+            "label": "Bio"
+        },
+        "promotion": null
+    },
+    {
+        "intitule":"oranges",
+        "descriptif":"Filet de 2kg",
+        "marque":"",
+        "prix_unite": NumberDecimal("4.50"),
+        "unite":"kg",
+        "prix": NumberDecimal("9"),
+        "origine":"Espagne",
+        "nom_image":"oranges_2kg",
+        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+        "label_qualite":{},
+        "promotion":{
+            "pourcent": true,
+            "info": "10"
+        }
+    },
+    {
+        "intitule":"Jus d'orange bio pur jus",
+        "descriptif":"la bouteille d'1L",
+        "marque":"JARDIN BIO",
+        "prix_unite": NumberDecimal("3.69"),
+        "unite":"litre",
+        "prix": NumberDecimal("3.69"),
+        "origine":"",
+        "nom_image":"jus_doranges_JARDIN_BIO_1l",
+        "rayon": ObjectId("6090868042b2205d269d7dff"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+        "label_qualite":{},
+        "promotion":{
+            "pourcent": true,
+            "info": "30"
+        }
+    }
+]);
+
+// Run a find command
+db.products.find();
+
