@@ -11,10 +11,12 @@ export default new Vuex.Store({
     data_error: null,
     display_margin_departments: false,
     display_margin_basket: false,
-    departments: [], // Qd dynamique, sera alimentée via mongoDB
-    products: [], // Qd dynamique, sera alimentée via mongoDB
-    basket: {}
+    departments: [],
+    products: [],
+    basket: {},
+    filters: {}
   },
+
 
   mutations: {
     SET_LOADING(state, payload) {
@@ -66,9 +68,13 @@ export default new Vuex.Store({
       //state.basket = Object.assign({}, state.basket);
       // ou
       state.basket = {...state.basket};
+    },
+    SET_FILTERS(state, payload) {
+      state.filters = payload;
     }
 
   },
+
 
   actions: {
     // Pour alimenter marge coulissante listant rayons
@@ -109,8 +115,25 @@ export default new Vuex.Store({
     closeComponents({ commit }) {
       commit('SET_DISPLAY_MARGIN_DEPARTMENTS', false);
       commit('SET_DISPLAY_MARGIN_BASKET', false);
+    },
+
+    // Pour charger les filtres dans marge gauche
+    setFilters({ commit }) {
+      commit('SET_LOADING', true);
+      commit('SET_MESSAGE_ERROR', null);
+
+      return axios.get('/api/get_filters')
+        .then(res => {
+          commit('SET_FILTERS', res.data);
+        })
+        .catch(err => {
+          console.error(err.response);
+          commit('SET_MESSAGE_ERROR', err.response);
+        })
+        .finally(() => commit('SET_LOADING', false));
     }
   },
+
 
   getters: {
     getBasketNbItems(state) {
@@ -159,6 +182,25 @@ export default new Vuex.Store({
     areComponentsOpen(state) {
       return state.display_margin_departments || state.display_margin_basket;
     },
+
+    // Construction texte promotion
+    getPromotion: (state) => (id) => {
+      const product = state.products.find(p => p._id == id);
+      let response = "";
+      //if("pourcent" in promotion) {}
+      if(product.promotion !== null) {
+        /* if(product.promotion.pourcent) {
+          response = `PROMO: -${product.promotion.info}%`;
+        } else {
+          response = product.promotion.info;
+        } */
+        response = product.promotion.pourcent ? 
+                        `PROMO: -${product.promotion.info}%` : 
+                        product.promotion.info;
+      }
+      //return id
+      return response;
+    }
   },
 
   modules: {
