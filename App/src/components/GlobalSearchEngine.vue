@@ -53,7 +53,8 @@ export default {
 }
 
 #iconSearch {
-  color: #1DAAF4;
+  /* color: #1DAAF4; */
+  color: #254879;
   position: absolute;
   z-index: 1;
   cursor: pointer;
