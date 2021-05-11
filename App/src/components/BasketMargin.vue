@@ -4,9 +4,10 @@
         @click.native="closeMarge"
         class="addTransition"
     >
+<!-- <transition name="ESSAI"> --><!-- TEST -->
         <div id="marge">
             <div class="marge_top">
-                <div class="header primary">
+                <div class="header primary-light">
                     <span>Aperçu panier</span>
                     <span><font-awesome-icon icon="times" id="close" class="tertiary-txt_hover" @click="closeMargeFromButton" /></span>
                 </div>      
@@ -26,6 +27,7 @@
             </div>
             <div class="marge_bottom primary">eerze</div>
         </div>
+<!-- </transition> --><!-- TEST -->
     </app-overlay>
 </template>
 
@@ -110,7 +112,6 @@ export default {
     }
 
     .header {
-        background-color: rgba(48,93,154, 0.2);
         font-weight: bold;
         margin: 0 0 5px 0;
         padding: 5px 10px;
@@ -158,4 +159,13 @@ export default {
     .items >>> .prix {
         font-size: 19px;
     }
+
+
+    /* ESSAI */
+    .ESSAI-enter-active, .ESSAI-leave-active {
+        transition: right .5s ease-in-out;
+    }
+    .ESSAI-enter, .ESSAI-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  right: 0;
+}
 </style>
