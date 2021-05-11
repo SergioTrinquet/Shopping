@@ -102,7 +102,18 @@ export default new Vuex.Store({
       return axios.get(`/api/get_produits_rayon/${payload}`)
         .then((res) => {
           console.log(res.data); //TEST
-          commit('SET_PRODUCTS', res.data);
+
+          // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
+          let items = [];
+          res.data.forEach(p => {
+            if("promotion" in p && p.promotion !== null && p.promotion.pourcent) {
+              p.prix_reduc = p.prix - (p.prix/100 * p.promotion.info);
+              //console.warn(p.intitule, p.prix_reduc, p); //TEST
+            }
+            items.push(p);
+          })
+
+          commit('SET_PRODUCTS', items);
         })
         .catch((err) => {
           console.error(err.response);
@@ -147,7 +158,9 @@ export default new Vuex.Store({
     getBasketTotalPrice(state) {
       let totalPrice = 0;
       for(let item of Object.values(state.basket)) {
-        totalPrice += (parseFloat(item.prix) * item.qte)
+        //totalPrice += (parseFloat(item.prix) * item.qte)
+        let prix = "prix_reduc" in item ? item.prix_reduc : item.prix;
+        totalPrice += (parseFloat(prix) * item.qte)
       }
       return totalPrice.toFixed(2);
     },
@@ -183,19 +196,6 @@ export default new Vuex.Store({
       return state.display_margin_departments || state.display_margin_basket;
     },
 
-    // Construction texte promotion
-    getPromotion: (state) => (id) => {
-      const product = state.products.find(p => p._id == id);
-      let response = "";
-      //if("pourcent" in promotion) {}
-      if(product.promotion !== null) {
-        response = product.promotion.pourcent ? 
-                        `PROMO: -${product.promotion.info}%` : 
-                        product.promotion.info;
-      }
-      //return id
-      return response;
-    }
   },
 
   modules: {
