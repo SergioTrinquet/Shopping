@@ -9,10 +9,19 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
-    descriptif: String,
+    descriptif: {
+        type: String,
+        required: true
+    },
     marque: String,
-    prix_unite: Number,
-    unite: String,
+    prix_unite: {
+        type: Number,
+        required: true
+    },
+    unite: {
+        type: String,
+        required: true
+    },
     prix: {
         type: Number,
         required: true,
@@ -23,7 +32,8 @@ const productSchema = new Schema({
     nom_image: String,
     rayon: {
         type: Schema.Types.ObjectId, 
-        ref: 'Department'
+        ref: 'Department',
+        required: true
     },
     nutriscore: nutriscoreSchema,
     label_qualite: labelQualiteSchema,
