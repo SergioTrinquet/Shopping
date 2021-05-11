@@ -161,11 +161,12 @@ export default {
     }
 
 
-    /* ESSAI */
+    /* ESSAI POUR TRANSITION */
     .ESSAI-enter-active, .ESSAI-leave-active {
         transition: right .5s ease-in-out;
     }
     .ESSAI-enter, .ESSAI-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  right: 0;
-}
+        right: 0;
+    }
+    /* FIN */
 </style>
