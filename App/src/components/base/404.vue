@@ -7,7 +7,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 .encart404 {
     background-color: rgb(241, 241, 241);
     border-radius: 3px;
