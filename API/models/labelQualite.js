@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const labelQualiteSchema = new Schema({
-    /* id: {
+    _id: {
         type: String,
         required: true
-    }, */
-    lettre: {
+    },
+    label: {
         type: String,
         required: true
     }
@@ -14,5 +14,7 @@ const labelQualiteSchema = new Schema({
 
 const LabelQualite = mongoose.model('LabelQualite', labelQualiteSchema);
 
-//module.exports = LabelQualite;
-module.exports = {'model': LabelQualite, 'schema': labelQualiteSchema};
+module.exports = {
+    'model': LabelQualite, 
+    'schema': labelQualiteSchema
+};
