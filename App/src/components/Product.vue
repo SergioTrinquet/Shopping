@@ -4,14 +4,18 @@
         <div class="marque" v-if="dataProduct.marque != ''">{{ dataProduct.marque }}</div>
         <div class="bloc">
             <div class="descriptif">{{ dataProduct.descriptif }}</div>
-            <div class="prixUnite">{{ dataProduct.prix_unite }} € / {{ dataProduct.unite }}</div>
+            <div class="prixUnite">{{ dataProduct.prix_unite.toFixed(2) }}€ / {{ dataProduct.unite }}</div>
         </div>
         <img alt="photo" :src="require('@/assets/imgs/' + dataProduct.nom_image + '.jpg')" class="illustration" />
+        <!-- <img alt="photo" :src="publicPath + dataProduct.nom_image + '.jpg'" class="illustration" /> -->
         <!-- <img alt="photo" :src="require(dataProduct.imgPath)" class="illustration" /> -->
         <div class="origine" v-if="dataProduct.origine != ''">Origine: {{ dataProduct.origine }}</div>
-        <div class="promotion tertiary-txt">{{ promotion(dataProduct._id) }}</div>
-        <div class="bottom">
-            <div class="prix tertiary-txt">{{ dataProduct.prix }} €</div>
+        <div class="promotion tertiary-txt">{{ libellePromotion }}</div>
+        <div class="bottom">     
+            <div>   
+                <div v-if="isDiscount" class="prix tertiary-txt">{{ dataProduct.prix_reduc.toFixed(2) }}€</div>
+                <div :class="isDiscount ? 'prixAvantDiscount' : 'prix tertiary-txt'">{{ dataProduct.prix.toFixed(2) }}€</div>
+            </div>
             <!-- NOTE :  Si 'dataProduct._id' se trouve dans 'basket', on récupère sa quantité -->
             <!-- <component 
                 :is="typeof basket[dataProduct._id] != 'undefined' ? 'buttonsSetQuantity' : 'buttonAddToBasket'"
@@ -47,13 +51,31 @@ export default {
         }
     },
 
+    /*data () {
+        return {
+            publicPath: process.env.BASE_URL
+        }
+    },*/
+
     computed: {
         basket() {
             return this.$store.state.basket;
-        }
+        },
 
-        , promotion() {
-            return this.$store.getters.getPromotion;
+        // Génère texte pour promo s'il y en a
+        libellePromotion() {
+            let libelle = "";
+            const prd = this.dataProduct;
+            if("promotion" in prd && prd.promotion !== null) {
+                libelle = prd.promotion.pourcent ? 
+                            `PROMO: -${prd.promotion.info}%` : 
+                            prd.promotion.info;
+            }
+            return libelle;
+        },
+        
+        isDiscount() {
+            return ("prix_reduc" in this.dataProduct ? true : false);
         }
     },
 
@@ -92,6 +114,12 @@ export default {
     font-weight: bold;
     font-size: 22px;
 }
+.prixAvantDiscount {
+    font-size: 14px;
+    text-decoration: line-through;
+    position: absolute;
+    margin: -13px 0 0 0;
+}
 
 .origine {
     font-size: 14px;
@@ -108,6 +136,7 @@ export default {
 .bottom {
     display: flex;
     justify-content: space-between;
+    margin: 5px 0 0 0;
 }
 
 .illustration {
