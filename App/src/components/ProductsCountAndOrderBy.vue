@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="container">
     <div>{{ products.length }} résultat{{ products.length > 1 ? "s" : "" }}</div>
     <div>
       <select name="" id="" ></select>
@@ -19,10 +19,11 @@ export default {
 }
 </script>
 
-<style>
-.wrapper {
+<style scoped>
+.container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 10px;
 }
 </style>
