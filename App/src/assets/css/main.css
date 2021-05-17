@@ -18,6 +18,9 @@ body {
 .primary-txt {
     color: rgb(37, 44, 122);
 }
+.primary-light {
+    background-color: rgb(48,93,154, 0.2);
+}
 .secondary {
     background-color: #15aabf;
     background-color: #ffd43b;
