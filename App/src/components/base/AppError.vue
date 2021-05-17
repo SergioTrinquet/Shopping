@@ -74,6 +74,7 @@ export default {
     border-radius: 5px;
     padding: 20px 30px;
     font-weight: bold;
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
 }
 .overlay:not(.display) .encartErreur {
     display: none;
