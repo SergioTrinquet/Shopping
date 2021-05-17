@@ -10,7 +10,7 @@ use('db_shopping');
 // Make sure you run it against the correct database and collection.
 db.products.drop();
 
-// Insert a few documents into the sales collection.
+// Insert a few documents into the 'products' collection.
 db.products.insertMany([
     {
         "intitule":"bananes",
@@ -41,10 +41,9 @@ db.products.insertMany([
         "rayon": ObjectId("6090865442b2205d269d7dfd"),
         "nutriscore":{"_id":"n1","lettre":"A"},
         "label_qualite":{
-            "_id": ObjectId("609312b857e57fc3606563d5"),
+            "_id": "lb_1",
             "label": "Bio"
-        },
-        "promotion": null
+        }
     },
     {
         "intitule":"oranges",
@@ -85,3 +84,39 @@ db.products.insertMany([
 // Run a find command
 db.products.find();
 
+
+
+
+
+
+
+//////////////////// Pour collection 'labelqualites' ///////////////////////
+use('db_shopping');
+db.labelqualites.drop();
+
+// Insert a few documents into the 'products' collection.
+db.labelqualites.insertMany([
+    { 
+        "_id": "lb_1",
+        "label":"Bio" 
+    },
+    { 
+        "_id": "lb_2",
+        "label":"Origine France" 
+    },
+    { 
+        "_id": "lb_3",
+        "label":"Label Rouge" 
+    },
+    { 
+        "_id": "lb_4",
+        "label":"Commerce Equitable" 
+    },
+    { 
+        "_id": "lb_5",
+        "label":"Appellation d'origine protégée" 
+    }
+]);
+
+// Run a find command
+db.labelqualites.find();
