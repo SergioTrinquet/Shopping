@@ -3,9 +3,12 @@
     <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
     <!-- <DepartmentsMargin v-if="displayMarginDepartments" /> -->
     <DepartmentsMargin />
+    <!-- <transition name="TESTtransition">
+      <BasketMargin v-if="displayMarginBasket" />
+    </transition> -->
     <BasketMargin />
 
-    <div class="grid-container">
+    <div class="grid-container" v-if="id_selected_department != null">
       <div class="block-filters">
         <Filters />
       </div>
@@ -42,14 +45,23 @@ export default {
   },
 
   computed: {
+
+    //TEST pour chargement à la volée qd demande ouverture marge
     displayMarginDepartments() {
       return this.$store.state.display_margin_departments;
     },
-  },
+    displayMarginBasket() {
+      return this.$store.state.display_margin_basket;
+    }
+    // FIN TEST
 
-  mounted() {
-    // Chargement liste des rayons
-    this.$store.dispatch('setDepartments');
+    , products() {
+      return this.$store.state.products;
+    },
+    id_selected_department() {
+      return this.$store.state.id_selected_department;
+    }
+
   }
 }
 </script>
@@ -67,4 +79,22 @@ export default {
 .block-filters { grid-area: Filters; }
 .block-countAndOrderBy { grid-area: CountAndOrderBy; }
 .block-products { grid-area: Products; }
+
+.block-filters { 
+  background-color: #F0F0F0;
+  box-sizing: border-box;
+  padding: 15px;
+  /* height: calc(100vh - 60px); */ height: 100%;
+}
+
+
+
+/* TEST transition */
+.TESTtransition-enter-active, .TESTtransition-leave-active {
+  transition: opacity 0.5s ease-in-out;
+}
+.TESTtransition-enter, .TESTtransition-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+/* FIN TEST transition */
 </style>
