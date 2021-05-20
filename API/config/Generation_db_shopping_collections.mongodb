@@ -23,7 +23,7 @@ db.products.insertMany([
         "nom_image":"bananes_1kg",
         "rayon": ObjectId("60907d7d42b2205d269d7df8"),
         "nutriscore":{"_id":"n1","lettre":"A"},
-        "label_qualite":{},
+        "label_qualite":[],
         "promotion":{
             "pourcent": true,
             "info": "30"
@@ -37,13 +37,13 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.20"),
         "origine":"Italie",
-        "nom_image":"Pates_fusilli_BARILLA_500g",
+        "nom_image":"Pates-fusilli_BARILLA_500g",
         "rayon": ObjectId("6090865442b2205d269d7dfd"),
         "nutriscore":{"_id":"n1","lettre":"A"},
-        "label_qualite":{
-            "_id": "lb_1",
-            "label": "Bio"
-        }
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ]
+        
     },
     {
         "intitule":"oranges",
@@ -56,10 +56,41 @@ db.products.insertMany([
         "nom_image":"oranges_2kg",
         "rayon": ObjectId("60907d7d42b2205d269d7df8"),
         "nutriscore":{"_id":"n1","lettre":"A"},
-        "label_qualite":{},
+        "label_qualite":[],
         "promotion":{
             "pourcent": true,
             "info": "10"
+        }
+    },
+    {
+        "intitule":"citrons",
+        "descriptif":"Filet de 500g",
+        "marque":"",
+        "prix_unite": NumberDecimal("0.99"),
+        "unite":"kg",
+        "prix": NumberDecimal("1.98"),
+        "origine":"Espagne",
+        "nom_image":"citrons_500g",
+        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "nutriscore":{"_id":"n2","lettre":"B"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ]
+    },
+    {
+        "intitule":"citrons verts Lime",
+        "descriptif":"la pièce",
+        "marque":"",
+        "prix_unite": NumberDecimal("0.40"),
+        "unite":"pièce",
+        "prix": NumberDecimal("0.40"),
+        "origine":"Espagne",
+        "nom_image":"citrons-verts-lime_piece",
+        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+        "promotion":{
+            "pourcent": false,
+            "info": "3 achetés = 1€"
         }
     },
     {
@@ -69,21 +100,50 @@ db.products.insertMany([
         "prix_unite": NumberDecimal("3.69"),
         "unite":"litre",
         "prix": NumberDecimal("3.69"),
-        "origine":"",
-        "nom_image":"jus_doranges_JARDIN_BIO_1l",
+        "origine":"france",
+        "nom_image":"jus-oranges_JARDIN_BIO_1l",
         "rayon": ObjectId("6090868042b2205d269d7dff"),
         "nutriscore":{"_id":"n1","lettre":"A"},
-        "label_qualite":{},
+        "label_qualite":[],
         "promotion":{
             "pourcent": true,
             "info": "30"
         }
-    }
+    },
+    {
+        "intitule":"Jus de citron bio pur jus",
+        "descriptif":"la bouteille d'1L",
+        "marque":"SIRACUSE",
+        "prix_unite": NumberDecimal("4.95"),
+        "unite":"litre",
+        "prix": NumberDecimal("4.95"),
+        "origine":"",
+        "nom_image":"jus-citron_SIRACUSE_1l",
+        "rayon": ObjectId("6090868042b2205d269d7dff"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "pourcent": true,
+            "info": "34"
+        }
+    },
+
 ]);
 
 // Run a find command
-db.products.find();
+//db.products.find();
 
+// Commande find() pour mettre en capitale le champ 'origine'
+db.products.find().forEach(function(doc) { 
+   db.products.updateOne(
+       { _id: doc._id},
+       { $set : { 'origine' : doc.origine.toUpperCase() } },
+       { $set : { 'marque' : doc.marque.toUpperCase() } },
+       { multi: true }
+   )
+});
 
 
 
@@ -91,7 +151,7 @@ db.products.find();
 
 
 //////////////////// Pour collection 'labelqualites' ///////////////////////
-use('db_shopping');
+/* use('db_shopping');
 db.labelqualites.drop();
 
 // Insert a few documents into the 'products' collection.
@@ -119,4 +179,4 @@ db.labelqualites.insertMany([
 ]);
 
 // Run a find command
-db.labelqualites.find();
+db.labelqualites.find(); */
