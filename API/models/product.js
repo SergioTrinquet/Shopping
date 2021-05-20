@@ -28,7 +28,10 @@ const productSchema = new Schema({
         min: 0,
         max: 10000
     },
-    origine: String,
+    origine: {
+        type: String,
+        uppercase: true
+    },
     nom_image: String,
     rayon: {
         type: Schema.Types.ObjectId, 
@@ -36,7 +39,7 @@ const productSchema = new Schema({
         required: true
     },
     nutriscore: nutriscoreSchema,
-    label_qualite: labelQualiteSchema,
+    label_qualite: [labelQualiteSchema],
     promotion: new Schema({
         pourcent: Boolean,
         info: String
@@ -44,7 +47,7 @@ const productSchema = new Schema({
 }, { timestamps: true });
 
 productSchema.virtual('imgPath').get(() => {
-    return "../assets/imgs/" + this.nom_image + '.jpg';
+    return "@/assets/imgs/" + this.nom_image + '.jpg';
 })
 
 const Product = mongoose.model('Product', productSchema);
