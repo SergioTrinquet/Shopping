@@ -1,10 +1,15 @@
 <template>
   <div>
-  <form ref="filtersForm" @change="changeFormValues"><!--  -->
+  <form ref="filtersForm" @change="changeFormValues">
       <div class="header primary-light">Filtres</div>
       <div class="filterWrapper lgnChbx">
-        <input type="checkbox" id="chbxPromos" name="chbxPromos">
+        <input type="checkbox" id="chbxPromos" name="promos">
         <label for="chbxPromos">N'affichez que les promotions</label>
+      </div>
+
+      <div class="filterWrapper lgnChbx">
+        <input type="checkbox" id="chbxPrdsFrancais" name="prdsFr">
+        <label for="chbxPrdsFrancais">Produits français</label>
       </div>
 
       <div class="filterWrapper">
@@ -41,11 +46,11 @@
       <div class="filterWrapper">
         <div class="champFiltre">Labels qualité</div>
         <div v-for="lq in filters.label_qual" :key="lq._id" class="lgnChbx">
-          <input type="checkbox" :id="lq._id" :value="lq._id" name="label">
+          <input type="checkbox" :id="lq._id" :value="lq._id" name="label_qualite">
           <label :for="lq._id">{{ lq.label }}</label>
         </div>
       </div>
-  </form><!--  -->  {{ selectionFiltres }}
+  </form> <!-- {{ selectionFiltres }} -->
   </div>
 </template>
 
@@ -62,10 +67,14 @@ export default {
   computed: {
     filters() {
       return this.$store.state.filters;
+    },
+    id_selected_department() {
+      return this.$store.state.id_selected_department;
     }
   },
 
   methods: {
+    // Input texte pour filtrer sur les marques
     filtrageMarques() {
       const chbx = this.$refs.chbx_marques.querySelectorAll('.chbx_m'); // Selection de ttes les balises comprenant les checkbox et leur libellé
       let r = new RegExp(this.champFiltreMarque, "i"); // Regex à partir de ce qui est saisi ds champ filtre
@@ -77,14 +86,16 @@ export default {
       this.nbMarquesFiltrage = this.$refs.chbx_marques.querySelectorAll('.chbx_m:not(.hidden)').length;
     },
 
+    // Envoi données sélectionnées ds le form à chaque modif
     changeFormValues() {
-      //console.log("Modif sur form"); //TEST
       const form = this.$refs.filtersForm;
       const data = new FormData(form);
 
       /* TEST */ //this.selectionFiltres = new URLSearchParams(data).toString();
 
+      // Création d'un objet JS listant les sélections de filtres
       let obj = {};
+      obj['rayon'] = this.id_selected_department; // Ajout id rayon sélectionné
       for(let [key, value] of data) {
         if(obj[key] !== undefined) {
           if(!Array.isArray(obj[key])) {
@@ -97,13 +108,13 @@ export default {
       }
       this.selectionFiltres = obj;
 
-      //this.$store.dispatch('sendFiltersSelection', this.selectionFiltres); // A TERMINER
+      this.$store.dispatch('fetchProductsDepartmentWithFilters', this.selectionFiltres);
     }
   },
 
   mounted() {
       // Chargement des filtres
-      this.$store.dispatch("setFilters")
+      this.$store.dispatch("setFilters", this.id_selected_department)
         .then(() => this.nbMarquesFiltrage = this.$refs.chbx_marques.querySelectorAll('.chbx_m').length)
   }
 }
