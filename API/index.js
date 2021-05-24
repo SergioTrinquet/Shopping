@@ -39,7 +39,10 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
             console.log("J'écoute au port " + port); //TEST
         })
     })
-    .catch(err => console.log("Erreur de connexion"));
+    .catch(err => {
+        console.log("Erreur de connexion"); 
+        // Appeler ici 'next(err)'
+    });
 
 
 
@@ -106,12 +109,58 @@ app.post("/department_products", (req, res, next) => {
         next(error);
     } */
 
+    
+    console.log("Paramètres passés en POST >>>", JSON.stringify(req.body)); // TEST
+    let clauseFind = {};
 
-    //TEST
-    console.log(JSON.stringify(req.body)); 
-    const id_rayon = req.body.department;
+    // NOTE:
+    // Si param = 'promos' => Check présence propriété 'Promotion', et si présente, check si pas vide (en testant présence prop. 'pourcent')
+
+    // Boucle sur paramètres passés
+    for(let rb in req.body) {
+
+        //console.log("=>", rb, req.body[rb],"isArray : " + Array.isArray(req.body[rb]) , "type valeur: " + typeof(req.body[rb])); // TEST
+
+        // Si paramètre passé est un tableau (nutriscore, labels qualité, marque)...
+        if(Array.isArray(req.body[rb])) { // Si c'est un Array...
+
+            console.log("Array => ", rb, req.body[rb]); //TEST
+            let tabMongoDBclause = [];
+            for(const x of req.body[rb]) {
+                // Si 'nutriscore' ou 'label_qualite', ajout '_id' pour chercher ds sous-document le path '_id'
+                rb = (rb == "nutriscore" || rb == "label_qualite" ? rb + '._id' : rb);
+                tabMongoDBclause.push({ [rb]: x }); // entre [] pour que propriété de l'obj. soit interprété, sinon lit 'rb'
+            }
+            clauseFind["$or"] = tabMongoDBclause;
+
+        } else if(typeof req.body[rb] == 'string') { // ...Si c'est un String (nutriscore, labels qualité, marque,promotions, prds français)...
+
+            console.log("string => ", rb, req.body[rb]); //TEST
+            if(rb == "promos") {
+                clauseFind["promotion.pourcent"] = { $exists:true }
+            } else if(rb == "prdsFr") {
+                clauseFind["origine"] = "FRANCE";
+            } else if(rb == "nutriscore" || rb == "label_qualite") { 
+                clauseFind[rb + "._id"] = req.body[rb];      
+            } else {
+                clauseFind[rb] = req.body[rb]; 
+            }
+
+        } /* else if(req.body[rb] = Object(req.body[rb])) { // ...Si c'est un objet
+
+            console.log("Object => ", rb, req.body[rb]); //TEST
+            clauseFind[rb]._id = req.body[rb];
+
+        } */
+    }
+    console.log("clauseFind", clauseFind); //TEST
+
+
     Product
-        .find({ rayon: id_rayon })
+        //.find({ "rayon": req.body.rayon })
+        //.find({ 'rayon': '60907d7d42b2205d269d7df8', 'nutriscore._id': 'n1' }) // FONCTIONNE !!!
+        //.find({ rayon: '60907d7d42b2205d269d7df8',  nutriscore: {_id: 'n1'} }) // NE FONCTIONNE PAS !!!
+        .find(clauseFind).sort('intitule')
         .populate("rayon")
         .then(result => {
             res.json(result);
