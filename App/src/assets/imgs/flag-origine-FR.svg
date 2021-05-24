@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="14px" viewBox="0 0 18 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: #FFFFFF;">
+    <title>Flag-origin-FR</title>
+    <defs>
+        <path d="M3.26784251,0 C4.77681309,0 6,1.3431 6,3 L6,11 C6,12.6569 4.77681309,14 3.26784251,14 L0,14 L0,0 L3.26784251,0 Z" id="path-1"/>
+        <path d="M6,0 L6,14 L2.73215749,14 C1.22318691,14 0,12.6569 0,11 L0,11 L0,3 C0,1.3431 1.22318691,0 2.73215749,0 L2.73215749,0 L6,0 Z" id="path-3"/>
+    </defs>
+    <g id="Flag-origin-FR" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect fill="#FFFFFF" x="0" y="0" width="18" height="14"/>
+        <g id="Group-2">
+            <g id="Group-33" transform="translate(12.000000, 0.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"/>
+                </mask>
+                <g id="Clip-32"/>
+                <polygon id="Fill-31" fill="#D0021B" mask="url(#mask-2)" points="0 0 6 0 6 14 0 14"/>
+            </g>
+            <g id="Group-36">
+                <mask id="mask-4" fill="white">
+                    <use xlink:href="#path-3"/>
+                </mask>
+                <g id="Clip-35"/>
+                <polygon id="Fill-34" fill="#274AA3" mask="url(#mask-4)" points="0 14 6 14 6 0 0 0"/>
+            </g>
+        </g>
+    </g>
+</svg>
