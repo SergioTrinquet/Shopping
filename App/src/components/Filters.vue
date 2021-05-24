@@ -1,10 +1,9 @@
 <template>
-  <div>
   <form ref="filtersForm" @change="changeFormValues">
       <div class="header primary-light">Filtres</div>
       <div class="filterWrapper lgnChbx">
         <input type="checkbox" id="chbxPromos" name="promos">
-        <label for="chbxPromos">N'affichez que les promotions</label>
+        <label for="chbxPromos">Promotions</label>
       </div>
 
       <div class="filterWrapper lgnChbx">
@@ -24,12 +23,13 @@
           placeholder="filtrer par marque" 
         />
         <div class="listeMarques" ref="chbx_marques">
+          <div class="msgToManyTrades secondary" v-if="displayMsgMarques">Pas plus de {{ nbMaxMarques }} marques, merci !</div>
           <div 
             v-for="(marque, idx) in filters.marques" :key="idx" 
             class="lgnChbx chbx_m" 
             :data-nommarque="marque"
           >
-            <input type="checkbox" :id="idx" :value="marque" name="marque">
+            <input type="checkbox" :id="idx" :value="marque" name="marque"   v-model="vm_marques">
             <label :for="idx">{{ marque }}</label>
           </div>
         </div>
@@ -50,8 +50,8 @@
           <label :for="lq._id">{{ lq.label }}</label>
         </div>
       </div>
-  </form> <!-- {{ selectionFiltres }} -->
-  </div>
+      <!-- {{ selectionFiltres }} -->
+  </form> 
 </template>
 
 <script>
@@ -60,7 +60,9 @@ export default {
     return {
       champFiltreMarque: "",
       selectionFiltres: {},
-      nbMarquesFiltrage: 0
+      nbMarquesFiltrage: 0,
+      vm_marques: [],
+      displayMsgMarques: false
     }
   },
 
@@ -70,6 +72,27 @@ export default {
     },
     id_selected_department() {
       return this.$store.state.id_selected_department;
+    },
+    nbMaxMarques() {
+      return this.$store.state.nbMaxMarques;
+    }
+  },
+
+  watch: {
+    vm_marques(val) {
+      let chbxs = this.$refs.chbx_marques.querySelectorAll('input[type="checkbox"]');
+      // Limite sur nb de marques dans filtres : Si plus de X marques cochées, les autres marques sont mises en disabled
+      if(val.length == this.nbMaxMarques) { 
+        this.displayMsgMarques = true;
+        chbxs.forEach(c => {
+          if(!val.includes(c.value)) {
+            c.disabled = true; 
+          }
+        });
+      } else {
+        this.displayMsgMarques = false;
+        chbxs.forEach(c => c.disabled = false );
+      }
     }
   },
 
@@ -110,6 +133,7 @@ export default {
 
       this.$store.dispatch('fetchProductsDepartmentWithFilters', this.selectionFiltres);
     }
+
   },
 
   mounted() {
@@ -121,6 +145,16 @@ export default {
 </script>
 
 <style scoped>
+.msgToManyTrades {
+  width: 200px;
+  font-size: 12px;
+  color: #fff;
+  border-radius: 3px;
+  line-height: 14px;
+  padding: 4px;
+  box-sizing: border-box;
+  margin: 3px 0;
+}
 .filterWrapper {
   border-bottom: dashed 1px #9f9f9f;
   padding: 8px 0;
