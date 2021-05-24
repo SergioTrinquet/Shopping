@@ -14,7 +14,9 @@ export default new Vuex.Store({
     departments: [],
     products: [],
     basket: {},
-    filters: {}
+    filters: {},
+    id_selected_department: null,
+    nbMaxMarques: 3,
   },
 
 
@@ -71,7 +73,10 @@ export default new Vuex.Store({
     },
     SET_FILTERS(state, payload) {
       state.filters = payload;
-    }
+    },
+    SET_ID_SELECTED_DEPARTMENT(state, payload) {
+      state.id_selected_department = payload;
+    },
 
   },
 
@@ -82,7 +87,7 @@ export default new Vuex.Store({
       commit('SET_LOADING', true);
       commit('SET_MESSAGE_ERROR', null);
 
-      return axios.get('/api/get_rayons')
+      return axios.get('/api/departments')
         .then((res) => {
           commit('SET_DEPARTMENTS', res.data);
         })
@@ -98,8 +103,10 @@ export default new Vuex.Store({
       commit('SET_LOADING', true);
       commit('SET_MESSAGE_ERROR', null);
 
+      commit('SET_ID_SELECTED_DEPARTMENT', payload.id);
+
       //const params = url.URLSearchParams({ rayonId: payload });
-      return axios.get(`/api/get_produits_rayon/${payload}`)
+      return axios.get(`/api/department_products/${payload.id}`)
         .then((res) => {
           console.log(res.data); //TEST
 
@@ -129,11 +136,11 @@ export default new Vuex.Store({
     },
 
     // Pour charger les filtres dans marge gauche
-    setFilters({ commit }) {
+    setFilters({ commit }, payload) {   console.log("setFilters", payload); //TEST
       commit('SET_LOADING', true);
       commit('SET_MESSAGE_ERROR', null);
 
-      return axios.get('/api/get_filters')
+      return axios.get('/api/filters')
         .then(res => {
           commit('SET_FILTERS', res.data);
         })
@@ -142,7 +149,35 @@ export default new Vuex.Store({
           commit('SET_MESSAGE_ERROR', err.response);
         })
         .finally(() => commit('SET_LOADING', false));
+    },
+
+    // Envoi du coté back-end sélection des filtres pour recupérer produits correspondants
+    fetchProductsDepartmentWithFilters({ commit }, payload) {
+      commit('SET_LOADING', true);
+      commit('SET_MESSAGE_ERROR', null);
+
+      return axios.post('/api/department_products', payload)
+        .then(res => {
+
+          // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
+          let items = [];
+          res.data.forEach(p => {
+            if("promotion" in p && p.promotion !== null && p.promotion.pourcent) {
+              p.prix_reduc = p.prix - (p.prix/100 * p.promotion.info);
+              //console.warn(p.intitule, p.prix_reduc, p); //TEST
+            }
+            items.push(p);
+          })
+
+          commit('SET_PRODUCTS', items);
+        })
+        .catch(err => {
+          console.error(err.response);
+          commit('SET_MESSAGE_ERROR', err.response);
+        })
+        .finally(() => commit('SET_LOADING', false));
     }
+
   },
 
 
@@ -158,7 +193,6 @@ export default new Vuex.Store({
     getBasketTotalPrice(state) {
       let totalPrice = 0;
       for(let item of Object.values(state.basket)) {
-        //totalPrice += (parseFloat(item.prix) * item.qte)
         let prix = "prix_reduc" in item ? item.prix_reduc : item.prix;
         totalPrice += (parseFloat(prix) * item.qte)
       }
@@ -191,7 +225,7 @@ export default new Vuex.Store({
       return finalSortedItems;
     },
 
-    // Signale si un composant parmi la liste ci-dessous est ouvert
+    // Signale si au moins un des composants est ouvert (composant marge des rayons et composant marge panier)
     areComponentsOpen(state) {
       return state.display_margin_departments || state.display_margin_basket;
     },
