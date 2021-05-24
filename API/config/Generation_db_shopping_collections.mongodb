@@ -117,7 +117,6 @@ db.products.insertMany([
         "prix_unite": NumberDecimal("4.95"),
         "unite":"litre",
         "prix": NumberDecimal("4.95"),
-        "origine":"",
         "nom_image":"jus-citron_SIRACUSE_1l",
         "rayon": ObjectId("6090868042b2205d269d7dff"),
         "nutriscore":{"_id":"n1","lettre":"A"},
@@ -128,6 +127,20 @@ db.products.insertMany([
             "pourcent": true,
             "info": "34"
         }
+    },
+    {
+        "intitule":"Viande de Porc: Côtes sans os à griller",
+        "descriptif":"la barquette de 4 - 400g",
+        "marque":"BONS MORCEAUX",
+        "prix_unite": NumberDecimal("12.38"),
+        "unite":"kg",
+        "prix": NumberDecimal("4.95"),
+        "origine":"france",
+        "nom_image":"Porc-cotes-sans-os-a-griller_BONS-MORCEAUX",
+        "rayon": ObjectId("60907dbc42b2205d269d7df9"),
+        "label_qualite":[
+            {"_id": "lb_3", "label": "Label Rouge"}
+        ]
     },
 
 ]);
