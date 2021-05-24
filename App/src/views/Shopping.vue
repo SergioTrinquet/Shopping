@@ -69,7 +69,7 @@ export default {
 <style scoped>
 .grid-container {
   display: grid;
-  grid-template-columns: 250px 1fr;
+  grid-template-columns: 250px 1fr; /* grid-template-columns: minmax(250px, 250px) 1fr; */
   grid-template-rows: 60px 1fr;
   gap: 0px 0px;
   grid-template-areas:
@@ -83,8 +83,11 @@ export default {
 .block-filters { 
   background-color: #F0F0F0;
   box-sizing: border-box;
-  padding: 15px;
-  /* height: calc(100vh - 60px); */ height: 100%;
+  padding: 10px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  position: fixed;
+  width: 250px;
 }
 
 
