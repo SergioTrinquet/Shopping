@@ -141,11 +141,14 @@ export default {
 .origine {
     font-size: 14px;
     font-style: italic;
+    display: flex;
+    align-items: center;
 }
 .frenchFlag {
     display: inline-block;
-    height: 20px;
-    /*background: 50% 50% url('../assets/imgs/flag-origine-FR.svg') no-repeat;*/
+    height: 14px;
+    width: 30px;
+    background: 50% 50% url('../assets/imgs/flag-origine-FR.svg') no-repeat;
 }
 .promotion {
     font-size: 13px;
