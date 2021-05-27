@@ -15,8 +15,16 @@ export default new Vuex.Store({
     products: [],
     basket: {},
     filters: {},
-    id_selected_department: null,
+    selected_department: null,
     nbMaxMarques: 3,
+    listeTypeTri: [
+      { champBdd: "intitule", ordre: 1, texte: "intitulé(alphabétique)" },
+      { champBdd: "intitule", ordre: -1, texte: "intitulé(alpha. inverse)" },
+      { champBdd: "prix", ordre: 1, texte: "Prix(croissant)" },
+      { champBdd: "prix", ordre: -1, texte: "Prix(décroissant)" },
+      { champBdd: "prix_unite", ordre: 1, texte: "Prix au kg/l(croissant)" },
+      { champBdd: "prix_unite", ordre: -1, texte: "Prix au kg/l(décroissant)" }
+    ]
   },
 
 
@@ -74,8 +82,8 @@ export default new Vuex.Store({
     SET_FILTERS(state, payload) {
       state.filters = payload;
     },
-    SET_ID_SELECTED_DEPARTMENT(state, payload) {
-      state.id_selected_department = payload;
+    SET_SELECTED_DEPARTMENT(state, payload) {
+      state.selected_department = {id: payload.id, intitule: payload.intitule };
     },
 
   },
@@ -98,14 +106,18 @@ export default new Vuex.Store({
         .finally(() => commit('SET_LOADING', false));
     },
 
+    // Pour fermer tous les composants étant potentiellement ouverts avent d'ouvrir celui sur lequel l'utilisateur vient de cliquer
+    closeComponents({ commit }) {
+      commit('SET_DISPLAY_MARGIN_DEPARTMENTS', false);
+      commit('SET_DISPLAY_MARGIN_BASKET', false);
+    },
+
+
     // Qd click sur rayon dans marge coulissante
     fetchProductsDepartment({ commit }, payload) {
       commit('SET_LOADING', true);
       commit('SET_MESSAGE_ERROR', null);
 
-      commit('SET_ID_SELECTED_DEPARTMENT', payload.id);
-
-      //const params = url.URLSearchParams({ rayonId: payload });
       return axios.get(`/api/department_products/${payload.id}`)
         .then((res) => {
           console.log(res.data); //TEST
@@ -119,32 +131,10 @@ export default new Vuex.Store({
             }
             items.push(p);
           })
-
+          commit('SET_SELECTED_DEPARTMENT', payload);
           commit('SET_PRODUCTS', items);
         })
         .catch((err) => {
-          console.error(err.response);
-          commit('SET_MESSAGE_ERROR', err.response);
-        })
-        .finally(() => commit('SET_LOADING', false));
-    },
-
-    // Pour fermer tous les composants étant potentiellement ouverts avent d'ouvrir celui sur lequel l'utilisateur vient de cliquer
-    closeComponents({ commit }) {
-      commit('SET_DISPLAY_MARGIN_DEPARTMENTS', false);
-      commit('SET_DISPLAY_MARGIN_BASKET', false);
-    },
-
-    // Pour charger les filtres dans marge gauche
-    setFilters({ commit }, payload) {   console.log("setFilters", payload); //TEST
-      commit('SET_LOADING', true);
-      commit('SET_MESSAGE_ERROR', null);
-
-      return axios.get('/api/filters')
-        .then(res => {
-          commit('SET_FILTERS', res.data);
-        })
-        .catch(err => {
           console.error(err.response);
           commit('SET_MESSAGE_ERROR', err.response);
         })
@@ -156,6 +146,7 @@ export default new Vuex.Store({
       commit('SET_LOADING', true);
       commit('SET_MESSAGE_ERROR', null);
 
+      //return axios.get(`/api/department_products${payload}`)
       return axios.post('/api/department_products', payload)
         .then(res => {
 
@@ -170,6 +161,27 @@ export default new Vuex.Store({
           })
 
           commit('SET_PRODUCTS', items);
+        })
+        .catch(err => {
+          console.error(err.response);
+          commit('SET_MESSAGE_ERROR', err.response);
+        })
+        .finally(() => commit('SET_LOADING', false));
+    },
+
+
+
+
+
+
+    // Récupération des filtres utiles selon le rayon sélectionné 
+    setFilters({ commit }, payload) {
+      commit('SET_LOADING', true);
+      commit('SET_MESSAGE_ERROR', null);
+
+      return axios.get(`/api/filters/${payload}`)
+        .then(res => {
+          commit('SET_FILTERS', res.data);
         })
         .catch(err => {
           console.error(err.response);
