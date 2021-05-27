@@ -1,27 +1,38 @@
 <template>
-  <form ref="filtersForm" @change="changeFormValues">
-      <div class="header primary-light">Filtres</div>
-      <div class="filterWrapper lgnChbx">
+  <form ref="filtersForm" @change="changeFormValues"><!-- {{ filters }} -->
+
+      <div class="header primary-light">Affiner</div>
+
+      <div class="filterWrapper lgnChbx" v-if="displayFilters.promos">
         <input type="checkbox" id="chbxPromos" name="promos">
         <label for="chbxPromos">Promotions</label>
       </div>
 
-      <div class="filterWrapper lgnChbx">
+      <div class="filterWrapper lgnChbx"  v-if="displayFilters.produitsFR">
         <input type="checkbox" id="chbxPrdsFrancais" name="prdsFr">
         <label for="chbxPrdsFrancais">Produits français</label>
       </div>
 
-      <div class="filterWrapper">
+      <div class="filterWrapper" v-if="displayFilters.marques">
         <div class="champFiltre">
           Marques <span class="nbMarques">
           ({{ nbMarquesFiltrage }})</span>
         </div>
         <input 
           type="text" 
+          id="inputFiltreMarques"
           v-model="champFiltreMarque" 
           @input="filtrageMarques" 
           placeholder="filtrer par marque" 
+          v-if="filters.marques.length > 5"
         />
+        <!-- <input 
+          type="text" 
+          id="inputFiltreMarques"
+          v-model="champFiltreMarque" 
+          @input="filtrageMarques" 
+          placeholder="filtrer par marque" 
+        /> -->
         <div class="listeMarques" ref="chbx_marques">
           <div class="msgToManyTrades secondary" v-if="displayMsgMarques">Pas plus de {{ nbMaxMarques }} marques, merci !</div>
           <div 
@@ -35,7 +46,7 @@
         </div>
       </div>
 
-      <div class="filterWrapper">
+      <div class="filterWrapper" v-if="displayFilters.nutriscores">
         <div class="champFiltre">Nutriscore</div>
         <div v-for="score in filters.nutriscore" :key="score._id" class="lgnChbx">
           <input type="checkbox" :id="score._id" :value="score._id" name="nutriscore">
@@ -43,7 +54,7 @@
         </div>
       </div>
 
-      <div class="filterWrapper">
+      <div class="filterWrapper" v-if="displayFilters.labels">
         <div class="champFiltre">Labels qualité</div>
         <div v-for="lq in filters.label_qual" :key="lq._id" class="lgnChbx">
           <input type="checkbox" :id="lq._id" :value="lq._id" name="label_qualite">
@@ -70,12 +81,27 @@ export default {
     filters() {
       return this.$store.state.filters;
     },
-    id_selected_department() {
-      return this.$store.state.id_selected_department;
+    selected_department() {
+      return this.$store.state.selected_department;
     },
     nbMaxMarques() {
       return this.$store.state.nbMaxMarques;
+    },
+    displayFilters() {
+      let f = {};
+      f.promos = this.filters.PromosPresence;
+      f.produitsFR = this.filters.ProduitsFRpresence;
+      f.marques = (this.filters.marques.length > 0 ? true : false);
+      f.nutriscores = (this.filters.nutriscore.length > 0 ? true : false);
+      f.labels = (this.filters.label_qual.length > 0 ? true : false);
+      return f;
+    },
+
+    ////
+    filterMarquesCount() {
+      return this.$store.state.filters.marques.length;
     }
+    ////
   },
 
   watch: {
@@ -93,6 +119,18 @@ export default {
         this.displayMsgMarques = false;
         chbxs.forEach(c => c.disabled = false );
       }
+    },
+
+    // Pour afficher nb de marques qd chgmt de rayon
+    filterMarquesCount(val) {
+      console.log("Changement nb de marques suite à chgmt rayon", "chbxs.length", val); //TEST
+      this.nbMarquesFiltrage = val;
+    },
+    
+    // Réinitialisation 'champFiltreMarque' à chaque chgt de rayon
+    selected_department() {
+      console.log("Changement de rayon"); //TEST
+      this.champFiltreMarque = "";
     }
   },
 
@@ -109,37 +147,47 @@ export default {
       this.nbMarquesFiltrage = this.$refs.chbx_marques.querySelectorAll('.chbx_m:not(.hidden)').length;
     },
 
-    // Envoi données sélectionnées ds le form à chaque modif
-    changeFormValues() {
-      const form = this.$refs.filtersForm;
-      const data = new FormData(form);
+    // Envoi valeurs des filtres sélectionnés ds le form à chaque modif
+    changeFormValues(event) {
+      // L'envoi des paramètres pour l'execut° de la requete ne doit pas se faire lorque modif  
+      // sur le champ de filtrage des marques, car valeur de ce champ est inutile pour requete
+      if(event.target.id !== 'inputFiltreMarques') {
+        
+        const form = this.$refs.filtersForm;
+        const data = new FormData(form);
 
-      /* TEST */ //this.selectionFiltres = new URLSearchParams(data).toString();
+        let searchParams = new URLSearchParams(data);
+        searchParams.append("rayon", this.selected_department.id);
+        console.log("sélection (GET) => ", searchParams.toString()); //TEST
 
-      // Création d'un objet JS listant les sélections de filtres
-      let obj = {};
-      obj['rayon'] = this.id_selected_department; // Ajout id rayon sélectionné
-      for(let [key, value] of data) {
-        if(obj[key] !== undefined) {
-          if(!Array.isArray(obj[key])) {
-            obj[key] = [obj[key]];
+        /* TEST */ //this.selectionFiltres = new URLSearchParams(data).toString();
+
+        // Création d'un objet JS listant les sélections de filtres
+        let obj = {};
+        obj['rayon'] = this.selected_department.id; // Ajout id rayon sélectionné
+        for(let [key, value] of data) {
+          if(obj[key] !== undefined) {
+            if(!Array.isArray(obj[key])) {
+              obj[key] = [obj[key]];
+            }
+            obj[key].push(value);
+          } else {
+            obj[key] = value;
           }
-          obj[key].push(value);
-        } else {
-          obj[key] = value;
         }
-      }
-      this.selectionFiltres = obj;
+        this.selectionFiltres = obj;
 
-      this.$store.dispatch('fetchProductsDepartmentWithFilters', this.selectionFiltres);
+        console.log("sélection (objet) => ", this.selectionFiltres); //TEST
+
+        this.$store.dispatch('fetchProductsDepartmentWithFilters', this.selectionFiltres);
+
+      } //
     }
 
   },
 
   mounted() {
-      // Chargement des filtres
-      this.$store.dispatch("setFilters", this.id_selected_department)
-        .then(() => this.nbMarquesFiltrage = this.$refs.chbx_marques.querySelectorAll('.chbx_m').length)
+    this.nbMarquesFiltrage = this.filterMarquesCount;
   }
 }
 </script>
@@ -159,7 +207,7 @@ export default {
   border-bottom: dashed 1px #9f9f9f;
   padding: 8px 0;
 }
-#filterWrapper:last-child {
+.filterWrapper:last-child {
   border-bottom-width: 0;
 }
 
