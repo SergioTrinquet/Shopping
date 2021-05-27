@@ -149,6 +149,7 @@ db.products.insertMany([
 //db.products.find();
 
 // Commande find() pour mettre en capitale le champ 'origine'
+/* 
 db.products.find().forEach(function(doc) { 
    db.products.updateOne(
        { _id: doc._id},
@@ -156,9 +157,26 @@ db.products.find().forEach(function(doc) {
        { $set : { 'marque' : doc.marque.toUpperCase() } },
        { multi: true }
    )
+}); */
+
+
+db.products.find().forEach(function(doc) { 
+    if('origine' in doc) {
+        db.products.updateOne(
+            { _id: doc._id}, 
+            { $set: { 'origine' : doc.origine.toUpperCase() } },
+            { multi: true }
+        )
+   }
+
+   if('marque' in doc) {
+        db.products.updateOne(
+            { _id: doc._id}, 
+            { $set: { 'marque' : doc.marque.toUpperCase() } },
+            { multi: true }
+        )
+   }
 });
-
-
 
 
 
