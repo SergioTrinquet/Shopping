@@ -1,11 +1,5 @@
 <template>
   <div class="container">
-      <div 
-        class="rayonProduits" 
-        v-if="products.length > 0"
-      >
-        Produits du rayon <b class="secondary-txt">"{{ rayon }}"</b>
-      </div>
       <div class="containerProductItems">
           <!-- Liste Produits -->
           <div 
@@ -35,9 +29,6 @@ export default {
     },
     basket() {
       return this.$store.state.basket;
-    },
-    rayon() {
-      return this.products[0].rayon.intitule;
     }
   },
 
@@ -46,10 +37,6 @@ export default {
     products() {
       this.$store.commit("SET_DISPLAY_MARGIN_DEPARTMENTS", false);
     }
-
-    /* , basket(val) {
-      console.log("watch 'basket'", val); //TEST
-    } */
   }
 
 }
@@ -59,9 +46,6 @@ export default {
 .container {
   border-top: dotted 1px #cecece;
   padding: 10px;
-}
-.rayonProduits {
-  font-size: 17px;
 }
 .containerProductItems {
   display: flex;
