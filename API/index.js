@@ -99,26 +99,13 @@ app.get("/department_products/:rayonId", (req, res, next) => {
 
 // Pour récupérer les produits d'un rayon après sélection de filtre(s)
 app.post("/department_products", (req, res, next) => {
-    /* try {
-        //TEST
-        console.log("id rayon", req.body.department); //TEST
-        console.log(JSON.stringify(req.body)); 
-        res.status(200).send("No problem !!");
-    } catch (error) {
-        error.customMsg = "Etape de récupération des filtres (partie 'Nutriscore' ou/et 'LabelQualite')";
-        next(error);
-    } */
 
-    
     console.log("Paramètres passés en POST >>>", JSON.stringify(req.body)); // TEST
-    let clauseFind = {};
 
-    // NOTE:
-    // Si param = 'promos' => Check présence propriété 'Promotion', et si présente, check si pas vide (en testant présence prop. 'pourcent')
+    let clauseFind = {};
 
     // Boucle sur paramètres passés
     for(let rb in req.body) {
-
         //console.log("=>", rb, req.body[rb],"isArray : " + Array.isArray(req.body[rb]) , "type valeur: " + typeof(req.body[rb])); // TEST
 
         // Si paramètre passé est un tableau (nutriscore, labels qualité, marque)...
@@ -137,7 +124,7 @@ app.post("/department_products", (req, res, next) => {
 
             console.log("string => ", rb, req.body[rb]); //TEST
             if(rb == "promos") {
-                clauseFind["promotion.pourcent"] = { $exists:true }
+                clauseFind["promotion.pourcent"] = { $exists:true } // Chck présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
             } else if(rb == "prdsFr") {
                 clauseFind["origine"] = "FRANCE";
             } else if(rb == "nutriscore" || rb == "label_qualite") { 
@@ -146,12 +133,11 @@ app.post("/department_products", (req, res, next) => {
                 clauseFind[rb] = req.body[rb]; 
             }
 
-        } /* else if(req.body[rb] = Object(req.body[rb])) { // ...Si c'est un objet
-
-            console.log("Object => ", rb, req.body[rb]); //TEST
-            clauseFind[rb]._id = req.body[rb];
-
-        } */
+        } 
+        //else if(req.body[rb] = Object(req.body[rb])) { // ...Si c'est un objet
+        //    console.log("Object => ", rb, req.body[rb]); //TEST
+        //    clauseFind[rb]._id = req.body[rb];
+        //}
     }
     console.log("clauseFind", clauseFind); //TEST
 
@@ -172,30 +158,9 @@ app.post("/department_products", (req, res, next) => {
 })
 
 
+/*
 // Pour récupérer les filtres (marge gauche qd produits affichés)
 app.get("/filters", async (req, res, next) => {
-    /* 
-    // Pour TEST pour vérifier que les prommesses s'executent de façon parallèle
-    const result_nutriscore = new Promise((resolve, reject) => {
-        setTimeout(
-            resolve, 5000, 
-            Nutriscore.find().sort('lettre').then(n => { return {"nutriscore": n} }) 
-        )
-    });
-    const result_labelqualite = new Promise((resolve, reject) => {
-        setTimeout(
-            resolve, 4000, 
-            LabelQualite.find().sort('label').then(l => { return {"label_qual": l} }) 
-        )
-    });
-    const result_marques = new Promise((resolve, reject) => {
-        setTimeout(
-            resolve, 6000,  
-            Product.distinct("marque").then(marques => {
-            return { "marques": marques.filter(m => m.length > 0).sort() }
-        }) );
-    }); 
-    */
     const result_nutriscore = Nutriscore.find().sort('lettre').then(scores => {
         return { "nutriscore": scores }
     });
@@ -221,14 +186,84 @@ app.get("/filters", async (req, res, next) => {
             const [key, value] = Object.entries(result)[0];
             filters[key] = value;
         }
-        //console.log("filters >>>>>", filters); //TEST
         res.json(filters);
     })
     .catch(error => {
-        error.customMsg = "Etape de récupération des filtres (partie 'Nutriscore' ou/et 'LabelQualite')";
+        error.customMsg = "Etape de récupération des filtres";
         next(error);
     })
+});
+*/
 
+
+// Pour récupérer les filtres utiles selon rayon sélectionné (marge gauche qd produits affichés)
+app.get("/filters/:department_id", async (req, res, next) => {
+
+    /* 
+    // TEST pour vérifier que les promesses s'executent de façon parallèle
+    const result_nutriscore = new Promise((resolve, reject) => {
+        setTimeout( resolve, 5000, 
+            Nutriscore.find().sort('lettre').then(n => { return {"nutriscore": n} }) )
+    });
+    */
+
+    const result_nutriscore = Product
+        .find({rayon: req.params.department_id})
+        .distinct("nutriscore")
+        .then(scores => {    
+            return { "nutriscore": scores }
+        });
+
+    const result_labelqualite = Product
+        .find({rayon: req.params.department_id})
+        .distinct("label_qualite")
+        .then(labels => {
+            return { "label_qual": labels }
+        });
+
+    const result_marques = Product
+        .find({rayon: req.params.department_id})
+        .distinct("marque")
+        .then(marques => {
+            return { "marques": marques.filter(m => m.length > 0).sort() }
+        });
+
+    const produitsFR_present = Product
+        .find({rayon: req.params.department_id, origine: "FRANCE"})
+        .then(prdsFR => {
+            return { "ProduitsFRpresence": (prdsFR.length > 0 ? true : false) }
+        });
+
+    const promos_present = Product
+        .find({rayon: req.params.department_id, "promotion.pourcent": { $exists:true }})
+        .then(promos => {
+            return { "PromosPresence": (promos.length > 0 ? true : false) }
+        });
+     
+    // Execution requetes mongoDB qui sont des promesses en parallèle
+    Promise.all([
+        result_nutriscore, 
+        result_labelqualite, 
+        result_marques,
+        produitsFR_present,
+        promos_present
+    ])
+    .then(values => {
+        let filters = {};
+        for(const result of values) {
+            // for(const [key, value] of Object.entries(result)) {
+            //    console.log("result =>", key, value); //TEST
+            //}
+            const [key, value] = Object.entries(result)[0];
+            filters[key] = value;
+        }
+        console.log("filters >>>>>", filters); //TEST
+        res.json(filters);
+    })
+    .catch(error => {
+        error.customMsg = "Etape de récupération des filtres par rayon";
+        next(error);
+    })
 });
 
 
