@@ -9,7 +9,7 @@
                 class="rayon"
                 v-for="department in departments" 
                 :key="department._id"
-                @click="displayProducts(department._id)"
+                @click="displayDataDepartment(department)"
             >
                 <span class="primary-txt">{{ department.intitule | uppercase }}</span>
                 <font-awesome-icon icon="chevron-right" class="secondary-txt" />
@@ -36,8 +36,11 @@ export default {
     },
 
     methods: {
-        displayProducts(id) {
-            this.$store.dispatch('fetchProductsDepartment', id);
+        displayDataDepartment(dept) {
+            // Récup. produits du rayon sélectionné
+            this.$store.dispatch('fetchProductsDepartment', { id: dept._id, intitule: dept.intitule });
+            // Récup. filtres présents ds produits du rayon sélectionné
+            this.$store.dispatch('setFilters', dept._id);
         },
 
         // Pour fermer la marge listant rayons qd click en dehors de celle-ci
@@ -46,6 +49,11 @@ export default {
                 this.$store.commit("SET_DISPLAY_MARGIN_DEPARTMENTS", false);
             }
         }
+    },
+
+    mounted() {
+        // Chargement liste des rayons
+        this.$store.dispatch('setDepartments');
     }
 }
 </script>
@@ -68,6 +76,7 @@ export default {
         background-color: #f5f5f5;
         transition: margin-left 0.3s ease-in-out;
         box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
+        overflow-y: auto;
     }
     /* Sélecteur utilisant class qui sont décarées ds composant enfant */
     .overlay.display #marge {
