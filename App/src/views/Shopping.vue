@@ -8,12 +8,12 @@
     </transition> -->
     <BasketMargin />
 
-    <div class="grid-container" v-if="id_selected_department != null">
+    <div class="grid-container" v-if="selected_department != null">
       <div class="block-filters">
-        <Filters />
+        <Filters v-if="Object.keys(filters).length > 0" />
       </div>
-      <div class="block-countAndOrderBy">
-        <ProductsCountAndOrderBy />
+      <div class="block-header">
+        <ProductsHeader />
       </div>
       <div class="block-products">
         <Products />
@@ -30,7 +30,7 @@
 const DepartmentsMargin = () => import(/* webpackChunkName: "DepartmentsMargin" */ '@/components/DepartmentsMargin')
 const Filters = () => import(/* webpackChunkName: "Filters" */ '@/components/Filters')
 const Products = () => import(/* webpackChunkName: "Products" */ '@/components/Products')
-const ProductsCountAndOrderBy = () => import(/* webpackChunkName: "ProductsCountAndOrderBy" */ '@/components/ProductsCountAndOrderBy')
+const ProductsHeader = () => import(/* webpackChunkName: "ProductsHeader" */ '@/components/ProductsHeader')
 const BasketMargin = () => import(/* webpackChunkName: "BasketMargin" */ '@/components/BasketMargin')
 
 export default {
@@ -40,7 +40,7 @@ export default {
     DepartmentsMargin,
     Filters,
     Products,
-    ProductsCountAndOrderBy,
+    ProductsHeader,
     BasketMargin
   },
 
@@ -58,8 +58,11 @@ export default {
     , products() {
       return this.$store.state.products;
     },
-    id_selected_department() {
-      return this.$store.state.id_selected_department;
+    selected_department() {
+      return this.$store.state.selected_department;
+    },
+    filters() {
+      return this.$store.state.filters;
     }
 
   }
@@ -70,14 +73,14 @@ export default {
 .grid-container {
   display: grid;
   grid-template-columns: 250px 1fr; /* grid-template-columns: minmax(250px, 250px) 1fr; */
-  grid-template-rows: 60px 1fr;
+  grid-template-rows: auto 1fr;
   gap: 0px 0px;
   grid-template-areas:
-    "Filters CountAndOrderBy"
+    "Filters Header"
     "Filters Products";
 }
 .block-filters { grid-area: Filters; }
-.block-countAndOrderBy { grid-area: CountAndOrderBy; }
+.block-header { grid-area: Header; }
 .block-products { grid-area: Products; }
 
 .block-filters { 
