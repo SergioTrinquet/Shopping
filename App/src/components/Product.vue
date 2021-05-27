@@ -9,9 +9,11 @@
         <img alt="photo" :src="require('@/assets/imgs/produits/' + dataProduct.nom_image + '.jpg')" class="illustration" /> <!-- Faire un computed pour gérer cas ou img n'existe pas. On afficherait alors une img par défaut -->
         <!-- <img alt="photo" :src="publicPath + dataProduct.nom_image + '.jpg'" class="illustration" /> -->
         <!-- <img alt="photo" :src="require(dataProduct.imgPath)" class="illustration" /> -->
-        <div class="origine" v-if="!!dataProduct.origine">
-            Origine: {{ dataProduct.origine }} 
-            <span v-if="dataProduct.origine.toUpperCase() == 'FRANCE'" class="frenchFlag"></span>
+        <div class="origine">
+            <span v-if="!!dataProduct.origine">
+                Origine: {{ dataProduct.origine }} 
+                <span v-if="dataProduct.origine.toUpperCase() == 'FRANCE'" class="frenchFlag"></span>
+            </span>
         </div>
         <div class="promotion tertiary-txt">{{ libellePromotion }}</div>
         <div class="label_nutriscore">
@@ -143,6 +145,7 @@ export default {
     font-style: italic;
     display: flex;
     align-items: center;
+    height: 22px;
 }
 .frenchFlag {
     display: inline-block;
@@ -209,6 +212,15 @@ export default {
 }
 .nutriscore.B {
     background: 100% 50% url('../assets/imgs/nutriscore/flag-nutriscore-B.svg') no-repeat;
+}
+.nutriscore.C {
+    background: 100% 50% url('../assets/imgs/nutriscore/flag-nutriscore-C.svg') no-repeat;
+}
+.nutriscore.D {
+    background: 100% 50% url('../assets/imgs/nutriscore/flag-nutriscore-D.svg') no-repeat;
+}
+.nutriscore.E {
+    background: 100% 50% url('../assets/imgs/nutriscore/flag-nutriscore-E.svg') no-repeat;
 }
 
 .bottom {
