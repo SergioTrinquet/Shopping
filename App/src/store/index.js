@@ -17,14 +17,8 @@ export default new Vuex.Store({
     filters: {},
     selected_department: null,
     nbMaxMarques: 3,
-    listeTypeTri: [
-      { champBdd: "intitule", ordre: 1, texte: "intitulé(alphabétique)" },
-      { champBdd: "intitule", ordre: -1, texte: "intitulé(alpha. inverse)" },
-      { champBdd: "prix", ordre: 1, texte: "Prix(croissant)" },
-      { champBdd: "prix", ordre: -1, texte: "Prix(décroissant)" },
-      { champBdd: "prix_unite", ordre: 1, texte: "Prix au kg/l(croissant)" },
-      { champBdd: "prix_unite", ordre: -1, texte: "Prix au kg/l(décroissant)" }
-    ]
+    filters_query_string_parameters: "",
+    tri_query_string_parameters: "",
   },
 
 
@@ -85,6 +79,12 @@ export default new Vuex.Store({
     SET_SELECTED_DEPARTMENT(state, payload) {
       state.selected_department = {id: payload.id, intitule: payload.intitule };
     },
+    SET_FILTERS_QUERY_STRING_PARAMETERS(state, payload) {
+      state.filters_query_string_parameters = payload;
+    },
+    SET_TRI_QUERY_STRING_PARAMETERS(state, payload) {
+      state.tri_query_string_parameters = payload;
+    },
 
   },
 
@@ -112,68 +112,6 @@ export default new Vuex.Store({
       commit('SET_DISPLAY_MARGIN_BASKET', false);
     },
 
-
-    // Qd click sur rayon dans marge coulissante
-    fetchProductsDepartment({ commit }, payload) {
-      commit('SET_LOADING', true);
-      commit('SET_MESSAGE_ERROR', null);
-
-      return axios.get(`/api/department_products/${payload.id}`)
-        .then((res) => {
-          console.log(res.data); //TEST
-
-          // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
-          let items = [];
-          res.data.forEach(p => {
-            if("promotion" in p && p.promotion !== null && p.promotion.pourcent) {
-              p.prix_reduc = p.prix - (p.prix/100 * p.promotion.info);
-              //console.warn(p.intitule, p.prix_reduc, p); //TEST
-            }
-            items.push(p);
-          })
-          commit('SET_SELECTED_DEPARTMENT', payload);
-          commit('SET_PRODUCTS', items);
-        })
-        .catch((err) => {
-          console.error(err.response);
-          commit('SET_MESSAGE_ERROR', err.response);
-        })
-        .finally(() => commit('SET_LOADING', false));
-    },
-
-    // Envoi du coté back-end sélection des filtres pour recupérer produits correspondants
-    fetchProductsDepartmentWithFilters({ commit }, payload) {
-      commit('SET_LOADING', true);
-      commit('SET_MESSAGE_ERROR', null);
-
-      //return axios.get(`/api/department_products${payload}`)
-      return axios.post('/api/department_products', payload)
-        .then(res => {
-
-          // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
-          let items = [];
-          res.data.forEach(p => {
-            if("promotion" in p && p.promotion !== null && p.promotion.pourcent) {
-              p.prix_reduc = p.prix - (p.prix/100 * p.promotion.info);
-              //console.warn(p.intitule, p.prix_reduc, p); //TEST
-            }
-            items.push(p);
-          })
-
-          commit('SET_PRODUCTS', items);
-        })
-        .catch(err => {
-          console.error(err.response);
-          commit('SET_MESSAGE_ERROR', err.response);
-        })
-        .finally(() => commit('SET_LOADING', false));
-    },
-
-
-
-
-
-
     // Récupération des filtres utiles selon le rayon sélectionné 
     setFilters({ commit }, payload) {
       commit('SET_LOADING', true);
@@ -188,7 +126,37 @@ export default new Vuex.Store({
           commit('SET_MESSAGE_ERROR', err.response);
         })
         .finally(() => commit('SET_LOADING', false));
-    }
+    },
+
+
+    // Qd click sur rayon dans marge coulissante, ou bien filtres ouencore sur select Tri
+    fetchProductsDepartment({ commit }, payload) {
+      commit('SET_LOADING', true);
+      commit('SET_MESSAGE_ERROR', null);
+
+      return axios.get(`/api/department_products?${payload}`)
+        .then((res) => {
+          console.log(res.data); //TEST
+
+          // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
+          let items = [];
+          res.data.forEach(p => {
+            if("promotion" in p && p.promotion !== null && p.promotion.pourcent) {
+              p.prix_reduc = p.prix - (p.prix/100 * p.promotion.info);
+              //console.warn(p.intitule, p.prix_reduc, p); //TEST
+            }
+            items.push(p);
+          })
+          
+          commit('SET_PRODUCTS', items);
+        })
+        .catch((err) => {
+          console.error(err.response);
+          commit('SET_MESSAGE_ERROR', err.response);
+        })
+        .finally(() => commit('SET_LOADING', false));
+    },
+
 
   },
 
@@ -241,6 +209,18 @@ export default new Vuex.Store({
     areComponentsOpen(state) {
       return state.display_margin_departments || state.display_margin_basket;
     },
+
+    // Construction de la partie 'search' de l'URL utilisée pour l'API qui va récupérer les produits 
+    // en concaténant les paramètres des filtres + l'id du rayon + les paramètres du tri
+    getQueryStringParametersToFetchProducts(state) {
+      let searchParams = new URLSearchParams(state.filters_query_string_parameters);
+      searchParams.append("rayon", state.selected_department.id);
+      // Ajout ID tri des produits à l'URL si classement sélectionné
+      const selectedOrder = !!state.tri_query_string_parameters; 
+      if(selectedOrder) { searchParams.append("tri", state.tri_query_string_parameters) }
+
+      return searchParams.toString();
+    }
 
   },
 

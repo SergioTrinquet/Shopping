@@ -100,8 +100,13 @@ export default {
     ////
     filterMarquesCount() {
       return this.$store.state.filters.marques.length;
-    }
+    },
     ////
+
+
+    queryStringParameterstoFetchProducts() {
+        return this.$store.getters.getQueryStringParametersToFetchProducts;
+    }
   },
 
   watch: {
@@ -147,23 +152,27 @@ export default {
       this.nbMarquesFiltrage = this.$refs.chbx_marques.querySelectorAll('.chbx_m:not(.hidden)').length;
     },
 
-    // Envoi valeurs des filtres sélectionnés ds le form à chaque modif
+
+
+
+    // A chaque modif de sélection des filtres dans le form, fonction ci-dessous appelée pour construire 
+    // chaine de requete de l'url destinée à récupérer les bon produits
     changeFormValues(event) {
       // L'envoi des paramètres pour l'execut° de la requete ne doit pas se faire lorque modif  
       // sur le champ de filtrage des marques, car valeur de ce champ est inutile pour requete
       if(event.target.id !== 'inputFiltreMarques') {
-        
         const form = this.$refs.filtersForm;
         const data = new FormData(form);
+        const searchParams = new URLSearchParams(data);
 
-        let searchParams = new URLSearchParams(data);
-        searchParams.append("rayon", this.selected_department.id);
-        console.log("sélection (GET) => ", searchParams.toString()); //TEST
+        // Enregistrement partie de la chaine de requête propre aux filtres
+        // NOTE: Fonctionne aussi en passant 'searParams' sans le convertir en string via (.toString()) mais on évite car ds ce cas valeur pas lisible avec 'Vue.js devtools'
+        this.$store.commit('SET_FILTERS_QUERY_STRING_PARAMETERS', searchParams.toString());
 
-        /* TEST */ //this.selectionFiltres = new URLSearchParams(data).toString();
 
+        // CODE INUTILE ACTUELLEMENT : POUR TRANSFORMER FormData EN OBJET
         // Création d'un objet JS listant les sélections de filtres
-        let obj = {};
+        /* let obj = {};
         obj['rayon'] = this.selected_department.id; // Ajout id rayon sélectionné
         for(let [key, value] of data) {
           if(obj[key] !== undefined) {
@@ -174,15 +183,16 @@ export default {
           } else {
             obj[key] = value;
           }
-        }
-        this.selectionFiltres = obj;
+        } */
+        ///////////////////////
 
-        console.log("sélection (objet) => ", this.selectionFiltres); //TEST
+        //console.log("sélection (GET) => ", this.queryStringParameterstoFetchProducts); //TEST
 
-        this.$store.dispatch('fetchProductsDepartmentWithFilters', this.selectionFiltres);
-
-      } //
+        // Appel API pour récup. des produits à afficher selon les filtres sélectionnés
+        this.$store.dispatch('fetchProductsDepartment', this.queryStringParameterstoFetchProducts);       
+      }
     }
+
 
   },
 

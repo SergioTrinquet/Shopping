@@ -37,8 +37,13 @@ export default {
 
     methods: {
         displayDataDepartment(dept) {
-            // Récup. produits du rayon sélectionné
-            this.$store.dispatch('fetchProductsDepartment', { id: dept._id, intitule: dept.intitule });
+            // Affectation 'selected_department' pour enregistrer le rayon sélectionné
+            this.$store.commit('SET_SELECTED_DEPARTMENT', { id: dept._id, intitule: dept.intitule });
+            // Creat° partie chaine de requete
+            let searchParam = new URLSearchParams({ "rayon": dept._id }).toString();
+            // Appel API pour récup. des produits du rayon sélectionné
+            this.$store.dispatch('fetchProductsDepartment', searchParam);
+
             // Récup. filtres présents ds produits du rayon sélectionné
             this.$store.dispatch('setFilters', dept._id);
         },
