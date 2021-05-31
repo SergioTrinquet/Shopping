@@ -4,23 +4,12 @@
     <div class="rayonProduits">
       Produits du rayon <b class="secondary-txt">"{{ selected_department_name }}"</b>
     </div>
-
     
     <FiltersListTags />
 
     <div class="lgn2">
       <div>{{ products.length }} résultat{{ products.length > 1 ? "s" : "" }}</div>
-      <div>
-        Trier par :
-        <select>
-          <option 
-            v-for="(typeTri, idx) in listeTypeTri" :key="idx" 
-            :value="typeTri.champBdd"
-          >
-            {{ typeTri.texte }}
-          </option>
-        </select>
-      </div>
+      <ProductsSelectOrder />
     </div>
     
   </div>
@@ -28,13 +17,15 @@
 
 <script>
 import FiltersListTags from '@/components/FiltersListTags'
+import ProductsSelectOrder from '@/components/ProductsSelectOrder'
 
 
 export default {
     name: 'ProductsHeader',
 
     components: {
-      FiltersListTags
+      FiltersListTags,
+      ProductsSelectOrder
     },
 
     computed: {
@@ -43,9 +34,6 @@ export default {
       },
       selected_department_name() {
         return this.$store.state.selected_department.intitule;
-      },
-      listeTypeTri() {
-        return this.$store.state.listeTypeTri;
       }
     }
 }
