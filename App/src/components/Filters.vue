@@ -3,14 +3,16 @@
 
       <div class="header primary-light">Affiner</div>
 
-      <div class="filterWrapper lgnChbx" v-if="displayFilters.promos">
-        <input type="checkbox" id="chbxPromos" name="promos">
+      <div class="filterWrapper lgnChbx tertiary-txt_hover" v-if="displayFilters.promos">
+        <input type="checkbox" id="chbxPromos" name="promos"  v-model="promos">
         <label for="chbxPromos">Promotions</label>
+        <span class="nb secondary">{{ filters.PromosPresence.total }}</span>
       </div>
 
-      <div class="filterWrapper lgnChbx"  v-if="displayFilters.produitsFR">
-        <input type="checkbox" id="chbxPrdsFrancais" name="prdsFr">
+      <div class="filterWrapper lgnChbx tertiary-txt_hover"  v-if="displayFilters.produitsFR">
+        <input type="checkbox" id="chbxPrdsFrancais" name="prdsFr"  v-model="prdsFr">
         <label for="chbxPrdsFrancais">Produits français</label>
+        <span class="nb secondary">{{ filters.ProduitsFRpresence.total }}</span>
       </div>
 
       <div class="filterWrapper" v-if="displayFilters.marques">
@@ -26,42 +28,37 @@
           placeholder="filtrer par marque" 
           v-if="filters.marques.length > 5"
         />
-        <!-- <input 
-          type="text" 
-          id="inputFiltreMarques"
-          v-model="champFiltreMarque" 
-          @input="filtrageMarques" 
-          placeholder="filtrer par marque" 
-        /> -->
         <div class="listeMarques" ref="chbx_marques">
           <div class="msgToManyTrades secondary" v-if="displayMsgMarques">Pas plus de {{ nbMaxMarques }} marques, merci !</div>
           <div 
-            v-for="(marque, idx) in filters.marques" :key="idx" 
-            class="lgnChbx chbx_m" 
-            :data-nommarque="marque"
+            v-for="(mq, idx) in filters.marques" :key="idx" 
+            class="lgnChbx chbx_m  tertiary-txt_hover" 
+            :data-nommarque="mq"
           >
-            <input type="checkbox" :id="idx" :value="marque" name="marque"   v-model="vm_marques">
-            <label :for="idx">{{ marque }}</label>
+            <input type="checkbox" :id="idx" :value="mq.libelle" name="marque"   v-model="marque">
+            <label :for="idx">{{ mq.libelle }}</label>
+            <span class="nb secondary">{{ mq.total }}</span>
           </div>
         </div>
       </div>
 
       <div class="filterWrapper" v-if="displayFilters.nutriscores">
         <div class="champFiltre">Nutriscore</div>
-        <div v-for="score in filters.nutriscore" :key="score._id" class="lgnChbx">
-          <input type="checkbox" :id="score._id" :value="score._id" name="nutriscore">
-          <label :for="score._id">{{ score.lettre }}</label>
+        <div v-for="score in filters.nutriscore" :key="score.id" class="lgnChbx tertiary-txt_hover">
+          <input type="checkbox" :id="score.id" :value="score.id" name="nutriscore"  v-model="nutriscore">
+          <label :for="score.id">{{ score.lettre }}</label>
+          <span class="nb secondary">{{ score.total }}</span>
         </div>
       </div>
 
       <div class="filterWrapper" v-if="displayFilters.labels">
         <div class="champFiltre">Labels qualité</div>
-        <div v-for="lq in filters.label_qual" :key="lq._id" class="lgnChbx">
-          <input type="checkbox" :id="lq._id" :value="lq._id" name="label_qualite">
-          <label :for="lq._id">{{ lq.label }}</label>
+        <div v-for="lq in filters.label_qual" :key="lq.id" class="lgnChbx tertiary-txt_hover">
+          <input type="checkbox" :id="lq.id" :value="lq.id" name="label_qualite"  v-model="label_qualite">
+          <label :for="lq.id">{{ lq.libelle }}</label>
+          <span class="nb secondary">{{ lq.total }}</span>
         </div>
       </div>
-      <!-- {{ selectionFiltres }} -->
   </form> 
 </template>
 
@@ -70,10 +67,20 @@ export default {
   data() {
     return {
       champFiltreMarque: "",
-      selectionFiltres: {},
       nbMarquesFiltrage: 0,
-      vm_marques: [],
-      displayMsgMarques: false
+      displayMsgMarques: false,
+      promos: false,
+      prdsFr: false,
+      marque: [],
+      nutriscore: [],
+      label_qualite: [],
+      filters_type: [
+      { typeChbx: "single", name: "promos"/* , libelle: "Promotions" */ },
+      { typeChbx: "single", name: "prdsFr"/* , libelle: "Produits français" */ },
+      { typeChbx: "multiple", name: "marque" },
+      { typeChbx: "multiple", name: "label_qualite" },
+      { typeChbx: "multiple", name: "nutriscore" },
+    ], 
     }
   },
 
@@ -104,15 +111,25 @@ export default {
     ////
 
 
+
     queryStringParameterstoFetchProducts() {
         return this.$store.getters.getQueryStringParametersToFetchProducts;
-    }
+    },
+
+
+    filter_to_remove() { 
+      return this.$store.state.filter_to_remove; 
+    },
+    /* filters_type() { return this.$store.state.filters_type } */
+
+
   },
 
   watch: {
-    vm_marques(val) {
+    // Limitat° sur nb de marques à cocher
+    marque(val) {
       let chbxs = this.$refs.chbx_marques.querySelectorAll('input[type="checkbox"]');
-      // Limite sur nb de marques dans filtres : Si plus de X marques cochées, les autres marques sont mises en disabled
+      // Si plus de X marques cochées, les autres marques sont mises en disabled
       if(val.length == this.nbMaxMarques) { 
         this.displayMsgMarques = true;
         chbxs.forEach(c => {
@@ -136,7 +153,27 @@ export default {
     selected_department() {
       console.log("Changement de rayon"); //TEST
       this.champFiltreMarque = "";
+    },
+
+    // Suppression filtre qd click sur tag du composant 'FiltersListTags'
+    filter_to_remove(val) { 
+      // Ci-dessous référence aux v-models avec une écriture un peu différente (par ex: 'this["promos"]' est la m chose que 'this.promos')
+      this.filters_type.forEach(f => { 
+        if(f.name == val.nom && f.typeChbx == 'single') {
+            this[val.nom] = "";
+        }
+        if(f.name == val.nom && f.typeChbx == 'multiple') {
+          this[val.nom] = this[val.nom].filter(m => m !== val.valeur);
+        }
+      })
+      
+      // Déclenchement manuel de l'evenement on change pour executer methode 'changeFormValues'
+      this.$nextTick(()=>{
+        const e = new Event("change");
+        this.$refs.filtersForm.dispatchEvent(e);
+      })
     }
+
   },
 
   methods: {
@@ -151,8 +188,6 @@ export default {
       // Nb de marques correspondant à saisie ds chp de filtrage
       this.nbMarquesFiltrage = this.$refs.chbx_marques.querySelectorAll('.chbx_m:not(.hidden)').length;
     },
-
-
 
 
     // A chaque modif de sélection des filtres dans le form, fonction ci-dessous appelée pour construire 
@@ -173,7 +208,6 @@ export default {
         // CODE INUTILE ACTUELLEMENT : POUR TRANSFORMER FormData EN OBJET
         // Création d'un objet JS listant les sélections de filtres
         /* let obj = {};
-        obj['rayon'] = this.selected_department.id; // Ajout id rayon sélectionné
         for(let [key, value] of data) {
           if(obj[key] !== undefined) {
             if(!Array.isArray(obj[key])) {
@@ -186,7 +220,7 @@ export default {
         } */
         ///////////////////////
 
-        //console.log("sélection (GET) => ", this.queryStringParameterstoFetchProducts); //TEST
+        console.log("sélection (GET) => ", this.queryStringParameterstoFetchProducts); //TEST
 
         // Appel API pour récup. des produits à afficher selon les filtres sélectionnés
         this.$store.dispatch('fetchProductsDepartment', this.queryStringParameterstoFetchProducts);       
@@ -234,9 +268,17 @@ export default {
 .lgnChbx {
   display: flex;
 }
+.lgnChbx.tertiary-txt_hover,
+.lgnChbx.tertiary-txt_hover .nb {
+  transition: all 0.2s ease-in-out;
+}
+.lgnChbx.tertiary-txt_hover:hover .nb {
+  background-color: #fb4b4b;
+}
 .lgnChbx label {
   line-height: 16px;
   margin: 4px 0 4px 5px;
+  flex-grow: 1;
 }
 
 .nbMarques {
@@ -254,5 +296,18 @@ label {
 
 .hidden {
   display: none;
+}
+
+.nb {
+  font-size: 12px;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  padding: 0 3px;
+  border-radius: 40%;
+  min-width: 13px;
+  margin: 0 0 0 5px;
+  height: 18px;
+  align-self: center;
 }
 </style>
