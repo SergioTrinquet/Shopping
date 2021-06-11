@@ -4,14 +4,12 @@ const port = process.env.PORT || 3080;
 
 const erreur = require('./app_modules/erreur');
 
-//const mockData = require('./mockData/mock'); // Variables mock juste pour phase de dev.
-
 const config = require("./config/identifiants_mongoDB.js");
 const mongoose = require('mongoose');
 const Department = require('./models/department');
 const Product = require('./models/product');
-const Nutriscore = require('./models/nutriscore').model;
-const LabelQualite = require('./models/labelQualite').model;
+/* const Nutriscore = require('./models/nutriscore').model;
+const LabelQualite = require('./models/labelQualite').model; */
 
 
 // on précise ici qu'on autorise toutes les sources
@@ -47,19 +45,10 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // Pour alimenter marge 'rayons'
 app.get("/departments", (req, res, next) => {
-    // === Version avec Mock === //
-    /* try {
-        res.json(mockData.rayons); 
-    } catch (error) {
-        error.customMsg = "Erreur lors de l'étape du chargement de la liste des rayons";
-        next(error);
-    } */
 
-    // === Version avec data dans mongoDB === //
     Department.find().sort("intitule")
     .then(result => {
         res.json(result);
-        //console.log(result); //TEST
     })
     .catch(error => { 
         error.customMsg = "Erreur lors de l'étape du chargement de la liste des rayons";
@@ -301,16 +290,6 @@ app.get("/department_products", (req, res, next) => {
 
     console.log("clauseFind", clauseFind); //TEST
 
-
-    // === Version avec Mock === //
-    /* try {
-        const produitsDuRayon = mockData.produits.filter(p => p.rayon.id == req.params.rayonId);
-        res.json(produitsDuRayon);
-    } catch (error) {
-        error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
-        next(error);
-    } */
-    
 
     Product
         //.find({rayon: req.query.rayon}) // FONCTIONNE !!!
