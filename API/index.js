@@ -4,7 +4,7 @@ const port = process.env.PORT || 3080;
 
 const erreur = require('./app_modules/erreur');
 
-const mockData = require('./mockData/mock'); // Variables mock juste pour phase de dev.
+//const mockData = require('./mockData/mock'); // Variables mock juste pour phase de dev.
 
 const config = require("./config/identifiants_mongoDB.js");
 const mongoose = require('mongoose');
@@ -12,7 +12,6 @@ const Department = require('./models/department');
 const Product = require('./models/product');
 const Nutriscore = require('./models/nutriscore').model;
 const LabelQualite = require('./models/labelQualite').model;
-//console.log(LabelQualite); //TEST
 
 
 // on précise ici qu'on autorise toutes les sources
@@ -69,136 +68,11 @@ app.get("/departments", (req, res, next) => {
 
 });
 
-// Pour récupérer les produits d'un rayon
-app.get("/department_products/:rayonId", (req, res, next) => {
-    
-    // === Version avec Mock === //
-    /* try {
-        const produitsDuRayon = mockData.produits.filter(p => p.rayon.id == req.params.rayonId);
-        res.json(produitsDuRayon);
-    } catch (error) {
-        error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
-        next(error);
-    } */
 
-    // === Version avec data dans mongoDB === //
-    Product
-        .find({rayon: req.params.rayonId}) // Bonne version !!
-        //.find({"rayon": ObjectId(req.params.rayonId)}) // Mauvaise version
-        .populate("rayon")
-        .then(result => {
-            res.json(result);
-        })
-        .catch(error => { 
-            error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
-            next(error);
-        });
-
-});
-
-
-// Pour récupérer les produits d'un rayon après sélection de filtre(s)
-app.post("/department_products", (req, res, next) => {
-
-    console.log("Paramètres passés en POST >>>", JSON.stringify(req.body)); // TEST
-
-    let clauseFind = {};
-
-    // Boucle sur paramètres passés
-    for(let rb in req.body) {
-        //console.log("=>", rb, req.body[rb],"isArray : " + Array.isArray(req.body[rb]) , "type valeur: " + typeof(req.body[rb])); // TEST
-
-        // Si paramètre passé est un tableau (nutriscore, labels qualité, marque)...
-        if(Array.isArray(req.body[rb])) { // Si c'est un Array...
-
-            console.log("Array => ", rb, req.body[rb]); //TEST
-            let tabMongoDBclause = [];
-            for(const x of req.body[rb]) {
-                // Si 'nutriscore' ou 'label_qualite', ajout '_id' pour chercher ds sous-document le path '_id'
-                rb = (rb == "nutriscore" || rb == "label_qualite" ? rb + '._id' : rb);
-                tabMongoDBclause.push({ [rb]: x }); // entre [] pour que propriété de l'obj. soit interprété, sinon lit 'rb'
-            }
-            clauseFind["$or"] = tabMongoDBclause;
-
-        } else if(typeof req.body[rb] == 'string') { // ...Si c'est un String (nutriscore, labels qualité, marque,promotions, prds français)...
-
-            console.log("string => ", rb, req.body[rb]); //TEST
-            if(rb == "promos") {
-                clauseFind["promotion.pourcent"] = { $exists:true } // Chck présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
-            } else if(rb == "prdsFr") {
-                clauseFind["origine"] = "FRANCE";
-            } else if(rb == "nutriscore" || rb == "label_qualite") { 
-                clauseFind[rb + "._id"] = req.body[rb];      
-            } else {
-                clauseFind[rb] = req.body[rb]; 
-            }
-
-        } 
-        //else if(req.body[rb] = Object(req.body[rb])) { // ...Si c'est un objet
-        //    console.log("Object => ", rb, req.body[rb]); //TEST
-        //    clauseFind[rb]._id = req.body[rb];
-        //}
-    }
-    console.log("clauseFind", clauseFind); //TEST
-
-
-    Product
-        //.find({ "rayon": req.body.rayon })
-        //.find({ 'rayon': '60907d7d42b2205d269d7df8', 'nutriscore._id': 'n1' }) // FONCTIONNE !!!
-        //.find({ rayon: '60907d7d42b2205d269d7df8',  nutriscore: {_id: 'n1'} }) // NE FONCTIONNE PAS !!!
-        .find(clauseFind).sort('intitule')
-        .populate("rayon")
-        .then(result => {
-            res.json(result);
-        })
-        .catch(error => { 
-            error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
-            next(error);
-        });
-})
-
-
-/*
-// Pour récupérer les filtres (marge gauche qd produits affichés)
-app.get("/filters", async (req, res, next) => {
-    const result_nutriscore = Nutriscore.find().sort('lettre').then(scores => {
-        return { "nutriscore": scores }
-    });
-    const result_labelqualite = LabelQualite.find().sort('label').then(labels => {
-        return { "label_qual": labels }
-    });
-    const result_marques = Product.distinct("marque").then(marques => {
-        return { "marques": marques.filter(m => m.length > 0).sort() }
-    });
-
-    // Execution requetes mongoDB qui sont des promesses en parallèle
-    Promise.all([
-        result_nutriscore, 
-        result_labelqualite, 
-        result_marques
-    ])
-    .then(values => {
-        let filters = {};
-        for(const result of values) {
-            // for(const [key, value] of Object.entries(result)) {
-            //    console.log("result =>", key, value); //TEST
-            //}
-            const [key, value] = Object.entries(result)[0];
-            filters[key] = value;
-        }
-        res.json(filters);
-    })
-    .catch(error => {
-        error.customMsg = "Etape de récupération des filtres";
-        next(error);
-    })
-});
-*/
 
 
 // Pour récupérer les filtres utiles selon rayon sélectionné (marge gauche qd produits affichés)
 app.get("/filters/:department_id", async (req, res, next) => {
-
     /* 
     // TEST pour vérifier que les promesses s'executent de façon parallèle
     const result_nutriscore = new Promise((resolve, reject) => {
@@ -207,40 +81,151 @@ app.get("/filters/:department_id", async (req, res, next) => {
     });
     */
 
+    const id_department = req.params.department_id;
+    const ObjectId = mongoose.Types.ObjectId;
+
+    // Requete pour obtenir les differents nutriscores des produits d'un rayon, et leurs nombres respectifs
     const result_nutriscore = Product
-        .find({rayon: req.params.department_id})
-        .distinct("nutriscore")
-        .then(scores => {    
+        .aggregate([
+            { $match: { 
+                    rayon: new ObjectId(id_department),
+                    nutriscore: { $exists: true,  $nin: ["", null] }
+                } 
+            },
+            { 
+                $group: { 
+                    _id: "$nutriscore._id", 
+                    total: {$sum: 1}, 
+                    otherFields: { $first: "$$ROOT" } 
+                } 
+            }, // On groupe par nutriscore._id', on incrémente à chaque fois de 1, et on récupère ts les champs de Product du 1er doc correspondant aux ._id groupés
+            { 
+                $project: { 
+                    id: "$_id",  
+                    lettre: "$otherFields.nutriscore.lettre", 
+                    total: "$total", 
+                    _id: 0 
+                } 
+            },
+            { 
+                $sort: { lettre: 1 } 
+            }
+            
+        ])
+        .then(scores => {
             return { "nutriscore": scores }
         });
 
+
+    // Requete pour obtenir les differents labels qualité des produits d'un rayon, et leurs nombres respectifs  
     const result_labelqualite = Product
-        .find({rayon: req.params.department_id})
-        .distinct("label_qualite")
+        .aggregate([
+            { $match: { 
+                    rayon: new ObjectId(id_department),
+                    label_qualite: { $exists: true,  $nin: ["", null] }
+                } 
+            },
+            { $unwind: "$label_qualite" },
+            { $group: { 
+                    _id: "$label_qualite", 
+                    total: { $sum: 1 }
+                } 
+            }, 
+            { $project: {
+                    id: "$_id._id",
+                    libelle: "$_id.label",
+                    total: "$total",
+                    _id: 0
+                } 
+            },
+            { $sort: { libelle: 1 } }
+        ])
         .then(labels => {
             return { "label_qual": labels }
         });
 
+
+    // Requete pour obtenir les differentes marques des produits d'un rayon, et leurs nombres respectifs
     const result_marques = Product
-        .find({rayon: req.params.department_id})
-        .distinct("marque")
+        .aggregate([
+            { 
+                $match: { 
+                    rayon: new ObjectId(id_department),
+                    marque: { $exists: true, $nin: ["", null] }
+                } 
+            },
+            { $project: { marque: 1 } }, 
+            { $group: { _id: "$marque", total: { $sum: 1 } } },
+            { $project: {_id: 0, libelle: "$_id", total: "$total"} }, // On renomme les champs
+            { $sort: { libelle: 1 } }
+        ])
         .then(marques => {
-            return { "marques": marques.filter(m => m.length > 0).sort() }
+            return { "marques": marques }
         });
 
+
+    // Requete pour savoir si Produits Français existent parmi les produits d'un rayon, et leur nombre
     const produitsFR_present = Product
-        .find({rayon: req.params.department_id, origine: "FRANCE"})
+        .aggregate([
+            { 
+                $match: { 
+                    rayon: new ObjectId(id_department),
+                    origine: "FRANCE"
+                } 
+            },
+            { 
+                $count: "total"
+            },
+            { 
+                $project: {
+                    exists: {
+                        $cond: { 
+                            if: { $gt: ["$total", 0] }, 
+                            then: true, 
+                            else: false 
+                        }
+                    },
+                    total: "$total",
+                    _id: 0
+                } 
+            }
+        ])
         .then(prdsFR => {
-            return { "ProduitsFRpresence": (prdsFR.length > 0 ? true : false) }
+            return {  "ProduitsFRpresence": prdsFR[0] }
         });
 
-    const promos_present = Product
-        .find({rayon: req.params.department_id, "promotion.pourcent": { $exists:true }})
-        .then(promos => {
-            return { "PromosPresence": (promos.length > 0 ? true : false) }
-        });
+
+        // Requete pour savoir s'il y a des Promotions pour les produits d'un rayon, et leur nombre
+        const promos_present = Product
+            .aggregate([
+                { 
+                    $match: { 
+                        rayon: new ObjectId(id_department),
+                        "promotion.pourcent": { $exists: true,  $nin: ["", null] }
+                    } 
+                },
+                { 
+                    $count: "total"
+                },
+                { 
+                    $project: {
+                        exists: {
+                            $cond: { 
+                                if: { $gt: ["$total", 0] }, 
+                                then: true, 
+                                else: false 
+                            }
+                        },
+                        total: "$total",
+                        _id: 0
+                    } 
+                }
+            ])
+            .then(promos => {
+                return {  "PromosPresence": promos[0] }
+            });
      
-    // Execution requetes mongoDB qui sont des promesses en parallèle
+    // Requetes mongoDB qui sont des promesses exécutées ici en parallèle
     Promise.all([
         result_nutriscore, 
         result_labelqualite, 
@@ -251,9 +236,9 @@ app.get("/filters/:department_id", async (req, res, next) => {
     .then(values => {
         let filters = {};
         for(const result of values) {
-            // for(const [key, value] of Object.entries(result)) {
-            //    console.log("result =>", key, value); //TEST
-            //}
+            /* for(const [key, value] of Object.entries(result)) {
+                console.log("result =>", key, value); //TEST
+            } */
             const [key, value] = Object.entries(result)[0];
             filters[key] = value;
         }
@@ -266,6 +251,84 @@ app.get("/filters/:department_id", async (req, res, next) => {
     })
 });
 
+
+
+
+// Pour récupérer les produits d'un rayon
+app.get("/department_products", (req, res, next) => {
+    let clauseFind = {};
+    let clauseSort = "intitule";
+    console.log("req.query", req.query); //TEST
+
+    // Boucle sur paramètres passés
+    for(let rb in req.query) {
+        console.log("=>", rb, req.query[rb],"isArray : " + Array.isArray(req.query[rb]) , "type valeur: " + typeof(req.query[rb])); // TEST
+
+        if(Array.isArray(req.query[rb])) { // Si c'est un Array...
+            
+            let tabMongoDBclause = [];
+            for(const x of req.query[rb]) {
+                // Si 'nutriscore' ou 'label_qualite', ajout '_id' pour chercher ds sous-document le path '_id'
+                rb = (rb == "nutriscore" || rb == "label_qualite" ? rb + '._id' : rb);
+                tabMongoDBclause.push({ [rb]: x }); // entre [] pour que propriété de l'obj. soit interprété, sinon lit 'rb'
+            }
+            clauseFind["$or"] = tabMongoDBclause;
+
+        } else if(typeof req.query[rb] == 'string') { // ...Si c'est un String (nutriscore, labels qualité, marque,promotions, prds français)...
+            
+            // Paramètre pour le classement de produits
+            if(rb == "tri") {
+                const triParams = new URLSearchParams(req.query[rb]); // Parsing de la string avec les paramètres propres au tri
+                const champBdd = triParams.get("champBdd");
+                const ordre = triParams.get("ordre");
+                clauseSort = { [champBdd]: ordre };
+            // Paramètres pour le filtrage de produits
+            } else {
+                if(rb == "promos") {
+                    clauseFind["promotion.pourcent"] = { $exists:true } // Chck présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
+                } else if(rb == "prdsFr") {
+                    clauseFind["origine"] = "FRANCE";
+                } else if(rb == "nutriscore" || rb == "label_qualite") { 
+                    clauseFind[rb + "._id"] = req.query[rb];      
+                } else { // rayon et marque
+                    clauseFind[rb] = req.query[rb]; 
+                }
+            }
+
+        }
+
+    }
+
+    console.log("clauseFind", clauseFind); //TEST
+
+
+    // === Version avec Mock === //
+    /* try {
+        const produitsDuRayon = mockData.produits.filter(p => p.rayon.id == req.params.rayonId);
+        res.json(produitsDuRayon);
+    } catch (error) {
+        error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
+        next(error);
+    } */
+    
+
+    Product
+        //.find({rayon: req.query.rayon}) // FONCTIONNE !!!
+        //.find({"rayon": ObjectId(req.params.rayon)})  // NE FONCTIONNE PAS !!!
+        //.find({ 'rayon': '60907d7d42b2205d269d7df8', 'nutriscore._id': 'n1' }) // FONCTIONNE !!!
+        //.find({ rayon: '60907d7d42b2205d269d7df8',  nutriscore: {_id: 'n1'} }) // NE FONCTIONNE PAS !!!
+        .find(clauseFind)
+        .sort(clauseSort)
+        .populate("rayon")
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => { 
+            error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
+            next(error);
+        });
+
+});
 
 
 
