@@ -87,11 +87,33 @@ db.products.insertMany([
         "origine":"Espagne",
         "nom_image":"citrons-verts-lime_piece",
         "rayon": ObjectId("60907d7d42b2205d269d7df8"),
-        "nutriscore":{"_id":"n1","lettre":"A"},
+        "nutriscore":{"_id":"n3","lettre":"C"},
         "promotion":{
             "pourcent": false,
             "info": "3 achetés = 1€"
         }
+    },
+    {
+        "intitule":"fraises Gariguette",
+        "descriptif":"barquette de 250g",
+        "prix_unite": NumberDecimal("3.49"),
+        "unite":"kg",
+        "prix": NumberDecimal("13.96"),
+        "origine":"france",
+        "nom_image":"fraises-gariguette_barquette-250g",
+        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+    },
+    {
+        "intitule":"Ananas Extra Sweet",
+        "descriptif":"la pièce",
+        "prix_unite": NumberDecimal("1.89"),
+        "unite":"pièce",
+        "prix": NumberDecimal("1.89"),
+        "origine":"costa rica",
+        "nom_image":"ananas-extra-sweet_piece",
+        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "nutriscore":{"_id":"n2","lettre":"B"},
     },
     {
         "intitule":"Jus d'orange bio pur jus",
@@ -103,12 +125,25 @@ db.products.insertMany([
         "origine":"france",
         "nom_image":"jus-oranges_JARDIN_BIO_1l",
         "rayon": ObjectId("6090868042b2205d269d7dff"),
-        "nutriscore":{"_id":"n1","lettre":"A"},
-        "label_qualite":[],
+        "nutriscore":{"_id":"n2","lettre":"B"},
+        "label_qualite":[{"_id": "lb_1", "label": "Bio"}],
         "promotion":{
             "pourcent": true,
             "info": "30"
         }
+    },
+        {
+        "intitule":"Boisson Détox bio",
+        "descriptif":"la bouteille de 50cL",
+        "marque":"JARDIN BIO",
+        "prix_unite": NumberDecimal("3.66"),
+        "unite":"litre",
+        "prix": NumberDecimal("7.32"),
+        "origine":"france",
+        "nom_image":"boisson-detox-bio_JARDIN_BIO_50cl",
+        "rayon": ObjectId("6090868042b2205d269d7dff"),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "label_qualite":[{"_id": "lb_1", "label": "Bio"}]
     },
     {
         "intitule":"Jus de citron bio pur jus",
@@ -120,13 +155,24 @@ db.products.insertMany([
         "nom_image":"jus-citron_SIRACUSE_1l",
         "rayon": ObjectId("6090868042b2205d269d7dff"),
         "nutriscore":{"_id":"n1","lettre":"A"},
-        "label_qualite":[
-            {"_id": "lb_1", "label": "Bio"}
-        ],
         "promotion":{
             "pourcent": true,
             "info": "34"
         }
+    },
+    {
+        "intitule":"Jus de fruits bio nectar mangue",
+        "descriptif":"la bouteille d'75cL",
+        "marque":"JARDIN BIO",
+        "prix_unite": NumberDecimal("3.55"),
+        "unite":"litre",
+        "prix": NumberDecimal("4.73"),
+        "nom_image":"jus-nectar-mangue_JARDIN-BIO_75cl",
+        "rayon": ObjectId("6090868042b2205d269d7dff"),
+        "nutriscore":{"_id":"n5","lettre":"E"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ]
     },
     {
         "intitule":"Viande de Porc: Côtes sans os à griller",
@@ -179,6 +225,29 @@ db.products.find().forEach(function(doc) {
 });
 
 
+// TEST
+/* 
+use('db_shopping');
+db.products.aggregate([
+            { 
+                $match: { 
+                    rayon: ObjectId("60907d7d42b2205d269d7df8"),
+                    //rayon: ObjectId("60907def42b2205d269d7dfa"),
+                    origine: "FRANCE"
+                } 
+            },
+            {
+                $count: "total"
+            },
+            { 
+                $project: {
+                    exists: "true",
+                    total: "$total",
+                    _id: 0
+                } 
+            }
+    ]);  */
+// FIN TEST
 
 
 //////////////////// Pour collection 'labelqualites' ///////////////////////
