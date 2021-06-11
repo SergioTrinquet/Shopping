@@ -4,8 +4,9 @@
             type="text" 
             class="mainInputSearch" 
             placeholder="Rechercher un produit par son nom, sa marque,..."
+            @keypress.enter="searchProducts"
         >
-        <font-awesome-icon icon="search" id="iconSearch" @click="TEST()" />
+        <font-awesome-icon icon="search" id="iconSearch" />
         <div id="proposals">gzrgzrg</div>
     </div>
 </template>
@@ -16,12 +17,24 @@ export default {
 
     data() {
         return {
-
+          old_saisie: ""
         }
     },
     methods: {
-      TEST() {
-        console.log("On a cliqué !!!"); //TEST
+      searchProducts(e) {
+        const new_saisie = e.target.value.trim();
+        //console.log("Saisie", new_saisie); //TEST
+
+        // Appel action que :
+          // - qd saisie differente de la dernière pour eviter appel inutile,
+          // - Après 200ms
+        if(new_saisie.localeCompare(this.old_saisie) != 0) {
+          console.log("Saisie differente !!"); //TEST
+          setTimeout(1000, )
+        } else {
+          console.log("MEME SAISIE"); //TEST
+        }
+        this.old_saisie = new_saisie;
       }
     }
 }
