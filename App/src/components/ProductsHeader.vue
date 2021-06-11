@@ -5,7 +5,7 @@
       Produits du rayon <b class="secondary-txt">"{{ selected_department_name }}"</b>
     </div>
     
-    <FiltersListTags />
+    <!-- <FiltersListTags v-if="!!filters_presence" /> --><FiltersListTags />
 
     <div class="lgn2">
       <div>{{ products.length }} résultat{{ products.length > 1 ? "s" : "" }}</div>
@@ -16,9 +16,9 @@
 </template>
 
 <script>
-import FiltersListTags from '@/components/FiltersListTags'
-import ProductsSelectOrder from '@/components/ProductsSelectOrder'
 
+const FiltersListTags = () => import(/* webpackChunkName: "FiltersListTags" */ '@/components/FiltersListTags')
+import ProductsSelectOrder from '@/components/ProductsSelectOrder'
 
 export default {
     name: 'ProductsHeader',
@@ -34,7 +34,11 @@ export default {
       },
       selected_department_name() {
         return this.$store.state.selected_department.intitule;
-      }
+      },
+      
+      /* filters_presence() {
+          return this.$store.state.filters_query_string_parameters.length;
+      } */
     }
 }
 </script>
