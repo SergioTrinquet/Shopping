@@ -60,6 +60,9 @@ export default {
   margin: 10px;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
+  /* Pour aligner contenu vers le bas */
+  display: flex;
+  align-items: flex-end;
 }
 .productItem.ordered {
   /* border: dotted 1px #2A538A; */
