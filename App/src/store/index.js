@@ -17,8 +17,17 @@ export default new Vuex.Store({
     filters: {},
     selected_department: null,
     nbMaxMarques: 3,
+    listeTypeTri: [
+      { id:1, champBdd: "intitule", ordre: 1, texte: "intitulé (alphabétique)", selected: true },
+      { id:2, champBdd: "intitule", ordre: -1, texte: "intitulé (alpha. inverse)", selected: false },
+      { id:3, champBdd: "prix", ordre: 1, texte: "Prix (croissant)", selected: false },
+      { id:4, champBdd: "prix", ordre: -1, texte: "Prix (décroissant)", selected: false },
+      { id:5, champBdd: "prix_unite", ordre: 1, texte: "Prix au kg/l/pièce (croissant)", selected: false },
+      { id:6, champBdd: "prix_unite", ordre: -1, texte: "Prix au kg/l/pièce (décroissant)", selected: false }
+    ],
     filters_query_string_parameters: "",
     tri_query_string_parameters: "",
+    filter_to_remove: null,
   },
 
 
@@ -85,7 +94,9 @@ export default new Vuex.Store({
     SET_TRI_QUERY_STRING_PARAMETERS(state, payload) {
       state.tri_query_string_parameters = payload;
     },
-
+    SET_FILTER_TO_REMOVE(state, payload) { 
+      state.filter_to_remove = payload 
+    }
   },
 
 
