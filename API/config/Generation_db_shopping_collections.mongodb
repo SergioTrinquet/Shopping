@@ -188,7 +188,103 @@ db.products.insertMany([
             {"_id": "lb_3", "label": "Label Rouge"}
         ]
     },
-
+    {
+        "intitule":"Pains au lait bio",
+        "descriptif":"le paquet de 8 - 280g",
+        "marque":"BRIOCHE PASQUIER",
+        "prix_unite": NumberDecimal("6.43"),
+        "unite":"kg",
+        "prix": NumberDecimal("1.80"),
+        "nom_image":"pain-au-lait-bio_BRIOCHE-PASQUIER_280g",
+        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "nutriscore":{"_id":"n4","lettre":"D"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ]
+    },
+    {
+        "intitule":"baguettes rustiques",
+        "descriptif":"le lot de 3",
+        "prix_unite": NumberDecimal("3.00"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.00"),
+        "nom_image":"baguettes-rustiques_lot-de-3",
+        "rayon": ObjectId("60907def42b2205d269d7dfa")
+    },
+    {
+        "intitule":"Mini beignets chocolat",
+        "descriptif":"la barquette de 8 - 200g",
+        "prix_unite": NumberDecimal("14.00"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.80"),
+        "origine":"france",
+        "nom_image":"mini-beignets-chocolat_200g",
+        "rayon": ObjectId("60907def42b2205d269d7dfa")
+    },
+    {
+        "intitule":"Pains hamburger",
+        "descriptif":"le paquet de 6 - 330g",
+        "marque":"JACQUET",
+        "prix_unite": NumberDecimal("3.36"),
+        "unite":"kg",
+        "prix": NumberDecimal("1.11"),
+        "nom_image":"pains-hamburger_JACQUET_330g",
+        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
+    },
+    {
+        "intitule":"Muffins nature",
+        "descriptif":"le paquet de 250g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("5.40"),
+        "unite":"kg",
+        "prix": NumberDecimal("1.35"),
+        "nom_image":"muffins-nature_CARREFOUR_250g",
+        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
+    },
+    {
+        "intitule":"Pain complet",
+        "descriptif":"le pain de 300g",
+        "prix_unite": NumberDecimal("4.00"),
+        "unite":"kg",
+        "prix": NumberDecimal("1.20"),
+        "nom_image":"pain-complet_300g",
+        "rayon": ObjectId("60907def42b2205d269d7dfa")
+    },
+    {
+        "intitule":"Pain Pita à garnir",
+        "descriptif":"le paquet de 400g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("3.70"),
+        "unite":"kg",
+        "prix": NumberDecimal("1.48"),
+        "nom_image":"pain-pita-a-garnir_CARREFOUR_400g",
+        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
+    },
+    {
+        "intitule":"Pain de mie complet maxi tranches",
+        "descriptif":"le paquet de 550g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("1.49"),
+        "unite":"kg",
+        "prix": NumberDecimal("0.82"),
+        "nom_image":"pain-de-mie-complet-maxi-tranches_CARREFOUR_550g",
+        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
+    },
+    {
+        "intitule":"Brioche pépites chocolat sans additifs DooWap",
+        "descriptif":"le paquet de 12 - 480g",
+        "marque":"HARRY'S",
+        "prix_unite": NumberDecimal("5.52"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.65"),
+        "nom_image":"brioche-pepites-chocolat-DooWap_HARRY_480g",
+        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "nutriscore":{"_id":"n3","lettre":"C"}
+    },
 ]);
 
 // Run a find command
