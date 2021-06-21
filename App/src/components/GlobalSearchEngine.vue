@@ -14,20 +14,27 @@
             @keyup="searchProducts"
         >
         <font-awesome-icon icon="search" id="iconSearch" />
-        <div id="proposals" class="proposals primary-txt" v-if="displaySearchEngineResults">
-          <div class="lgnProduit legende">
-            <div class="intituleProduit">Intitule produit</div>
-            <div class="marqueProduit">Marque</div>
-          </div>
-          <div class="lgnProduit" 
-            v-for="result in autocompleteResults" :key="result._id"
-            @click="displayProduct(result._id)"
+
+        <transition name="autocomplete">
+          <div 
+            id="proposals" 
+            class="proposals primary-txt" 
+            v-if="displaySearchEngineResults"
           >
-            <div class="intituleProduit" v-html="highlight(result, 'intitule')"></div>
-            <div class="marqueProduit" v-html="highlight(result, 'marque')"></div>
+            <div class="lgnProduit legende">
+              <div class="intituleProduit">Intitule produit</div>
+              <div class="marqueProduit">Marque</div>
+            </div>
+            <div class="lgnProduit" 
+              v-for="result in autocompleteResults" :key="result._id"
+              @click="displayProduct(result._id)"
+            >
+              <div class="intituleProduit" v-html="highlight(result, 'intitule')"></div>
+              <div class="marqueProduit" v-html="highlight(result, 'marque')"></div>
+            </div>
+            <!-- {{ autocompleteResults }} -->
           </div>
-          <!-- {{ autocompleteResults }} -->
-        </div>
+        </transition>
     </div>
 </template>
 
@@ -199,5 +206,16 @@ export default {
 
     background-color: rgb(255, 255, 0);
     /* background-color: pink; */
+}
+
+
+.autocomplete-enter,
+.autocomplete-leave-to {
+  opacity: 0;
+  transform: translateY(-15px);
+}
+.autocomplete-enter-active,
+.autocomplete-leave-active {
+  transition: all 0.25s ease-out;
 }
 </style>
