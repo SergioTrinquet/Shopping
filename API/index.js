@@ -457,6 +457,7 @@ app.get("/product/:id", (req, res, next) => {
 
     Product
         .find({ _id: id })
+        .populate("rayon")
         .then(result => {
             res.json(result);
         })
