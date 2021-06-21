@@ -28,6 +28,7 @@ export default new Vuex.Store({
     filters_query_string_parameters: "",
     tri_query_string_parameters: "",
     filter_to_remove: null,
+    autocompleteResults: []
   },
 
 
@@ -96,6 +97,9 @@ export default new Vuex.Store({
     },
     SET_FILTER_TO_REMOVE(state, payload) { 
       state.filter_to_remove = payload 
+    },
+    SET_AUTOCOMPLETE_RESULTS(state, payload) {
+      state.autocompleteResults = payload;
     }
   },
 
@@ -147,7 +151,6 @@ export default new Vuex.Store({
 
       return axios.get(`/api/department_products?${payload}`)
         .then((res) => {
-          console.log(res.data); //TEST
 
           // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
           let items = [];
@@ -169,6 +172,47 @@ export default new Vuex.Store({
     },
 
 
+    // Qd saisie ds champ de saisie recherche : Appel pour récupérer produits coorespondants
+    fetchProductsForAutocompleteSearchEngine({ commit }, payload) {
+        axios.get(`api/products/${payload}`)
+          .then(res => {
+            commit('SET_AUTOCOMPLETE_RESULTS', res.data);
+          })
+          .catch((err) => {
+            console.error(err.response);
+            commit('SET_MESSAGE_ERROR', err.response);
+          })
+    },
+
+
+    fetchProductFromAutocompleteSearchEngine({ commit }, payload) {   console.log(payload); //TEST
+      commit('SET_LOADING', true);
+      commit('SET_MESSAGE_ERROR', null);
+
+      axios.get(`api/product/${payload}`)
+        .then(res => {
+          console.log(res.data); //TEST
+          
+          // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
+          let items = [];
+          res.data.forEach(p => {
+            if("promotion" in p && p.promotion !== null && p.promotion.pourcent) {
+              p.prix_reduc = p.prix - (p.prix/100 * p.promotion.info);
+              //console.warn(p.intitule, p.prix_reduc, p); //TEST
+            }
+            items.push(p);
+          })
+          
+          commit('SET_PRODUCTS', items);
+        })
+        .catch((err) => {
+          console.error(err.response);
+          commit('SET_MESSAGE_ERROR', err.response);
+        })
+        .finally(() => commit('SET_LOADING', false));
+    }
+
+    
   },
 
 

@@ -8,6 +8,7 @@ const config = require("./config/identifiants_mongoDB.js");
 const mongoose = require('mongoose');
 const Department = require('./models/department');
 const Product = require('./models/product');
+const { json } = require('express');
 /* const Nutriscore = require('./models/nutriscore').model;
 const LabelQualite = require('./models/labelQualite').model; */
 
@@ -307,6 +308,162 @@ app.get("/department_products", (req, res, next) => {
             next(error);
         });
 
+});
+
+
+
+// Pour récupérer produits correspondant à saisie dans champ de recherche principal en haut de page
+app.get("/products/:searchText", (req, res, next) => {
+    const searchText = req.params.searchText;
+
+    // Recherche sur 2 champ mais sans autocomplete
+    // Fait avec un index dynamique (index par défaut)
+    /* Product.aggregate([
+        {
+          '$search': {
+            'index': 'index_products', 
+            'text': {
+              'query': searchText, 
+              'path': [
+                'intitule', 'marque'
+              ]
+            }, 
+            'highlight': {
+              'path': [
+                'intitule', 'marque'
+              ]
+            }
+          }
+        }, 
+        {
+          '$project': {
+            'intitule': 1, 
+            'marque': 1, 
+            'score': {
+              '$meta': 'searchScore'
+            }, 
+            'highlight': {
+              '$meta': 'searchHighlights'
+            }
+          }
+        }, 
+        { '$limit': 20 }
+    ])
+    .then(result => {res.json(result)})
+    .catch(error => {
+        error.customMsg = "Erreur lors de l'étape de récupération des produits à partir du champ de recherche d'un produit";
+        next(error);
+    }) */
+
+
+    // Autocomplete avec recherche sur un seul champ
+    /*  
+    Product.aggregate([
+    {
+        '$search': {
+        'index': 'products_intitule_autocomplete', 
+        'autocomplete': {
+            'query': searchText, 
+            'path': 'intitule',
+            "fuzzy": {
+                "maxEdits": 2,
+                "prefixLength": 1
+            }
+        }
+        }
+    }, 
+    {
+        '$project': {
+        'intitule': 1, 
+        'marque': 1,
+        'score': {
+            '$meta': 'searchScore'
+        }
+        }
+    }, 
+    { $limit': 20 }
+    ]).then(result => {res.json(result)})
+    .catch(error => {
+        error.customMsg = "Erreur lors de l'étape de récupération des produits à partir du champ de recherche d'un produit";
+        next(error);
+    }) 
+    */
+
+    // Autocomplete sur 2 champs (intitule et marque), donc utilisation de 'compound' avec créat° dans mongodb ATLAS d'un index sur les 2 champs pré-cités
+    // 'should' dans le compound permet d'avoir des résultats à partir d'une seule clause (ici les 2 'autocomplete')
+    // Highlight possible que parce que dans la construction de l'index, j'ai ajouté pour le champ 'intitule' le data Type 'String' au data Type 'Autocomplete'
+    Product.aggregate([
+        {
+          '$search': {
+            'index': 'products_autocomplete',
+            'compound': {
+                'should': [
+                    {
+                        'autocomplete': {
+                            'query': searchText, 
+                            'path': 'intitule',
+                            "fuzzy": {
+                                "maxEdits": 1,
+                                "prefixLength": 1
+                            }
+                        }
+                    },
+                    {
+                        'autocomplete': {
+                            'query': searchText, 
+                            'path': 'marque',
+                            "fuzzy": {
+                                "maxEdits": 1,
+                                "prefixLength": 1
+                            }
+                        }
+                    }
+                ]
+            },
+            'highlight': {
+                'path': ['intitule', 'marque']
+            }
+          }
+        }, 
+        {
+          '$project': {
+            'intitule': 1, 
+            'marque': 1,
+            'score': {
+                '$meta': 'searchScore'
+            }, 
+            'highlight': {
+              '$meta': 'searchHighlights'
+            }
+          }
+        }, 
+        {
+          '$limit': 20
+        }
+    ])
+    .then(result => {res.json(result)})
+    .catch(error => {
+        error.customMsg = "Erreur lors de l'étape de récupération des produits à partir du champ de recherche d'un produit";
+        next(error);
+    })
+
+});
+
+
+
+// Qd clic sur un article dans autocomplete du moteur de recherche
+app.get("/product/:id", (req, res, next) => {
+    const id = req.params.id;
+
+    Product
+        .find({ _id: id })
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => { 
+            error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
+            next(error);
+        });
 });
 
 
