@@ -1,5 +1,5 @@
 <template>
-    <div>   <!-- {{ dataProduct }} -->
+    <div class="product">   <!-- {{ dataProduct }} -->
         <div class="intitule primary-txt">{{ dataProduct.intitule }}</div>
         <div class="marque" v-if="!!dataProduct.marque">{{ dataProduct.marque }}</div>
         <div class="bloc">
@@ -110,6 +110,9 @@ export default {
 </script>
 
 <style scoped>
+.product {
+    margin: auto;
+}
 .intitule {
     font-weight: bold;
     font-size: 20px;
