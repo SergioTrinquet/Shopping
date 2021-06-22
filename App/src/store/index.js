@@ -46,7 +46,16 @@ export default new Vuex.Store({
       state.departments = payload;
     },
     SET_PRODUCTS(state, payload) {
-      state.products = payload;
+      // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
+      let items = [];
+      payload.forEach(p => {
+        if("promotion" in p && p.promotion !== null && p.promotion.pourcent) {
+          p.prix_reduc = p.prix - (p.prix/100 * p.promotion.info);
+          //console.warn(p.intitule, p.prix_reduc, p); //TEST
+        }
+        items.push(p);
+      })
+      state.products = items;
     },
     SET_DISPLAY_MARGIN_BASKET(state, payload) {
       state.display_margin_basket = payload;
@@ -121,7 +130,7 @@ export default new Vuex.Store({
         .finally(() => commit('SET_LOADING', false));
     },
 
-    // Pour fermer tous les composants étant potentiellement ouverts avent d'ouvrir celui sur lequel l'utilisateur vient de cliquer
+    // Pour fermer tous les composants étant potentiellement ouverts avant d'ouvrir celui sur lequel l'utilisateur vient de cliquer
     closeComponents({ commit }) {
       commit('SET_DISPLAY_MARGIN_DEPARTMENTS', false);
       commit('SET_DISPLAY_MARGIN_BASKET', false);
@@ -144,27 +153,16 @@ export default new Vuex.Store({
     },
 
 
-    // Qd click sur rayon dans marge coulissante, ou bien filtres ouencore sur select Tri
+    // Qd click sur rayon dans marge coulissante, ou bien filtres ou encore sur select Tri
     fetchProductsDepartment({ commit }, payload) {
       commit('SET_LOADING', true);
       commit('SET_MESSAGE_ERROR', null);
 
       return axios.get(`/api/department_products?${payload}`)
-        .then((res) => {
-
-          // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
-          let items = [];
-          res.data.forEach(p => {
-            if("promotion" in p && p.promotion !== null && p.promotion.pourcent) {
-              p.prix_reduc = p.prix - (p.prix/100 * p.promotion.info);
-              //console.warn(p.intitule, p.prix_reduc, p); //TEST
-            }
-            items.push(p);
-          })
-          
-          commit('SET_PRODUCTS', items);
+        .then(res => {
+          commit('SET_PRODUCTS', res.data);
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err.response);
           commit('SET_MESSAGE_ERROR', err.response);
         })
@@ -185,27 +183,45 @@ export default new Vuex.Store({
     },
 
 
-    fetchProductFromAutocompleteSearchEngine({ commit }, payload) {   console.log(payload); //TEST
+    // Qd clic sur un produit dans l'autocomplete du moteur de recherche
+    fetchProductFromAutocompleteSearchEngine({ commit }, payload) {
       commit('SET_LOADING', true);
       commit('SET_MESSAGE_ERROR', null);
 
       axios.get(`api/product/${payload}`)
         .then(res => {
-          console.log(res.data); //TEST
-          
-          // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
-          let items = [];
-          res.data.forEach(p => {
-            if("promotion" in p && p.promotion !== null && p.promotion.pourcent) {
-              p.prix_reduc = p.prix - (p.prix/100 * p.promotion.info);
-              //console.warn(p.intitule, p.prix_reduc, p); //TEST
-            }
-            items.push(p);
-          })
-          
-          commit('SET_PRODUCTS', items);
+
+          // Affectation 'selected_department' pour enregistrer le rayon sélectionné
+          commit('SET_SELECTED_DEPARTMENT', 
+          { 
+            id: res.data[0].rayon._id, 
+            intitule: res.data[0].rayon.intitule 
+          });
+
+          commit('SET_PRODUCTS', res.data);
         })
-        .catch((err) => {
+        .catch(err => {
+          console.error(err.response);
+          commit('SET_MESSAGE_ERROR', err.response);
+        })
+        .finally(() => commit('SET_LOADING', false));
+    },
+
+
+
+
+    // Qd clic sur icone Loupe dans le moteur de recherche
+    fetchProductsFromIconSearchEngine({ commit }, payload) {
+      commit('SET_LOADING', true);
+      commit('SET_MESSAGE_ERROR', null);
+
+      axios.get(`api/products/searchicon/${payload}`)
+        .then(res => { 
+          console.log("fetchProductsFromIconSearchEngine", res.data, res.data[0].prix.$numberDecimal); //TEST
+
+          commit('SET_PRODUCTS', res.data);
+        })
+        .catch(err => {
           console.error(err.response);
           commit('SET_MESSAGE_ERROR', err.response);
         })
