@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3080;
+const port = process.env.PORT || 3081;
 
 const erreur = require('./app_modules/erreur');
 
@@ -312,7 +312,7 @@ app.get("/department_products", (req, res, next) => {
 
 
 
-// Pour récupérer produits correspondant à saisie dans champ de recherche principal en haut de page
+// Pour alimenter l'autocomplete du moteur de recherche principal en haut de page
 app.get("/products/:searchText", (req, res, next) => {
     const searchText = req.params.searchText;
 
@@ -391,6 +391,7 @@ app.get("/products/:searchText", (req, res, next) => {
 
     // Autocomplete sur 2 champs (intitule et marque), donc utilisation de 'compound' avec créat° dans mongodb ATLAS d'un index sur les 2 champs pré-cités
     // 'should' dans le compound permet d'avoir des résultats à partir d'une seule clause (ici les 2 'autocomplete')
+    // 'fuzzy' pour permettre de trouver des résultats malgr une marge d'erreur dans la saisie: Affiche notamment produits ayant 1 caractère différent par rapport à la recherche validée (paramétré avec prop. 'maxEdits')
     // Highlight possible que parce que dans la construction de l'index, j'ai ajouté pour le champ 'intitule' le data Type 'String' au data Type 'Autocomplete'
     Product.aggregate([
         {
@@ -443,7 +444,7 @@ app.get("/products/:searchText", (req, res, next) => {
     ])
     .then(result => {res.json(result)})
     .catch(error => {
-        error.customMsg = "Erreur lors de l'étape de récupération des produits à partir du champ de recherche d'un produit";
+        error.customMsg = "Erreur lors de l'étape d'alimentation des suggestions de produits après saisie dans le moteur de recherche";
         next(error);
     })
 
@@ -462,9 +463,70 @@ app.get("/product/:id", (req, res, next) => {
             res.json(result);
         })
         .catch(error => { 
-            error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
+            error.customMsg = "Erreur lors de l'étape de récupération d'un produit à partir de la liste des suggestions du moteur de recherche";
             next(error);
         });
+});
+
+
+
+// Qd clic sur icone de recherche (loupe) du moteur de recherche
+app.get("/products/searchicon/:searchText", (req, res, next) => {
+    const searchText = req.params.searchText;
+
+    Product.aggregate([
+        {
+            '$search': {
+                'index': 'products', 
+                'text': {
+                    'query': searchText, 
+                    'path': [
+                        'intitule', 
+                        'marque'
+                    ]
+                }
+            }
+        }, 
+        {
+            '$project': {
+                'descriptif': 1,
+                'intitule': 1, 
+                'marque': 1, 
+                'nom_image': 1,
+                // Convertion des 'prix' et 'prix_unite' en 'double', sinon bug du coté front avec '.toFixed()'
+                'prix': {
+                    $convert: {
+                        input: '$prix',
+                        to: 'double'
+                    }
+                },
+                'prix_unite': {
+                    $convert: {
+                        input: '$prix_unite',
+                        to: 'double'
+                    }
+                },
+                'unite': 1,
+                'origine': 1,
+                'rayon': 1,
+                'nutriscore': 1,
+                'label_qualite': 1,
+                'promotion': 1,
+                'score': {
+                    '$meta': 'searchScore'
+                }
+            }
+        }, 
+        { '$limit': 20 }
+    ])
+    .then(result => {
+        console.log("result", result); //TEST
+        res.json(result);
+    })
+    .catch(error => {
+        error.customMsg = "Erreur lors de l'étape de récupération des produits après click sur icone de validation du moteur de recherche";
+        next(error);
+    })
 });
 
 
