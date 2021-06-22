@@ -1,19 +1,24 @@
 <template>
     <div id="searchEngine">
-        <!-- <input 
-            type="text" 
-            class="mainInputSearch" 
-            placeholder="Rechercher un produit par son nom, sa marque,..."
-            @keypress.enter="searchProducts"
-            @keyup="searchProducts"
-        > -->
         <input 
             type="text" 
             class="mainInputSearch" 
-            placeholder="Rechercher un produit par son nom, sa marque,..."
-            @keyup="searchProducts"
+            placeholder="Rechercher un produit par son nom ou sa marque"
+            @click="closeMargins"
+            @keyup="searchProductsForAutocomplete"
+            @keypress.enter="searchProducts"
         >
-        <font-awesome-icon icon="search" id="iconSearch" />
+        <font-awesome-icon 
+            icon="backspace" 
+            id="iconBackspace" 
+            @click="clearSearch" 
+            v-if="displayIconClearSearch" 
+        />
+        <font-awesome-icon 
+            icon="search" 
+            id="iconSearch" 
+            @click="searchProducts"
+        />
 
         <transition name="autocomplete">
           <div 
@@ -46,13 +51,17 @@ export default {
         return {
           old_saisie: "",
           timer: null,
-          displaySearchEngineResults: false
+          displaySearchEngineResults: false,
+          displayIconClearSearch: false
         }
     },
 
     computed: {
       autocompleteResults() {
         return this.$store.state.autocompleteResults;
+      },
+      componentsOpen() {
+        return this.$store.getters.areComponentsOpen;
       }
     },
 
@@ -63,9 +72,12 @@ export default {
     },
 
     methods: {
-      searchProducts(e) {   
+      searchProductsForAutocomplete(e) {   
         //console.log("event", e.type); //TEST
         const new_saisie = e.target.value.trim();
+
+        // Pour afficher ou non icone de suppress° du texte ds moteur de recherche
+        this.setDisplayIconClearSearch(new_saisie);
 
         // Appel action qd saisie differente de la dernière pour eviter appel inutile
         if(new_saisie.localeCompare(this.old_saisie) != 0) {
@@ -79,6 +91,26 @@ export default {
         }
         
         this.old_saisie = new_saisie;
+      },
+
+
+      clearSearch() {
+        const newValue = "";
+        document.querySelector('.mainInputSearch').value = newValue;
+        this.setDisplayIconClearSearch(newValue);
+        this.$store.commit('SET_AUTOCOMPLETE_RESULTS', []); // disparit° autocomplete en vidant son contenu
+      },
+
+      
+      setDisplayIconClearSearch(inputValue) {
+        this.displayIconClearSearch = inputValue.length > 0 ? true : false;
+      },
+
+
+      closeMargins() {
+        if(this.componentsOpen) {
+          this.$store.dispatch("closeComponents");
+        }
       },
 
 
@@ -100,8 +132,19 @@ export default {
         }
       },
 
+      // Qd click sur un produit ds l'autocomplete
       displayProduct(id) {
         this.$store.dispatch('fetchProductFromAutocompleteSearchEngine', id);
+      },
+
+
+      // Qd click sur icone 'search' ds moteur de recherche
+      searchProducts() {
+        this.displaySearchEngineResults = false; // disparit° autocomplete sans vider son contenu car correspond au texte de recherche que l'utilisateur vient de valider
+        const searchString = document.querySelector('.mainInputSearch').value.trim();
+        if(searchString !== "") {
+          this.$store.dispatch('fetchProductsFromIconSearchEngine', searchString);
+        }
       }
     },
 
@@ -142,16 +185,32 @@ export default {
 }
 
 .mainInputSearch {
+  font-family: 'Baloo 2', cursive;
+  font-size: 15px;
+  color: rgb(37, 44, 122);
   border: 0;
   background: none;
   width: calc(100% - 30px);
   box-sizing: border-box;
-  padding: 5px 3px;
+  padding: 0 3px;
   height: 100%;
   display: inline-block;
 }
 .mainInputSearch:focus {
   outline: none;
+}
+
+#iconBackspace {
+  color: rgb(189, 189, 189);
+  transition: color 0.2s ease-in-out;
+  position: absolute;
+  z-index: 1;
+  cursor: pointer;
+  font-size: 22px;
+  margin: 2px 0 0px -38px;
+}
+#iconBackspace:hover {
+  color: rgb(161, 161, 161);
 }
 
 #iconSearch {
@@ -171,8 +230,8 @@ export default {
   box-sizing: border-box;
   border-radius: 4px;
   margin: 30px 0 0 -8px;
-  padding: 4px 10px;
-  box-shadow: 0 0 3px rgba(0,0,0,0.6);
+  padding: 0;
+  box-shadow: 0 0 3px rgba(0,0,0,0.7);
   background-color: #fff;
 }
 
@@ -180,8 +239,8 @@ export default {
   display: flex;
   font-size: 14px;
   padding: 3px;
-
   border-bottom: dotted 1px #254A7B;
+  margin: 0 4px;
 }
 #proposals .lgnProduit:last-child {
   border-bottom-width: 0;
@@ -195,10 +254,13 @@ export default {
   flex-basis: 0;
 }
 #proposals .lgnProduit.legende {  
-  font-style: italic;
   font-size: 13px;
-
   border-bottom: solid 1px #254A7B;
+  background-color: #2F5C99;
+  color: #fff;
+  border-radius: 4px 4px 0 0;
+  padding: 4px 10px 2px 10px;
+  margin: 0;
 }
 #proposals .lgnProduit i {
     font-style: normal;
@@ -206,6 +268,21 @@ export default {
 
     background-color: rgb(255, 255, 0);
     /* background-color: pink; */
+}
+
+#proposals:after {
+	bottom: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: "";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(213, 0, 0, 0);
+	border-bottom-color: #2F5C99;
+	border-width: 10px;
+	margin-left: -10px;
 }
 
 
