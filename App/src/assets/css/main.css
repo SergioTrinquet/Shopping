@@ -19,7 +19,7 @@ body {
     color: rgb(37, 44, 122);
 }
 .primary-light {
-    background-color: rgb(48,93,154, 0.2);
+    background-color: rgba(48,93,154, 0.2);
 }
 .secondary {
     background-color: #15aabf;
