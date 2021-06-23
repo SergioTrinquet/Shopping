@@ -289,7 +289,7 @@ app.get("/department_products", (req, res, next) => {
 
     }
 
-    console.log("clauseFind", clauseFind); //TEST
+    //console.log("clauseFind", clauseFind); //TEST
 
 
     Product
@@ -439,10 +439,19 @@ app.get("/products/:searchText", (req, res, next) => {
           }
         }, 
         {
+            '$sort': {
+                'score': -1,
+                'intitule': 1
+            }
+        },
+        {
           '$limit': 20
         }
     ])
-    .then(result => {res.json(result)})
+    .then(result => {
+        //console.log("result", result); //TEST
+        res.json(result);
+    })
     .catch(error => {
         error.customMsg = "Erreur lors de l'étape d'alimentation des suggestions de produits après saisie dans le moteur de recherche";
         next(error);
@@ -470,7 +479,7 @@ app.get("/product/:id", (req, res, next) => {
 
 
 
-// Qd clic sur icone de recherche (loupe) du moteur de recherche
+// Qd clic sur icone de recherche (loupe) du moteur de recherche ou touche 'entrée' pour validation saisie
 app.get("/products/searchicon/:searchText", (req, res, next) => {
     const searchText = req.params.searchText;
 
@@ -517,7 +526,12 @@ app.get("/products/searchicon/:searchText", (req, res, next) => {
                 }
             }
         }, 
-        { '$limit': 20 }
+        {
+            '$sort': {
+                'score': -1,
+                'intitule': 1
+            }
+        }
     ])
     .then(result => {
         console.log("result", result); //TEST
