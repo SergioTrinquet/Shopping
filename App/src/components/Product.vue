@@ -11,11 +11,13 @@
         <!-- <img alt="photo" :src="require(dataProduct.imgPath)" class="illustration" /> -->
         <div class="origine">
             <span v-if="!!dataProduct.origine">
-                Origine: {{ dataProduct.origine }} 
+                <span>Origine: {{ dataProduct.origine }}</span>
                 <span v-if="dataProduct.origine.toUpperCase() == 'FRANCE'" class="frenchFlag"></span>
             </span>
         </div>
-        <div class="promotion tertiary-txt">{{ libellePromotion }}</div>
+        <div class="promotion tertiary-txt">
+            <span v-if="libellePromotion">{{ libellePromotion }}</span>
+        </div>
         <div class="label_nutriscore">
             <div class="labels">
                 <div    
@@ -111,9 +113,13 @@ export default {
 
 <style scoped>
 .product {
-    margin: auto;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: flex-end;
 }
 .intitule {
+    flex-grow: 1;
     font-weight: bold;
     font-size: 20px;
     line-height: 18px;
@@ -144,11 +150,14 @@ export default {
 }
 
 .origine {
+    margin: 3px 0 0 0;
     font-size: 14px;
     font-style: italic;
+    min-height: 22px;
+}
+.origine > span {
     display: flex;
     align-items: center;
-    height: 22px;
 }
 .frenchFlag {
     display: inline-block;
@@ -159,9 +168,12 @@ export default {
 .promotion {
     font-size: 13px;
     font-weight: bold;
-    background-color: #fded69;
-    display: inline-block;
+    min-height: 22px;
+    padding: 3px 0;
+}
+.promotion > span {
     padding: 0 3px;
+    background-color: #fded69;
 }
 
 .label_nutriscore {
