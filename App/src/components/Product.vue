@@ -116,10 +116,10 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100%;
-    justify-content: flex-end;
+    justify-content: flex-end; /* Pour aligner contenu vers le bas... */
 }
 .intitule {
-    flex-grow: 1;
+    flex-grow: 1; /* ...sauf l'intitulé, qui et donc aligné vers le haut */
     font-weight: bold;
     font-size: 20px;
     line-height: 18px;
