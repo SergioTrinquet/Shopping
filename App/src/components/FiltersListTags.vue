@@ -28,49 +28,11 @@ export default {
         },
         filters_query_string_parameters() {
             return this.$store.state.filters_query_string_parameters;
-        },
-        /* queryStringParameterstoFetchProducts() {
-            return this.$store.getters.getQueryStringParametersToFetchProducts;
-        } */
+        }
     },
 
     methods: {
         // Retrait du paramètre correspondant au flag ds la query string et appel API pour chargement des produits
-        // V1
-        /* closeTag(param) {
-            console.log("nom param : " + param.nom, "valeur param : " + param.valeur); //TEST
-            let searchParams = new URLSearchParams(this.filters_query_string_parameters);
-
-            // Pour déterminer s'il y a plusieurs values avec le même nom de paramètre ou pas
-            const lengthParamValues = searchParams.getAll(param.nom).length;
-            let newURLstring = "";
-
-            if(lengthParamValues == 1) {
-                searchParams.delete(param.nom);
-                newURLstring = searchParams.toString();
-            } else {
-                let newURL = [];
-                // Boucle car '.delete()' pas utilisable ici ds le cas ou le paramètre dont il faut supprimer une paire clé/valeur à plusieurs valeurs : '.delete()' supprimerait ttes les paires de ce paramètre
-                searchParams.forEach((value, key) => {
-                    //console.log("value => ", value, "param.valeur => ", param.valeur, "key => ", key, "param.nom => ", param.nom); //TEST
-                    if(!(value == param.valeur && key == param.nom)) {
-                        newURL.push(`${key}=${value}`);
-                    }
-                })
-                newURLstring = newURL.join("&");
-            }
-
-            // Enregistrement partie de la chaine de requête propre aux filtres
-            // NOTE: Fonctionne aussi en passant 'searParams' sans le convertir en string via (.toString()) mais on évite car ds ce cas valeur pas lisible avec 'Vue.js devtools'
-            this.$store.commit('SET_FILTERS_QUERY_STRING_PARAMETERS', newURLstring);
-
-            console.log("sélection (GET) => ", this.queryStringParameterstoFetchProducts); //TEST
-
-            // Appel API pour récup. des produits à afficher selon les filtres sélectionnés
-            this.$store.dispatch('fetchProductsDepartment', this.queryStringParameterstoFetchProducts);  
-        } */
-
-        // V2
         closeTag(param) {
             //console.log("nom param : " + param.nom, "valeur param : " + param.valeur); //TEST
             this.$store.commit('SET_FILTER_TO_REMOVE', param);
