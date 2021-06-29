@@ -285,6 +285,94 @@ db.products.insertMany([
         "rayon": ObjectId("60907def42b2205d269d7dfa"),
         "nutriscore":{"_id":"n3","lettre":"C"}
     },
+    {
+        "intitule":"Gel Douche Bébé Très Doux Corps et Cheveux 2 en 1",
+        "descriptif":"le flacon de 750ml",
+        "marque":"MIXA BEBE",
+        "prix_unite": NumberDecimal("7.40"),
+        "unite":"litre",
+        "prix": NumberDecimal("9.87"),
+        "nom_image":"gel-douche-bebe-2-en-1_MIXA-BEBE_750ml",
+        "rayon": ObjectId("609086a042b2205d269d7e00"),
+        "promotion":{
+            "pourcent": false,
+            "info": "3 achetés = 1€"
+        }
+    },
+    {
+        "intitule":"Gel douche Bébé Huile d'Amandes Douce Bio",
+        "descriptif":"la pompe de 750ml",
+        "marque":"CADUM BEBE",
+        "prix_unite": NumberDecimal("3.42"),
+        "unite":"litre",
+        "prix": NumberDecimal("4.56"),
+        "nom_image":"gel-douche-bebe-huile-amandes-douce-bio_CADUM-BEBE_750ml",
+        "rayon": ObjectId("609086a042b2205d269d7e00"),
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ]
+    },
+    {
+        "intitule":"Eau Nettoyante Bébé Douceur",
+        "descriptif":"la pompe de 750ml",
+        "marque":"CADUM BEBE",
+        "prix_unite": NumberDecimal("3.24"),
+        "unite":"litre",
+        "prix": NumberDecimal("4.32"),
+        "nom_image":"",
+        "rayon": ObjectId("609086a042b2205d269d7e00")
+    },
+    {
+        "intitule":"Lingettes bébé ultra-douces au lait de toilette",
+        "descriptif":"le paquet de 72",
+        "marque":"MIXA BEBE",
+        "origine":"france"
+        "prix_unite": NumberDecimal("2.45"),
+        "unite":"pièce",
+        "prix": NumberDecimal("0.03"),
+        "nom_image":"lingettes-bebe-ultra-douces-lait-de-toilette_MIXA-BEBE_paquet-72",
+        "rayon": ObjectId("609086a042b2205d269d7e00")
+    },
+    {
+        "intitule":"Lingettes bébé Natural Caresse",
+        "descriptif":"les 2 paquets de 60",
+        "marque":"BEBE CADUM",
+        "prix_unite": NumberDecimal("4.39"),
+        "unite":"pièce",
+        "prix": NumberDecimal("4.39"),
+        "nom_image":"lingettes-bebe-natural-caresse_BEBE-CADUM_2-paquets-60",
+        "rayon": ObjectId("609086a042b2205d269d7e00")
+    },
+    /* {
+        "intitule":"",
+        "descriptif":"",
+        "marque":"",
+        "origine":"france",
+        "prix_unite": NumberDecimal("0.00"),
+        "unite":"",
+        "prix": NumberDecimal("0.00"),
+        "nom_image":"",
+        "rayon": ObjectId(""),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "pourcent": true,
+            "info": "30"
+        }
+    }, */
+    {
+        "intitule":"Couches taille 3 : 6-10kg",
+        "descriptif":"le paquet de 74 couches",
+        "marque":"PAMPERS",
+        "prix_unite": NumberDecimal("26.25"),
+        "unite":"pièce",
+        "prix": NumberDecimal("0.35"),
+        "nom_image":"couches-taille-3-6a10kg_PAMPERS_paquet-74",
+        "rayon": ObjectId("609086a042b2205d269d7e00")
+    },
+    
 ]);
 
 // Run a find command
@@ -322,27 +410,64 @@ db.products.find().forEach(function(doc) {
 
 
 // TEST
-/* 
-use('db_shopping');
-db.products.aggregate([
-            { 
-                $match: { 
-                    rayon: ObjectId("60907d7d42b2205d269d7df8"),
-                    //rayon: ObjectId("60907def42b2205d269d7dfa"),
-                    origine: "FRANCE"
-                } 
-            },
-            {
-                $count: "total"
-            },
-            { 
-                $project: {
-                    exists: "true",
-                    total: "$total",
-                    _id: 0
-                } 
+/* use('db_shopping');
+    db.products.aggregate([
+        {
+            '$search': {
+                'index': 'products', 
+                'text': {
+                    'query': 'jus', 
+                    'path': [
+                        'intitule', 
+                        'marque'
+                    ]
+                }
             }
-    ]);  */
+        }, 
+{
+    '$match': { 
+            'promotion.pourcent': { '$exists': true },
+            'nutriscore._id': 'n1' 
+    }
+},
+
+        {
+            '$project': {
+                'descriptif': 1,
+                'intitule': 1, 
+                'marque': 1, 
+                'nom_image': 1,
+                // Convertion des 'prix' et 'prix_unite' en 'double', sinon bug du coté front avec '.toFixed()'
+                'prix': {
+                    $convert: {
+                        input: '$prix',
+                        to: 'double'
+                    }
+                },
+                'prix_unite': {
+                    $convert: {
+                        input: '$prix_unite',
+                        to: 'double'
+                    }
+                },
+                'unite': 1,
+                'origine': 1,
+                'rayon': 1,
+                'nutriscore': 1,
+                'label_qualite': 1,
+                'promotion': 1,
+                'score': {
+                    '$meta': 'searchScore'
+                }
+            }
+        }, 
+        {
+            '$sort': {
+                'score': -1,
+                'intitule': 1
+            }
+        }
+    ]) */  
 // FIN TEST
 
 
