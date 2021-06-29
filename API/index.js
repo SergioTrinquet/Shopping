@@ -6,11 +6,9 @@ const erreur = require('./app_modules/erreur');
 
 const config = require("./config/identifiants_mongoDB.js");
 const mongoose = require('mongoose');
-const Department = require('./models/department');
 const Product = require('./models/product');
-const { json } = require('express');
-/* const Nutriscore = require('./models/nutriscore').model;
-const LabelQualite = require('./models/labelQualite').model; */
+
+const requests = require('./requests');
 
 
 // on précise ici qu'on autorise toutes les sources
@@ -46,16 +44,14 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // Pour alimenter marge 'rayons'
 app.get("/departments", (req, res, next) => {
-
-    Department.find().sort("intitule")
-    .then(result => {
-        res.json(result);
-    })
-    .catch(error => { 
-        error.customMsg = "Erreur lors de l'étape du chargement de la liste des rayons";
-        next(error);
-    });
-
+    requests.getDepartments
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => { 
+            error.customMsg = "Erreur lors de l'étape du chargement de la liste des rayons";
+            next(error);
+        });
 });
 
 
@@ -63,225 +59,89 @@ app.get("/departments", (req, res, next) => {
 
 // Pour récupérer les filtres utiles selon rayon sélectionné (marge gauche qd produits affichés)
 app.get("/filters/:department_id", async (req, res, next) => {
-    /* 
-    // TEST pour vérifier que les promesses s'executent de façon parallèle
-    const result_nutriscore = new Promise((resolve, reject) => {
-        setTimeout( resolve, 5000, 
-            Nutriscore.find().sort('lettre').then(n => { return {"nutriscore": n} }) )
-    });
-    */
-
     const id_department = req.params.department_id;
     const ObjectId = mongoose.Types.ObjectId;
 
-    // Requete pour obtenir les differents nutriscores des produits d'un rayon, et leurs nombres respectifs
-    const result_nutriscore = Product
-        .aggregate([
-            { $match: { 
-                    rayon: new ObjectId(id_department),
-                    nutriscore: { $exists: true,  $nin: ["", null] }
-                } 
-            },
-            { 
-                $group: { 
-                    _id: "$nutriscore._id", 
-                    total: {$sum: 1}, 
-                    otherFields: { $first: "$$ROOT" } 
-                } 
-            }, // On groupe par nutriscore._id', on incrémente à chaque fois de 1, et on récupère ts les champs de Product du 1er doc correspondant aux ._id groupés
-            { 
-                $project: { 
-                    id: "$_id",  
-                    lettre: "$otherFields.nutriscore.lettre", 
-                    total: "$total", 
-                    _id: 0 
-                } 
-            },
-            { 
-                $sort: { lettre: 1 } 
-            }
-            
-        ])
-        .then(scores => {
-            return { "nutriscore": scores }
-        });
+    const pipeline = { $match: { rayon: new ObjectId(id_department) } };
 
-
-    // Requete pour obtenir les differents labels qualité des produits d'un rayon, et leurs nombres respectifs  
-    const result_labelqualite = Product
-        .aggregate([
-            { $match: { 
-                    rayon: new ObjectId(id_department),
-                    label_qualite: { $exists: true,  $nin: ["", null] }
-                } 
-            },
-            { $unwind: "$label_qualite" },
-            { $group: { 
-                    _id: "$label_qualite", 
-                    total: { $sum: 1 }
-                } 
-            }, 
-            { $project: {
-                    id: "$_id._id",
-                    libelle: "$_id.label",
-                    total: "$total",
-                    _id: 0
-                } 
-            },
-            { $sort: { libelle: 1 } }
-        ])
-        .then(labels => {
-            return { "label_qual": labels }
-        });
-
-
-    // Requete pour obtenir les differentes marques des produits d'un rayon, et leurs nombres respectifs
-    const result_marques = Product
-        .aggregate([
-            { 
-                $match: { 
-                    rayon: new ObjectId(id_department),
-                    marque: { $exists: true, $nin: ["", null] }
-                } 
-            },
-            { $project: { marque: 1 } }, 
-            { $group: { _id: "$marque", total: { $sum: 1 } } },
-            { $project: {_id: 0, libelle: "$_id", total: "$total"} }, // On renomme les champs
-            { $sort: { libelle: 1 } }
-        ])
-        .then(marques => {
-            return { "marques": marques }
-        });
-
-
-    // Requete pour savoir si Produits Français existent parmi les produits d'un rayon, et leur nombre
-    const produitsFR_present = Product
-        .aggregate([
-            { 
-                $match: { 
-                    rayon: new ObjectId(id_department),
-                    origine: "FRANCE"
-                } 
-            },
-            { 
-                $count: "total"
-            },
-            { 
-                $project: {
-                    exists: {
-                        $cond: { 
-                            if: { $gt: ["$total", 0] }, 
-                            then: true, 
-                            else: false 
-                        }
-                    },
-                    total: "$total",
-                    _id: 0
-                } 
-            }
-        ])
-        .then(prdsFR => {
-            return {  "ProduitsFRpresence": prdsFR[0] }
-        });
-
-
-        // Requete pour savoir s'il y a des Promotions pour les produits d'un rayon, et leur nombre
-        const promos_present = Product
-            .aggregate([
-                { 
-                    $match: { 
-                        rayon: new ObjectId(id_department),
-                        "promotion.pourcent": { $exists: true,  $nin: ["", null] }
-                    } 
-                },
-                { 
-                    $count: "total"
-                },
-                { 
-                    $project: {
-                        exists: {
-                            $cond: { 
-                                if: { $gt: ["$total", 0] }, 
-                                then: true, 
-                                else: false 
-                            }
-                        },
-                        total: "$total",
-                        _id: 0
-                    } 
-                }
-            ])
-            .then(promos => {
-                return {  "PromosPresence": promos[0] }
-            });
-     
-    // Requetes mongoDB qui sont des promesses exécutées ici en parallèle
-    Promise.all([
-        result_nutriscore, 
-        result_labelqualite, 
-        result_marques,
-        produitsFR_present,
-        promos_present
-    ])
-    .then(values => {
-        let filters = {};
-        for(const result of values) {
-            /* for(const [key, value] of Object.entries(result)) {
-                console.log("result =>", key, value); //TEST
-            } */
-            const [key, value] = Object.entries(result)[0];
-            filters[key] = value;
-        }
-        console.log("filters >>>>>", filters); //TEST
+    try {
+        const filters = await getFilters(pipeline);
         res.json(filters);
-    })
-    .catch(error => {
+    } catch (error) {
         error.customMsg = "Etape de récupération des filtres par rayon";
         next(error);
-    })
+    }
 });
 
 
 
 
+// Construction filtres pour prpoduits trouvés à partir du moteur de recherche
+app.get("/filters/searchstring/:searchText", async (req, res, next) => {
+    const pipeline = {
+        '$search': {
+            'index': 'products', 
+            'text': {
+                'query': req.params.searchText, 
+                'path': [
+                    'intitule', 
+                    'marque'
+                ]
+            }
+        }
+    };
+
+    try {
+        const filters = await getFilters(pipeline);
+        res.json(filters);
+    } catch (error) {
+        error.customMsg = "Etape de récupération des filtres sur produits affichés après recherche";
+        next(error);
+    }
+});
+
+
+
+
+
 // Pour récupérer les produits d'un rayon
-app.get("/department_products", (req, res, next) => {
-    let clauseFind = {};
-    let clauseSort = "intitule";
+app.get("/department/products", (req, res, next) => {
+    let queryMethodFind = {};
+    let queryMethodSort = "intitule";
     console.log("req.query", req.query); //TEST
 
     // Boucle sur paramètres passés
-    for(let rb in req.query) {
-        console.log("=>", rb, req.query[rb],"isArray : " + Array.isArray(req.query[rb]) , "type valeur: " + typeof(req.query[rb])); // TEST
+    for(let p in req.query) {
+        //console.log("=>", p, req.query[p],"isArray : " + Array.isArray(req.query[p]) , "type valeur: " + typeof(req.query[p])); // TEST
 
-        if(Array.isArray(req.query[rb])) { // Si c'est un Array...
+        if(Array.isArray(req.query[p])) { // Si c'est un Array...
             
             let tabMongoDBclause = [];
-            for(const x of req.query[rb]) {
+            for(const x of req.query[p]) {
                 // Si 'nutriscore' ou 'label_qualite', ajout '_id' pour chercher ds sous-document le path '_id'
-                rb = (rb == "nutriscore" || rb == "label_qualite" ? rb + '._id' : rb);
-                tabMongoDBclause.push({ [rb]: x }); // entre [] pour que propriété de l'obj. soit interprété, sinon lit 'rb'
+                p = (p == "nutriscore" || p == "label_qualite" ? p + '._id' : p);
+                tabMongoDBclause.push({ [p]: x }); // entre [] pour que propriété de l'obj. soit interprété, sinon lit 'p'
             }
-            clauseFind["$or"] = tabMongoDBclause;
+            queryMethodFind["$or"] = tabMongoDBclause;
 
-        } else if(typeof req.query[rb] == 'string') { // ...Si c'est un String (nutriscore, labels qualité, marque,promotions, prds français)...
+        } else if(typeof req.query[p] == 'string') { // ...Si c'est un String (nutriscore, labels qualité, marque, promotions, prds français)...
             
             // Paramètre pour le classement de produits
-            if(rb == "tri") {
-                const triParams = new URLSearchParams(req.query[rb]); // Parsing de la string avec les paramètres propres au tri
+            if(p == "tri") {
+                const triParams = new URLSearchParams(req.query[p]); // Parsing de la string avec les paramètres propres au tri
                 const champBdd = triParams.get("champBdd");
                 const ordre = triParams.get("ordre");
-                clauseSort = { [champBdd]: ordre };
+                queryMethodSort = { [champBdd]: ordre };
             // Paramètres pour le filtrage de produits
             } else {
-                if(rb == "promos") {
-                    clauseFind["promotion.pourcent"] = { $exists:true } // Chck présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
-                } else if(rb == "prdsFr") {
-                    clauseFind["origine"] = "FRANCE";
-                } else if(rb == "nutriscore" || rb == "label_qualite") { 
-                    clauseFind[rb + "._id"] = req.query[rb];      
+                if(p == "promos") {
+                    queryMethodFind["promotion.pourcent"] = { $exists:true } // Chck présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
+                } else if(p == "prdsFr") {
+                    queryMethodFind["origine"] = "FRANCE";
+                } else if(p == "nutriscore" || p == "label_qualite") { 
+                    queryMethodFind[p + "._id"] = req.query[p];      
                 } else { // rayon et marque
-                    clauseFind[rb] = req.query[rb]; 
+                    queryMethodFind[p] = req.query[p]; 
                 }
             }
 
@@ -289,7 +149,7 @@ app.get("/department_products", (req, res, next) => {
 
     }
 
-    //console.log("clauseFind", clauseFind); //TEST
+    //console.log("queryMethodFind", queryMethodFind); //TEST
 
 
     Product
@@ -297,8 +157,8 @@ app.get("/department_products", (req, res, next) => {
         //.find({"rayon": ObjectId(req.params.rayon)})  // NE FONCTIONNE PAS !!!
         //.find({ 'rayon': '60907d7d42b2205d269d7df8', 'nutriscore._id': 'n1' }) // FONCTIONNE !!!
         //.find({ rayon: '60907d7d42b2205d269d7df8',  nutriscore: {_id: 'n1'} }) // NE FONCTIONNE PAS !!!
-        .find(clauseFind)
-        .sort(clauseSort)
+        .find(queryMethodFind)
+        .sort(queryMethodSort)
         .populate("rayon")
         .then(result => {
             res.json(result);
@@ -312,8 +172,137 @@ app.get("/department_products", (req, res, next) => {
 
 
 
+// Qd validation sur moteur de recherche : Clic sur icone de recherche (loupe) du moteur de recherche ou touche 'entrée' pour validation saisie
+/* ANCIENNE VERSION */
+/* app.get("/searchEngine/products/:searchText", (req, res, next) => {
+    const searchText = req.params.searchText; */
+/* NOUVELLE VERSION */
+app.get("/searchEngine/products", (req, res, next) => {    
+    let queryMethodFind = {};
+    let queryMethodSort = "intitule";
+ 
+    const searchText = req.query.searchstring;
+    delete req.query.searchstring; // On supprime cette propriété ds le but de factoriser code commun ci-dessous avec celui de l'API "/department/products"
+
+
+    // Boucle sur paramètres passés
+    for(let p in req.query) {
+        //console.log("=>", p, req.query[p],"isArray : " + Array.isArray(req.query[p]) , "type valeur: " + typeof(req.query[p])); // TEST
+
+        if(Array.isArray(req.query[p])) { // Si c'est un Array...
+                    
+            let tabMongoDBclause = [];
+            for(const x of req.query[p]) {
+                // Si 'nutriscore' ou 'label_qualite', ajout '_id' pour chercher ds sous-document le path '_id'
+                p = (p == "nutriscore" || p == "label_qualite" ? p + '._id' : p);
+                tabMongoDBclause.push({ [p]: x }); // entre [] pour que propriété de l'obj. soit interprété, sinon lit 'p'
+            }
+            queryMethodFind["$or"] = tabMongoDBclause;
+
+        } else if(typeof req.query[p] == 'string') { // ...Si c'est un String (nutriscore, labels qualité, marque, promotions, prds français)...
+            
+            /* // Paramètre pour le classement de produits
+            if(p == "tri") {
+                const triParams = new URLSearchParams(req.query[p]); // Parsing de la string avec les paramètres propres au tri
+                const champBdd = triParams.get("champBdd");
+                const ordre = triParams.get("ordre");
+                queryMethodSort = { [champBdd]: ordre };
+            // Paramètres pour le filtrage de produits
+            } else { */
+                if(p == "promos") {
+                    queryMethodFind["promotion.pourcent"] = { $exists:true } // Chck présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
+                } else if(p == "prdsFr") {
+                    queryMethodFind["origine"] = "FRANCE";
+                } else if(p == "nutriscore" || p == "label_qualite") { 
+                    queryMethodFind[p + "._id"] = req.query[p];      
+                } else { // marque
+                    queryMethodFind[p] = req.query[p]; 
+                }
+            /* } */
+
+        }
+    }
+
+    console.log("queryMethodFind", queryMethodFind); //TEST
+
+    const pipeline = queryMethodFind !== {} ? { '$match': queryMethodFind } : "";
+/* FIN NOUVELLE VERSION */
+
+
+
+    Product.aggregate([
+        {
+            '$search': {
+                'index': 'products', 
+                'text': {
+                    'query': searchText, 
+                    'path': [
+                        'intitule', 
+                        'marque'
+                    ]
+                }
+            }
+        }, 
+        pipeline,
+        {   // Pipeline '$lookup' pour faire un 'join' sur la collection 'departments' et récupérer l'intitulé des rayons
+            $lookup: {
+                from: 'departments',
+                localField: 'rayon',
+                foreignField: '_id',
+                as: 'rayon'
+            }
+        },
+        {
+            '$project': {
+                'descriptif': 1,
+                'intitule': 1, 
+                'marque': 1, 
+                'nom_image': 1,
+                // Convertion des 'prix' et 'prix_unite' en 'double', sinon bug du coté front avec '.toFixed()'
+                'prix': {
+                    $convert: {
+                        input: '$prix',
+                        to: 'double'
+                    }
+                },
+                'prix_unite': {
+                    $convert: {
+                        input: '$prix_unite',
+                        to: 'double'
+                    }
+                },
+                'unite': 1,
+                'origine': 1,
+                'rayon': { $arrayElemAt: [ "$rayon", 0 ] }, // Pour 'aplatir' (flatten) l'array généré par le pipeline '$lookup' juste avant celui-ci
+                'nutriscore': 1,
+                'label_qualite': 1,
+                'promotion': 1,
+                'score': {
+                    '$meta': 'searchScore'
+                }
+            }
+        }, 
+        {
+            '$sort': {
+                'score': -1,
+                'intitule': 1
+            }
+        }
+    ])
+    .then(result => {
+        res.json(result);
+
+    })
+    .catch(error => {
+        error.customMsg = "Erreur lors de l'étape de récupération des produits après validation du moteur de recherche";
+        next(error);
+    })
+});
+
+
+
 // Pour alimenter l'autocomplete du moteur de recherche principal en haut de page
-app.get("/products/:searchText", (req, res, next) => {
+app.get("/autocomplete/products/:searchText", (req, res, next) => {
     const searchText = req.params.searchText;
 
     // Recherche sur 2 champ mais sans autocomplete
@@ -390,7 +379,7 @@ app.get("/products/:searchText", (req, res, next) => {
     */
 
     // Autocomplete sur 2 champs (intitule et marque), donc utilisation de 'compound' avec créat° dans mongodb ATLAS d'un index sur les 2 champs pré-cités
-    // 'should' dans le compound permet d'avoir des résultats à partir d'une seule clause (ici les 2 'autocomplete')
+    // 'should' dans le compound permet de retourner des résultats  même si une seule clause sur les 2 est valide (ici les 2 'autocomplete')
     // 'fuzzy' pour permettre de trouver des résultats malgr une marge d'erreur dans la saisie: Affiche notamment produits ayant 1 caractère différent par rapport à la recherche validée (paramétré avec prop. 'maxEdits')
     // Highlight possible que parce que dans la construction de l'index, j'ai ajouté pour le champ 'intitule' le data Type 'String' au data Type 'Autocomplete'
     Product.aggregate([
@@ -479,69 +468,77 @@ app.get("/product/:id", (req, res, next) => {
 
 
 
-// Qd clic sur icone de recherche (loupe) du moteur de recherche ou touche 'entrée' pour validation saisie
-app.get("/products/searchicon/:searchText", (req, res, next) => {
-    const searchText = req.params.searchText;
 
-    Product.aggregate([
-        {
-            '$search': {
-                'index': 'products', 
-                'text': {
-                    'query': searchText, 
-                    'path': [
-                        'intitule', 
-                        'marque'
-                    ]
-                }
-            }
-        }, 
-        {
-            '$project': {
-                'descriptif': 1,
-                'intitule': 1, 
-                'marque': 1, 
-                'nom_image': 1,
-                // Convertion des 'prix' et 'prix_unite' en 'double', sinon bug du coté front avec '.toFixed()'
-                'prix': {
-                    $convert: {
-                        input: '$prix',
-                        to: 'double'
-                    }
-                },
-                'prix_unite': {
-                    $convert: {
-                        input: '$prix_unite',
-                        to: 'double'
-                    }
-                },
-                'unite': 1,
-                'origine': 1,
-                'rayon': 1,
-                'nutriscore': 1,
-                'label_qualite': 1,
-                'promotion': 1,
-                'score': {
-                    '$meta': 'searchScore'
-                }
-            }
-        }, 
-        {
-            '$sort': {
-                'score': -1,
-                'intitule': 1
-            }
-        }
+// Appelé qd coté front, sélection rayon, ou saisie recherche produit (validat° chp de recherche ou click produit dans autocomplete) : 
+// Requetes pour obtenir les filtres correspondants aux produits affichés ainsi que nbr de produit(s) propre à chaque filtre
+const getFilters = (pipeline) => {
+    // Requete pour obtenir les differents scores Nuriscores des produits, et leurs nombres respectifs  
+    const result_nutriscore = requests.getNutriscoreFilter(pipeline)
+                                .then(scores => {
+                                    return { "nutriscore": scores }
+                                }); 
+
+
+    // Requete pour obtenir les differents labels qualité des produits, et leurs nombres respectifs  
+    const result_labelqualite = requests.getLabelsQualiteFilter(pipeline)
+                                    .then(labels => {
+                                        return { "label_qual": labels }
+                                    });
+
+
+    // Requete pour obtenir les differentes marques des produits, et leurs nombres respectifs
+    const result_marques = requests.getMarquesFilter(pipeline)
+                                .then(marques => {
+                                    return { "marques": marques }
+                                });
+
+
+    // Requete pour savoir si Produits Français existent parmi les produits, et leur nombre
+    const produitsFR_present = requests.getProduitsFRfilter(pipeline)
+                                .then(prdsFR => {
+                                    return {  "ProduitsFRpresence": prdsFR[0] }
+                                });
+
+
+    // Requete pour savoir s'il y a des Promotions pour les produits, et leur nombre
+    const promos_present = requests.getPromosFilter(pipeline)
+                            .then(promos => {
+                                return {  "PromosPresence": promos[0] }
+                            });
+
+     
+    // Requetes mongoDB qui sont des promesses exécutées ici en parallèle
+    return Promise.all([
+        result_nutriscore, 
+        result_labelqualite, 
+        result_marques,
+        produitsFR_present,
+        promos_present
     ])
-    .then(result => {
-        console.log("result", result); //TEST
-        res.json(result);
+    .then(values => {
+        let filters = {};
+        for(const result of values) {
+            //for(const [key, value] of Object.entries(result)) {
+            //    console.log("result =>", key, value); //TEST
+            //}
+            const [key, value] = Object.entries(result)[0];
+            filters[key] = value;
+        }
+        console.log("filters >>>>>", filters); //TEST
+        return filters;
     })
     .catch(error => {
-        error.customMsg = "Erreur lors de l'étape de récupération des produits après click sur icone de validation du moteur de recherche";
-        next(error);
+        throw error
     })
-});
+}
+
+
+
+
+
+
+
+
 
 
 
