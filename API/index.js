@@ -58,8 +58,8 @@ app.get("/departments", (req, res, next) => {
 
 
 // Pour récupérer les filtres utiles selon rayon sélectionné (marge gauche qd produits affichés)
-app.get("/filters/:department_id", async (req, res, next) => {
-    const id_department = req.params.department_id;
+app.get("/department/filters/:id_dpt", async (req, res, next) => {
+    const id_department = req.params.id_dpt;
     const ObjectId = mongoose.Types.ObjectId;
 
     const pipeline = { $match: { rayon: new ObjectId(id_department) } };
@@ -76,8 +76,8 @@ app.get("/filters/:department_id", async (req, res, next) => {
 
 
 
-// Construction filtres pour prpoduits trouvés à partir du moteur de recherche
-app.get("/filters/searchstring/:searchText", async (req, res, next) => {
+// Pour récupérer les filtres utiles pour produits trouvés à partir du moteur de recherche
+app.get("/searchstring/filters/:searchText", async (req, res, next) => {
     const pipeline = {
         '$search': {
             'index': 'products', 
@@ -173,17 +173,12 @@ app.get("/department/products", (req, res, next) => {
 
 
 // Qd validation sur moteur de recherche : Clic sur icone de recherche (loupe) du moteur de recherche ou touche 'entrée' pour validation saisie
-/* ANCIENNE VERSION */
-/* app.get("/searchEngine/products/:searchText", (req, res, next) => {
-    const searchText = req.params.searchText; */
-/* NOUVELLE VERSION */
 app.get("/searchEngine/products", (req, res, next) => {    
-    let queryMethodFind = {};
-    let queryMethodSort = "intitule";
- 
     const searchText = req.query.searchstring;
     delete req.query.searchstring; // On supprime cette propriété ds le but de factoriser code commun ci-dessous avec celui de l'API "/department/products"
 
+    let queryMethodFind = {};
+    let queryMethodSort = "score";
 
     // Boucle sur paramètres passés
     for(let p in req.query) {
@@ -201,14 +196,15 @@ app.get("/searchEngine/products", (req, res, next) => {
 
         } else if(typeof req.query[p] == 'string') { // ...Si c'est un String (nutriscore, labels qualité, marque, promotions, prds français)...
             
-            /* // Paramètre pour le classement de produits
+            // Paramètre pour le classement de produits
             if(p == "tri") {
-                const triParams = new URLSearchParams(req.query[p]); // Parsing de la string avec les paramètres propres au tri
+                /* const triParams = new URLSearchParams(req.query[p]); // Parsing de la string avec les paramètres propres au tri
                 const champBdd = triParams.get("champBdd");
                 const ordre = triParams.get("ordre");
-                queryMethodSort = { [champBdd]: ordre };
+                queryMethodSort = { [champBdd]: ordre }; */
+                
             // Paramètres pour le filtrage de produits
-            } else { */
+            } else {
                 if(p == "promos") {
                     queryMethodFind["promotion.pourcent"] = { $exists:true } // Chck présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
                 } else if(p == "prdsFr") {
@@ -218,7 +214,7 @@ app.get("/searchEngine/products", (req, res, next) => {
                 } else { // marque
                     queryMethodFind[p] = req.query[p]; 
                 }
-            /* } */
+            }
 
         }
     }
@@ -226,8 +222,6 @@ app.get("/searchEngine/products", (req, res, next) => {
     console.log("queryMethodFind", queryMethodFind); //TEST
 
     const pipeline = queryMethodFind !== {} ? { '$match': queryMethodFind } : "";
-/* FIN NOUVELLE VERSION */
-
 
 
     Product.aggregate([
@@ -291,7 +285,6 @@ app.get("/searchEngine/products", (req, res, next) => {
     ])
     .then(result => {
         res.json(result);
-
     })
     .catch(error => {
         error.customMsg = "Erreur lors de l'étape de récupération des produits après validation du moteur de recherche";
@@ -454,17 +447,16 @@ app.get("/autocomplete/products/:searchText", (req, res, next) => {
 app.get("/product/:id", (req, res, next) => {
     const id = req.params.id;
 
-    Product
-        .find({ _id: id })
-        .populate("rayon")
-        .then(result => {
-            res.json(result);
-        })
-        .catch(error => { 
-            error.customMsg = "Erreur lors de l'étape de récupération d'un produit à partir de la liste des suggestions du moteur de recherche";
-            next(error);
-        });
+    requests.getProductFromId(id)
+                .then(result => {
+                    res.json(result);
+                })
+                .catch(error => { 
+                    error.customMsg = "Erreur lors de l'étape de récupération d'un produit à partir de la liste des suggestions du moteur de recherche";
+                    next(error);
+                });
 });
+
 
 
 
