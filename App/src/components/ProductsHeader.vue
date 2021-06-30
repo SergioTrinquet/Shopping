@@ -1,15 +1,15 @@
 <template>
   <div class="container">
 
-    <div class="rayonProduits">
-      Produits du rayon <b class="secondary-txt">"{{ selected_department_name }}"</b>
-    </div>
-    
     <!-- <FiltersListTags v-if="!!filters_presence" /> --><FiltersListTags />
 
-    <div class="lgn2">
+    <div class="lgn">
       <div>{{ products.length }} résultat{{ products.length > 1 ? "s" : "" }}</div>
       <ProductsSelectOrder />
+    </div>
+
+    <div class="rayonProduits" v-if="!!selected_department_name">
+      Produits du rayon <b class="secondary-txt">"{{ selected_department_name }}"</b>
     </div>
     
   </div>
@@ -50,7 +50,7 @@ export default {
 .rayonProduits {
   font-size: 17px;
 }
-.lgn2 {
+.lgn {
   display: flex;
   justify-content: space-between;
   align-items: center;
