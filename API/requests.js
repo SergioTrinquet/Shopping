@@ -12,7 +12,7 @@ module.exports = {
     ,
     
     
-    // Récupération filtres utiles en fonction des produits affichés : Filtre Nutriscore
+    // Récupération filtres 'nutriscore' en fonction des produits affichés
     getNutriscoreFilter: (pipeline) => {
         return Product.aggregate([
                 pipeline,
@@ -42,7 +42,7 @@ module.exports = {
 
 
 
-    // Récupération filtres utiles en fonction des produits affichés : Filtre 'labels Qualité'
+    // Récupération filtres 'label qualité' en fonction des produits affichés
     getLabelsQualiteFilter: (pipeline) => {
         return Product.aggregate([
                 pipeline,
@@ -75,7 +75,7 @@ module.exports = {
 
 
 
-    // Récupération filtres utiles en fonction des produits affichés : Filtre Marques
+    // Récupération filtres 'marques' en fonction des produits affichés
     getMarquesFilter: (pipeline) => {
         return Product
                 .aggregate([
@@ -94,7 +94,7 @@ module.exports = {
 
 
 
-    // Récupération filtres utiles en fonction des produits affichés : Filtre 'Produits français'
+    // Récupération filtres 'Produits français' en fonction des produits affichés
     getProduitsFRfilter: (pipeline) => {
         return Product
                 .aggregate([
@@ -123,7 +123,7 @@ module.exports = {
 
 
 
-    // Récupération filtres utiles en fonction des produits affichés : Filtre 'Produits français'
+    // Récupération filtres 'Promotions' en fonction des produits affichés
     getPromosFilter: (pipeline) => {
         return Product
                 .aggregate([
@@ -150,7 +150,14 @@ module.exports = {
                         } 
                     }
                 ])
-    }
+    },
 
+
+    // Récupération données produit à partir de son id : Qd clic sur un article dans autocomplete du moteur de recherche
+    getProductFromId: (id) => {
+        return Product
+                    .find({ _id: id })
+                    .populate("rayon")
+    }
 
 }
