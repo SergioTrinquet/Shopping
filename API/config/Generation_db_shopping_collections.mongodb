@@ -410,31 +410,64 @@ db.products.find().forEach(function(doc) {
 
 
 // TEST
-/* use('db_shopping');
+use('db_shopping');
     db.products.aggregate([
-        {
-            '$search': {
-                'index': 'products', 
-                'text': {
-                    'query': 'jus', 
-                    'path': [
-                        'intitule', 
-                        'marque'
-                    ]
-                }
+        /* { 
+            $match: { 
+                // _id: ObjectId("60cb5b3b01d453363cc18ad9")
             }
-        }, 
-{
-    '$match': { 
-            'promotion.pourcent': { '$exists': true },
-            'nutriscore._id': 'n1' 
-    }
-},
-
+        }, */
+        {   // Pipeline '$lookup' pour faire un 'join' sur la collection 'departments' et récupérer l'intitulé des rayons
+            $lookup: {
+                from: 'departments',
+                localField: 'rayon',
+                foreignField: '_id',
+                as: 'rayon'
+            }
+        },
         {
-            '$project': {
+            $project: {
+                'prix_promo': {
+                    $cond: { 
+                        if: { $eq: [ "$promotion.pourcent", true ] }, 
+                        // Ici calcul du pourcentage de réduction pour déterminer prix après promotion => (prix_unite * (100 - promotion.info)) / 100
+                        then: { 
+                            $divide: 
+                            [
+                                {
+                                    $multiply: 
+                                    [ 
+                                        {
+                                            $convert: {
+                                                input: '$prix_unite',
+                                                to: 'double'
+                                            }
+                                        }
+                                        ,
+                                        {
+                                            $subtract: [
+                                                100,
+                                                {
+                                                    $convert: {
+                                                        input: '$promotion.info',
+                                                        to: 'double'
+                                                    }
+                                                }
+                                            ]
+
+                                        }
+                                    ]
+                                }
+                                , 
+                                100
+                            ] 
+                        },
+                        else: "/" 
+                    }
+                },
+
+                'intitule': 1,
                 'descriptif': 1,
-                'intitule': 1, 
                 'marque': 1, 
                 'nom_image': 1,
                 // Convertion des 'prix' et 'prix_unite' en 'double', sinon bug du coté front avec '.toFixed()'
@@ -452,13 +485,13 @@ db.products.find().forEach(function(doc) {
                 },
                 'unite': 1,
                 'origine': 1,
-                'rayon': 1,
+                'rayon': { $arrayElemAt: [ "$rayon", 0 ] }, // Pour 'aplatir' (flatten) l'array généré par le pipeline '$lookup' juste avant celui-ci
                 'nutriscore': 1,
                 'label_qualite': 1,
                 'promotion': 1,
-                'score': {
+                /* 'score': {
                     '$meta': 'searchScore'
-                }
+                } */
             }
         }, 
         {
@@ -467,8 +500,11 @@ db.products.find().forEach(function(doc) {
                 'intitule': 1
             }
         }
-    ]) */  
+    ])  
 // FIN TEST
+
+
+
 
 
 //////////////////// Pour collection 'labelqualites' ///////////////////////
