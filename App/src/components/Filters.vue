@@ -75,8 +75,8 @@ export default {
       nutriscore: [],
       label_qualite: [],
       filters_type: [
-      { typeChbx: "single", name: "promos"/* , libelle: "Promotions" */ },
-      { typeChbx: "single", name: "prdsFr"/* , libelle: "Produits français" */ },
+      { typeChbx: "single", name: "promos" },
+      { typeChbx: "single", name: "prdsFr" },
       { typeChbx: "multiple", name: "marque" },
       { typeChbx: "multiple", name: "label_qualite" },
       { typeChbx: "multiple", name: "nutriscore" },
@@ -111,17 +111,13 @@ export default {
     ////
 
 
-
     queryStringParameterstoFetchProducts() {
         return this.$store.getters.getQueryStringParametersToFetchProducts;
     },
 
-
     filter_to_remove() { 
       return this.$store.state.filter_to_remove; 
-    },
-    /* filters_type() { return this.$store.state.filters_type } */
-
+    }
 
   },
 
@@ -142,6 +138,26 @@ export default {
         chbxs.forEach(c => c.disabled = false );
       }
     },
+
+
+    // A chaque fois que des nouveaux filtres sont chargés (suite à validat° chp de recherche/click prd sur autocomplete/chgmt de rayon), 
+    // on réinitialise la sélection des filtres
+    filters() {
+      this.filters_type.forEach(f => {
+        if(f.typeChbx == 'single' && this[f.name]) {
+          this[f.name] = false;
+        }
+        if(f.typeChbx == 'multiple' && this[f.name].length > 0) {
+          this[f.name] = [];
+        }
+      });
+      // Déclenchement manuel de l'evenement on change pour executer methode 'changeFormValues'
+      this.$nextTick(()=>{
+        const e = new Event("change");
+        this.$refs.filtersForm.dispatchEvent(e);
+      })
+    },
+
 
     // Pour afficher nb de marques qd chgmt de rayon
     filterMarquesCount(val) {
@@ -201,32 +217,25 @@ export default {
         const searchParams = new URLSearchParams(data);
 
         // Enregistrement partie de la chaine de requête propre aux filtres
-        // NOTE: Fonctionne aussi en passant 'searParams' sans le convertir en string via (.toString()) mais on évite car ds ce cas valeur pas lisible avec 'Vue.js devtools'
+        // NOTE: Fonctionne aussi en passant 'searchParams' sans le convertir en string via (.toString()) mais on évite car ds ce cas valeur pas lisible avec 'Vue.js devtools'
         this.$store.commit('SET_FILTERS_QUERY_STRING_PARAMETERS', searchParams.toString());
-
-
-        // CODE INUTILE ACTUELLEMENT : POUR TRANSFORMER FormData EN OBJET
-        // Création d'un objet JS listant les sélections de filtres
-        /* let obj = {};
-        for(let [key, value] of data) {
-          if(obj[key] !== undefined) {
-            if(!Array.isArray(obj[key])) {
-              obj[key] = [obj[key]];
-            }
-            obj[key].push(value);
-          } else {
-            obj[key] = value;
-          }
-        } */
-        ///////////////////////
-
+        
         console.log("sélection (GET) => ", this.queryStringParameterstoFetchProducts); //TEST
 
+        // Aiguillage selon type de recherche entre produits à aller chercher via action 'fetchProductsDepartment' qd recherche par rayon,
+        // et produits via action 'fetchProductsValidationSearchEngine' qd recherche via moteur de recherche
+        let action = '';
+        const queryString = new URLSearchParams(this.queryStringParameterstoFetchProducts);
+        if(queryString.has('rayon')) {
+          action = 'fetchProductsDepartment';
+        } else if(queryString.has('searchstring')) {
+          action = 'fetchProductsValidationSearchEngine';
+        }
+
         // Appel API pour récup. des produits à afficher selon les filtres sélectionnés
-        this.$store.dispatch('fetchProductsDepartment', this.queryStringParameterstoFetchProducts);       
+        this.$store.dispatch(action, this.queryStringParameterstoFetchProducts);
       }
     }
-
 
   },
 
