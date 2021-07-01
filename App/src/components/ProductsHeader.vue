@@ -1,16 +1,16 @@
 <template>
   <div class="container">
 
-    <!-- <FiltersListTags v-if="!!filters_presence" /> --><FiltersListTags />
-
     <div class="lgn">
-      <div>{{ products.length }} résultat{{ products.length > 1 ? "s" : "" }}</div>
-      <ProductsSelectOrder />
+      <div>{{ Nb_products }} résultat{{ Nb_products > 1 ? "s" : "" }}</div>
+      <ProductsSelectOrder v-if="Nb_products > 1" />
     </div>
 
     <div class="rayonProduits" v-if="!!selected_department_name">
       Produits du rayon <b class="secondary-txt">"{{ selected_department_name }}"</b>
     </div>
+
+    <!-- <FiltersListTags v-if="!!filters_presence" /> --><FiltersListTags />
     
   </div>
 </template>
@@ -31,6 +31,9 @@ export default {
     computed: {
       products() {
         return this.$store.state.products;
+      },
+      Nb_products() {
+        return this.products.length;
       },
       selected_department_name() {
         return this.$store.state.selected_department.intitule;
