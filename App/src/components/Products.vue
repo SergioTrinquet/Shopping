@@ -30,13 +30,6 @@ export default {
     basket() {
       return this.$store.state.basket;
     }
-  },
-
-  watch: {
-    // Pour fermer la marge listant rayons juste après clic sur un de ces rayons
-    products() {
-      this.$store.commit("SET_DISPLAY_MARGIN_DEPARTMENTS", false);
-    }
   }
 
 }
