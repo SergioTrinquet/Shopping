@@ -32,11 +32,24 @@ export default {
         },
         departments() {
             return this.$store.state.departments;
+        },
+        products() {
+            return this.$store.state.products;
+        }
+    },
+
+    watch: {
+        // Pour fermer la marge listant rayons juste après clic sur un de ces rayons
+        products() {
+        this.$store.commit("SET_DISPLAY_MARGIN_DEPARTMENTS", false);
         }
     },
 
     methods: {
         displayDataDepartment(dept) {
+            // TEST au 25/06 : On indique par quel moyen on recherche des produits (par rayon, ou par recherche ds le moteur)
+            this.$store.commit('SET_TYPE_OF_SEARCH_PRODUCTS', { type: 'rayon' , value: dept._id });
+
             // Affectation 'selected_department' pour enregistrer le rayon sélectionné
             this.$store.commit('SET_SELECTED_DEPARTMENT', { id: dept._id, intitule: dept.intitule });
             // Creat° partie chaine de requete
@@ -45,7 +58,7 @@ export default {
             this.$store.dispatch('fetchProductsDepartment', searchParam);
 
             // Récup. filtres présents ds produits du rayon sélectionné
-            this.$store.dispatch('setFilters', dept._id);
+            this.$store.dispatch('setFiltersFromDepartment', dept._id);
         },
 
         // Pour fermer la marge listant rayons qd click en dehors de celle-ci
