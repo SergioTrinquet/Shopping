@@ -1,12 +1,13 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3081;
+const port = process.env.PORT || 3080;
 
 const erreur = require('./app_modules/erreur');
 
 const config = require("./config/identifiants_mongoDB.js");
 const mongoose = require('mongoose');
 const Product = require('./models/product');
+const ObjectId = mongoose.Types.ObjectId;
 
 const requests = require('./requests');
 
@@ -59,13 +60,15 @@ app.get("/departments", (req, res, next) => {
 
 // Pour récupérer les filtres utiles selon rayon sélectionné (marge gauche qd produits affichés)
 app.get("/department/filters/:id_dpt", async (req, res, next) => {
-    const id_department = req.params.id_dpt;
-    const ObjectId = mongoose.Types.ObjectId;
-
-    const pipeline = { $match: { rayon: new ObjectId(id_department) } };
-
     try {
-        const filters = await getFilters(pipeline);
+        const id_department = req.params.id_dpt;
+        //const ObjectId = mongoose.Types.ObjectId;
+
+        const stage = { 
+            $match: { rayon: new ObjectId(id_department) } 
+        };
+
+        const filters = await getFilters(stage);
         res.json(filters);
     } catch (error) {
         error.customMsg = "Etape de récupération des filtres par rayon";
@@ -78,21 +81,21 @@ app.get("/department/filters/:id_dpt", async (req, res, next) => {
 
 // Pour récupérer les filtres utiles pour produits trouvés à partir du moteur de recherche
 app.get("/searchstring/filters/:searchText", async (req, res, next) => {
-    const pipeline = {
-        '$search': {
-            'index': 'products', 
-            'text': {
-                'query': req.params.searchText, 
-                'path': [
-                    'intitule', 
-                    'marque'
-                ]
-            }
-        }
-    };
-
     try {
-        const filters = await getFilters(pipeline);
+        const stage = {
+            $search: {
+                'index': 'products', 
+                'text': {
+                    'query': req.params.searchText, 
+                    'path': [
+                        'intitule', 
+                        'marque'
+                    ]
+                }
+            }
+        };
+
+        const filters = await getFilters(stage);
         res.json(filters);
     } catch (error) {
         error.customMsg = "Etape de récupération des filtres sur produits affichés après recherche";
@@ -106,190 +109,67 @@ app.get("/searchstring/filters/:searchText", async (req, res, next) => {
 
 // Pour récupérer les produits d'un rayon
 app.get("/department/products", (req, res, next) => {
-    let queryMethodFind = {};
-    let queryMethodSort = "intitule";
-    console.log("req.query", req.query); //TEST
+    let sortStageDefaultArgument = { intitule: 1 };
+    const mongodbStageArguments = buildMongodbStageArguments(req.query, sortStageDefaultArgument);
 
-    // Boucle sur paramètres passés
-    for(let p in req.query) {
-        //console.log("=>", p, req.query[p],"isArray : " + Array.isArray(req.query[p]) , "type valeur: " + typeof(req.query[p])); // TEST
+    const stages = { 
+        "sort": mongodbStageArguments.sortStage,
+        "match": mongodbStageArguments.matchStage
+    } 
 
-        if(Array.isArray(req.query[p])) { // Si c'est un Array...
-            
-            let tabMongoDBclause = [];
-            for(const x of req.query[p]) {
-                // Si 'nutriscore' ou 'label_qualite', ajout '_id' pour chercher ds sous-document le path '_id'
-                p = (p == "nutriscore" || p == "label_qualite" ? p + '._id' : p);
-                tabMongoDBclause.push({ [p]: x }); // entre [] pour que propriété de l'obj. soit interprété, sinon lit 'p'
-            }
-            queryMethodFind["$or"] = tabMongoDBclause;
-
-        } else if(typeof req.query[p] == 'string') { // ...Si c'est un String (nutriscore, labels qualité, marque, promotions, prds français)...
-            
-            // Paramètre pour le classement de produits
-            if(p == "tri") {
-                const triParams = new URLSearchParams(req.query[p]); // Parsing de la string avec les paramètres propres au tri
-                const champBdd = triParams.get("champBdd");
-                const ordre = triParams.get("ordre");
-                queryMethodSort = { [champBdd]: ordre };
-            // Paramètres pour le filtrage de produits
-            } else {
-                if(p == "promos") {
-                    queryMethodFind["promotion.pourcent"] = { $exists:true } // Chck présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
-                } else if(p == "prdsFr") {
-                    queryMethodFind["origine"] = "FRANCE";
-                } else if(p == "nutriscore" || p == "label_qualite") { 
-                    queryMethodFind[p + "._id"] = req.query[p];      
-                } else { // rayon et marque
-                    queryMethodFind[p] = req.query[p]; 
-                }
-            }
-
-        }
-
-    }
-
-    //console.log("queryMethodFind", queryMethodFind); //TEST
-
-
-    Product
-        //.find({rayon: req.query.rayon}) // FONCTIONNE !!!
-        //.find({"rayon": ObjectId(req.params.rayon)})  // NE FONCTIONNE PAS !!!
-        //.find({ 'rayon': '60907d7d42b2205d269d7df8', 'nutriscore._id': 'n1' }) // FONCTIONNE !!!
-        //.find({ rayon: '60907d7d42b2205d269d7df8',  nutriscore: {_id: 'n1'} }) // NE FONCTIONNE PAS !!!
-        .find(queryMethodFind)
-        .sort(queryMethodSort)
-        .populate("rayon")
+    // On passe en argument l'objet 'stages' utiles pour la construction de la requete
+    requests.getProducts(stages)
         .then(result => {
             res.json(result);
         })
         .catch(error => { 
             error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
             next(error);
-        });
-
+        });  
 });
 
 
 
 // Qd validation sur moteur de recherche : Clic sur icone de recherche (loupe) du moteur de recherche ou touche 'entrée' pour validation saisie
-app.get("/searchEngine/products", (req, res, next) => {    
+app.get("/searchstring/products", (req, res, next) => {    
     const searchText = req.query.searchstring;
-    delete req.query.searchstring; // On supprime cette propriété ds le but de factoriser code commun ci-dessous avec celui de l'API "/department/products"
+    delete req.query.searchstring; // Suppression param 'searchstring' de req.query pour 
 
-    let queryMethodFind = {};
-    let queryMethodSort = "score";
+    let sortStageDefaultArgument = { score: -1 };
+    const mongodbStageArguments = buildMongodbStageArguments(req.query, sortStageDefaultArgument);
 
-    // Boucle sur paramètres passés
-    for(let p in req.query) {
-        //console.log("=>", p, req.query[p],"isArray : " + Array.isArray(req.query[p]) , "type valeur: " + typeof(req.query[p])); // TEST
-
-        if(Array.isArray(req.query[p])) { // Si c'est un Array...
-                    
-            let tabMongoDBclause = [];
-            for(const x of req.query[p]) {
-                // Si 'nutriscore' ou 'label_qualite', ajout '_id' pour chercher ds sous-document le path '_id'
-                p = (p == "nutriscore" || p == "label_qualite" ? p + '._id' : p);
-                tabMongoDBclause.push({ [p]: x }); // entre [] pour que propriété de l'obj. soit interprété, sinon lit 'p'
-            }
-            queryMethodFind["$or"] = tabMongoDBclause;
-
-        } else if(typeof req.query[p] == 'string') { // ...Si c'est un String (nutriscore, labels qualité, marque, promotions, prds français)...
-            
-            // Paramètre pour le classement de produits
-            if(p == "tri") {
-                /* const triParams = new URLSearchParams(req.query[p]); // Parsing de la string avec les paramètres propres au tri
-                const champBdd = triParams.get("champBdd");
-                const ordre = triParams.get("ordre");
-                queryMethodSort = { [champBdd]: ordre }; */
-                
-            // Paramètres pour le filtrage de produits
-            } else {
-                if(p == "promos") {
-                    queryMethodFind["promotion.pourcent"] = { $exists:true } // Chck présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
-                } else if(p == "prdsFr") {
-                    queryMethodFind["origine"] = "FRANCE";
-                } else if(p == "nutriscore" || p == "label_qualite") { 
-                    queryMethodFind[p + "._id"] = req.query[p];      
-                } else { // marque
-                    queryMethodFind[p] = req.query[p]; 
-                }
-            }
-
-        }
-    }
-
-    console.log("queryMethodFind", queryMethodFind); //TEST
-
-    const pipeline = queryMethodFind !== {} ? { '$match': queryMethodFind } : "";
-
-
-    Product.aggregate([
-        {
-            '$search': {
-                'index': 'products', 
-                'text': {
-                    'query': searchText, 
-                    'path': [
-                        'intitule', 
-                        'marque'
-                    ]
-                }
-            }
-        }, 
-        pipeline,
-        {   // Pipeline '$lookup' pour faire un 'join' sur la collection 'departments' et récupérer l'intitulé des rayons
-            $lookup: {
-                from: 'departments',
-                localField: 'rayon',
-                foreignField: '_id',
-                as: 'rayon'
-            }
+    let stages = {
+        'search': { 
+            'index': 'products', 
+            'text': {
+                'query': searchText, 
+                'path': [
+                    'intitule', 
+                    'marque'
+                ]
+            } 
         },
-        {
-            '$project': {
-                'descriptif': 1,
-                'intitule': 1, 
-                'marque': 1, 
-                'nom_image': 1,
-                // Convertion des 'prix' et 'prix_unite' en 'double', sinon bug du coté front avec '.toFixed()'
-                'prix': {
-                    $convert: {
-                        input: '$prix',
-                        to: 'double'
-                    }
-                },
-                'prix_unite': {
-                    $convert: {
-                        input: '$prix_unite',
-                        to: 'double'
-                    }
-                },
-                'unite': 1,
-                'origine': 1,
-                'rayon': { $arrayElemAt: [ "$rayon", 0 ] }, // Pour 'aplatir' (flatten) l'array généré par le pipeline '$lookup' juste avant celui-ci
-                'nutriscore': 1,
-                'label_qualite': 1,
-                'promotion': 1,
-                'score': {
-                    '$meta': 'searchScore'
-                }
-            }
-        }, 
-        {
-            '$sort': {
-                'score': -1,
-                'intitule': 1
-            }
-        }
-    ])
-    .then(result => {
-        res.json(result);
-    })
-    .catch(error => {
-        error.customMsg = "Erreur lors de l'étape de récupération des produits après validation du moteur de recherche";
-        next(error);
-    })
+        'addFields': {
+            'score': {
+                '$meta': 'searchScore'
+            } 
+        },
+        'sort': mongodbStageArguments.sortStage
+    }; 
+
+    if(mongodbStageArguments.matchStage !== {}) {
+        stages.match = mongodbStageArguments.matchStage;
+    } 
+
+    // On passe en argument l'objet 'stages' utiles pour la construction de la requete
+    requests.getProducts(stages)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            error.customMsg = "Erreur lors de l'étape de récupération des produits après validation du moteur de recherche";
+            next(error);
+        });
 });
 
 
@@ -444,17 +324,20 @@ app.get("/autocomplete/products/:searchText", (req, res, next) => {
 
 
 // Qd clic sur un article dans autocomplete du moteur de recherche
-app.get("/product/:id", (req, res, next) => {
+app.get("/product/:id", (req, res, next) => {       
     const id = req.params.id;
+    //const ObjectId = mongoose.Types.ObjectId;
+    const stage = { 'match':{ _id: new ObjectId(id) } };
 
-    requests.getProductFromId(id)
-                .then(result => {
-                    res.json(result);
-                })
-                .catch(error => { 
-                    error.customMsg = "Erreur lors de l'étape de récupération d'un produit à partir de la liste des suggestions du moteur de recherche";
-                    next(error);
-                });
+    // On passe en argument l'objet 'stage' utile pour la construction de la requete
+    requests.getProducts(stage)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => { 
+            error.customMsg = "Erreur lors de l'étape de récupération d'un produit à partir de la liste des suggestions du moteur de recherche";
+            next(error);
+        });
 });
 
 
@@ -463,37 +346,37 @@ app.get("/product/:id", (req, res, next) => {
 
 // Appelé qd coté front, sélection rayon, ou saisie recherche produit (validat° chp de recherche ou click produit dans autocomplete) : 
 // Requetes pour obtenir les filtres correspondants aux produits affichés ainsi que nbr de produit(s) propre à chaque filtre
-const getFilters = (pipeline) => {
+const getFilters = (stage) => {
     // Requete pour obtenir les differents scores Nuriscores des produits, et leurs nombres respectifs  
-    const result_nutriscore = requests.getNutriscoreFilter(pipeline)
+    const result_nutriscore = requests.getNutriscoreFilter(stage)
                                 .then(scores => {
                                     return { "nutriscore": scores }
                                 }); 
 
 
     // Requete pour obtenir les differents labels qualité des produits, et leurs nombres respectifs  
-    const result_labelqualite = requests.getLabelsQualiteFilter(pipeline)
+    const result_labelqualite = requests.getLabelsQualiteFilter(stage)
                                     .then(labels => {
                                         return { "label_qual": labels }
                                     });
 
 
     // Requete pour obtenir les differentes marques des produits, et leurs nombres respectifs
-    const result_marques = requests.getMarquesFilter(pipeline)
+    const result_marques = requests.getMarquesFilter(stage)
                                 .then(marques => {
                                     return { "marques": marques }
                                 });
 
 
     // Requete pour savoir si Produits Français existent parmi les produits, et leur nombre
-    const produitsFR_present = requests.getProduitsFRfilter(pipeline)
+    const produitsFR_present = requests.getProduitsFRfilter(stage)
                                 .then(prdsFR => {
                                     return {  "ProduitsFRpresence": prdsFR[0] }
                                 });
 
 
     // Requete pour savoir s'il y a des Promotions pour les produits, et leur nombre
-    const promos_present = requests.getPromosFilter(pipeline)
+    const promos_present = requests.getPromosFilter(stage)
                             .then(promos => {
                                 return {  "PromosPresence": promos[0] }
                             });
@@ -516,7 +399,7 @@ const getFilters = (pipeline) => {
             const [key, value] = Object.entries(result)[0];
             filters[key] = value;
         }
-        console.log("filters >>>>>", filters); //TEST
+        //console.log("filters >>>>>", filters); //TEST
         return filters;
     })
     .catch(error => {
@@ -526,7 +409,60 @@ const getFilters = (pipeline) => {
 
 
 
+// Construction des stages de pipeline pour requete MongoDB, à partir des paramètres passés en GET
+const buildMongodbStageArguments = (query, sortStageArgument) => {
+    let matchStageArguments = {};
 
+    // Boucle sur paramètres passés
+    for(let p in query) {
+        //console.log("=>", p, query[p],"isArray : " + Array.isArray(query[p]) , "type valeur: " + typeof(query[p])); // TEST
+
+        if(Array.isArray(query[p])) { // Si c'est un Array (plusieurs nutriscore ou labels qualité ou marques cochées)...
+                    
+            let tabMongoDBclause = [];
+            for(const x of query[p]) {
+                // Si 'nutriscore' ou 'label_qualite', ajout '_id' pour chercher ds sous-document le path '_id'
+                p = (p == "nutriscore" || p == "label_qualite" ? p + '._id' : p);
+                tabMongoDBclause.push({ [p]: x }); // Entre [] pour que propriété de l'obj. soit interprétée, sinon lit 'p'
+            }
+            matchStageArguments["$or"] = tabMongoDBclause;
+
+        } else if(typeof query[p] == 'string') { // ...Sinon si c'est un String (un seul nutriscore coché, un seul label qualité coché, une seule marque cochée, promotions, prds français)...
+            
+            // Paramètre pour le classement de produits
+            if(p == "tri") {
+                const triParams = new URLSearchParams(query[p]); // Parsing de la string avec les paramètres propres au tri
+                const champBdd = triParams.get("champBdd");
+                const ordre = triParams.get("ordre");
+                sortStageArgument = { [champBdd]: parseInt(ordre) };
+
+            // Paramètres pour le filtrage de produits
+            } else {
+                if(p == "promos") {
+                    matchStageArguments["promotion.pourcent"] = { $exists:true } // Check présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
+                } else if(p == "prdsFr") {
+                    matchStageArguments["origine"] = "FRANCE";
+                } else if(p == "nutriscore" || p == "label_qualite") { 
+                    matchStageArguments[p + "._id"] = query[p]; 
+                } else if(p == "rayon") { // Cas juste qd recherche à partir de la sélection d'un rayon
+                    //const ObjectId = mongoose.Types.ObjectId;
+                    matchStageArguments[p] = new ObjectId(query[p]);
+                } else { // marque
+                    matchStageArguments[p] = query[p]; 
+                }
+            }
+
+        }
+    }
+
+    console.log("matchStageArguments", matchStageArguments); //TEST
+    console.log("sortStageArgument", sortStageArgument); //TEST
+
+    return { 
+        "matchStage": matchStageArguments, 
+        "sortStage": sortStageArgument 
+    }
+}
 
 
 
