@@ -62,8 +62,6 @@ app.get("/departments", (req, res, next) => {
 app.get("/department/filters/:id_dpt", async (req, res, next) => {
     try {
         const id_department = req.params.id_dpt;
-        //const ObjectId = mongoose.Types.ObjectId;
-
         const stage = { 
             $match: { rayon: new ObjectId(id_department) } 
         };
@@ -108,68 +106,69 @@ app.get("/searchstring/filters/:searchText", async (req, res, next) => {
 
 
 // Pour récupérer les produits d'un rayon
-app.get("/department/products", (req, res, next) => {
-    let sortStageDefaultArgument = { intitule: 1 };
-    const mongodbStageArguments = buildMongodbStageArguments(req.query, sortStageDefaultArgument);
+app.get("/department/products", async (req, res, next) => {
+    try {
 
-    const stages = { 
-        "sort": mongodbStageArguments.sortStage,
-        "match": mongodbStageArguments.matchStage
-    } 
+        let sortStageDefaultArgument = { intitule: 1 };
+        const mongodbStageArguments = buildMongodbStageArguments(req.query, sortStageDefaultArgument);
 
-    // On passe en argument l'objet 'stages' utiles pour la construction de la requete
-    requests.getProducts(stages)
-        .then(result => {
-            res.json(result);
-        })
-        .catch(error => { 
-            error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
-            next(error);
-        });  
+        const stages = { 
+            "sort": mongodbStageArguments.sortStage,
+            "match": mongodbStageArguments.matchStage
+        } 
+
+        // On passe en argument l'objet 'stages' utiles pour la construction de la requete
+        const result = await requests.getProducts(stages);
+        res.json(result);
+
+    } catch (error) {
+        error.customMsg = "Erreur lors de l'étape de récupération des produits d'un rayon";
+        next(error);
+    }
 });
 
 
 
 // Qd validation sur moteur de recherche : Clic sur icone de recherche (loupe) du moteur de recherche ou touche 'entrée' pour validation saisie
-app.get("/searchstring/products", (req, res, next) => {    
-    const searchText = req.query.searchstring;
-    delete req.query.searchstring; // Suppression param 'searchstring' de req.query pour 
+app.get("/searchstring/products", async (req, res, next) => {    
+    try {
+        const searchText = req.query.searchstring;
+        delete req.query.searchstring; // Suppression param 'searchstring' de req.query pour 
 
-    let sortStageDefaultArgument = { score: -1 };
-    const mongodbStageArguments = buildMongodbStageArguments(req.query, sortStageDefaultArgument);
+        let sortStageDefaultArgument = { score: -1 };
+        const mongodbStageArguments = buildMongodbStageArguments(req.query, sortStageDefaultArgument);
 
-    let stages = {
-        'search': { 
-            'index': 'products', 
-            'text': {
-                'query': searchText, 
-                'path': [
-                    'intitule', 
-                    'marque'
-                ]
-            } 
-        },
-        'addFields': {
-            'score': {
-                '$meta': 'searchScore'
-            } 
-        },
-        'sort': mongodbStageArguments.sortStage
-    }; 
+        let stages = {
+            'search': { 
+                'index': 'products', 
+                'text': {
+                    'query': searchText, 
+                    'path': [
+                        'intitule', 
+                        'marque'
+                    ]
+                } 
+            },
+            'addFields': {
+                'score': {
+                    '$meta': 'searchScore'
+                } 
+            },
+            'sort': mongodbStageArguments.sortStage
+        }; 
 
-    if(mongodbStageArguments.matchStage !== {}) {
-        stages.match = mongodbStageArguments.matchStage;
-    } 
+        if(mongodbStageArguments.matchStage !== {}) {
+            stages.match = mongodbStageArguments.matchStage;
+        } 
 
-    // On passe en argument l'objet 'stages' utiles pour la construction de la requete
-    requests.getProducts(stages)
-        .then(result => {
-            res.json(result);
-        })
-        .catch(error => {
-            error.customMsg = "Erreur lors de l'étape de récupération des produits après validation du moteur de recherche";
-            next(error);
-        });
+        // On passe en argument l'objet 'stages' utiles pour la construction de la requete
+        const result = await requests.getProducts(stages)
+        res.json(result);
+
+    } catch (error) {
+        error.customMsg = "Erreur lors de l'étape de récupération des produits après validation du moteur de recherche";
+        next(error);
+    }
 });
 
 
@@ -326,7 +325,6 @@ app.get("/autocomplete/products/:searchText", (req, res, next) => {
 // Qd clic sur un article dans autocomplete du moteur de recherche
 app.get("/product/:id", (req, res, next) => {       
     const id = req.params.id;
-    //const ObjectId = mongoose.Types.ObjectId;
     const stage = { 'match':{ _id: new ObjectId(id) } };
 
     // On passe en argument l'objet 'stage' utile pour la construction de la requete
@@ -445,7 +443,6 @@ const buildMongodbStageArguments = (query, sortStageArgument) => {
                 } else if(p == "nutriscore" || p == "label_qualite") { 
                     matchStageArguments[p + "._id"] = query[p]; 
                 } else if(p == "rayon") { // Cas juste qd recherche à partir de la sélection d'un rayon
-                    //const ObjectId = mongoose.Types.ObjectId;
                     matchStageArguments[p] = new ObjectId(query[p]);
                 } else { // marque
                     matchStageArguments[p] = query[p]; 
