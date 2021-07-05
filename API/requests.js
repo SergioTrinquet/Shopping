@@ -245,6 +245,11 @@ module.exports = {
                                     // else: "$$REMOVE" // retire le champ 'prix_final'
                                     else: '$prix'
                                 }
+                            }, 
+                            
+                            // Pour que le tri par intitulé ne osit pas faussé à cause de certains intiulés avec des maj. et pas d'autres
+                            'intitule_insensitive': { 
+                                '$toLower': '$intitule' 
                             }
                         }
                     }
@@ -263,9 +268,9 @@ module.exports = {
         if("addFields" in stages) {
             aggregationPipelineStages.push({ $addFields: stages.addFields });
         }
-        if("sort" in stages) {
+        //if("sort" in stages) {
             aggregationPipelineStages.push({ $sort: stages.sort });
-        }
+        //}
 
         //console.log(aggregationPipelineStages); //TEST
 
