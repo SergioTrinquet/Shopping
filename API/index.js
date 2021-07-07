@@ -177,147 +177,14 @@ app.get("/searchstring/products", async (req, res, next) => {
 app.get("/autocomplete/products/:searchText", (req, res, next) => {
     const searchText = req.params.searchText;
 
-    // Recherche sur 2 champ mais sans autocomplete
-    // Fait avec un index dynamique (index par défaut)
-    /* Product.aggregate([
-        {
-          '$search': {
-            'index': 'index_products', 
-            'text': {
-              'query': searchText, 
-              'path': [
-                'intitule', 'marque'
-              ]
-            }, 
-            'highlight': {
-              'path': [
-                'intitule', 'marque'
-              ]
-            }
-          }
-        }, 
-        {
-          '$project': {
-            'intitule': 1, 
-            'marque': 1, 
-            'score': {
-              '$meta': 'searchScore'
-            }, 
-            'highlight': {
-              '$meta': 'searchHighlights'
-            }
-          }
-        }, 
-        { '$limit': 20 }
-    ])
-    .then(result => {res.json(result)})
-    .catch(error => {
-        error.customMsg = "Erreur lors de l'étape de récupération des produits à partir du champ de recherche d'un produit";
-        next(error);
-    }) */
-
-
-    // Autocomplete avec recherche sur un seul champ
-    /*  
-    Product.aggregate([
-    {
-        '$search': {
-        'index': 'products_intitule_autocomplete', 
-        'autocomplete': {
-            'query': searchText, 
-            'path': 'intitule',
-            "fuzzy": {
-                "maxEdits": 2,
-                "prefixLength": 1
-            }
-        }
-        }
-    }, 
-    {
-        '$project': {
-        'intitule': 1, 
-        'marque': 1,
-        'score': {
-            '$meta': 'searchScore'
-        }
-        }
-    }, 
-    { $limit': 20 }
-    ]).then(result => {res.json(result)})
-    .catch(error => {
-        error.customMsg = "Erreur lors de l'étape de récupération des produits à partir du champ de recherche d'un produit";
-        next(error);
-    }) 
-    */
-
-    // Autocomplete sur 2 champs (intitule et marque), donc utilisation de 'compound' avec créat° dans mongodb ATLAS d'un index sur les 2 champs pré-cités
-    // 'should' dans le compound permet de retourner des résultats  même si une seule clause sur les 2 est valide (ici les 2 'autocomplete')
-    // 'fuzzy' pour permettre de trouver des résultats malgr une marge d'erreur dans la saisie: Affiche notamment produits ayant 1 caractère différent par rapport à la recherche validée (paramétré avec prop. 'maxEdits')
-    // Highlight possible que parce que dans la construction de l'index, j'ai ajouté pour le champ 'intitule' le data Type 'String' au data Type 'Autocomplete'
-    Product.aggregate([
-        {
-          '$search': {
-            'index': 'products_autocomplete',
-            'compound': {
-                'should': [
-                    {
-                        'autocomplete': {
-                            'query': searchText, 
-                            'path': 'intitule',
-                            "fuzzy": {
-                                "maxEdits": 1,
-                                "prefixLength": 1
-                            }
-                        }
-                    },
-                    {
-                        'autocomplete': {
-                            'query': searchText, 
-                            'path': 'marque',
-                            "fuzzy": {
-                                "maxEdits": 1,
-                                "prefixLength": 1
-                            }
-                        }
-                    }
-                ]
-            },
-            'highlight': {
-                'path': ['intitule', 'marque']
-            }
-          }
-        }, 
-        {
-          '$project': {
-            'intitule': 1, 
-            'marque': 1,
-            'score': {
-                '$meta': 'searchScore'
-            }, 
-            'highlight': {
-              '$meta': 'searchHighlights'
-            }
-          }
-        }, 
-        {
-            '$sort': {
-                'score': -1,
-                'intitule': 1
-            }
-        },
-        {
-          '$limit': 20
-        }
-    ])
-    .then(result => {
-        //console.log("result", result); //TEST
-        res.json(result);
-    })
-    .catch(error => {
-        error.customMsg = "Erreur lors de l'étape d'alimentation des suggestions de produits après saisie dans le moteur de recherche";
-        next(error);
-    })
-
+    requests.getAutocompleteData(searchText)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            error.customMsg = "Erreur lors de l'étape d'alimentation des suggestions de produits après saisie dans le moteur de recherche";
+            next(error);
+        })
 });
 
 
@@ -329,7 +196,7 @@ app.get("/product/:id", (req, res, next) => {
 
     // On passe en argument l'objet 'stage' utile pour la construction de la requete
     requests.getProducts(stage)
-        .then(result => {
+        .then(result => {   console.log("Prd from Autocomplete", result); //TEST
             res.json(result);
         })
         .catch(error => { 
