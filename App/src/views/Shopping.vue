@@ -1,14 +1,23 @@
 <template>
   <div>
-    <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
     <!-- <DepartmentsMargin v-if="displayMarginDepartments" /> -->
     <DepartmentsMargin />
+
     <!-- <transition name="TESTtransition">
       <BasketMargin v-if="displayMarginBasket" />
     </transition> -->
     <BasketMargin />
+    {{displayProductsInterface}}
+    <div class="center" v-if="!displayProductsInterface">
+      <div class="accueilTexte">Bienvenue sur mon appli de courses en ligne!</div>
+      <img 
+        src="../assets/imgs/illustration_undraw_shopping_app.svg" 
+        alt="Bienvenue sur mon appli de courses en ligne!" 
+        class="accueilSVG" 
+      />
+    </div>
 
-    <div class="grid-container" v-if="selected_department != null">
+    <div class="grid-container" v-else>
       <div class="block-filters">
         <Filters v-if="Object.keys(filters).length > 0" />
       </div>
@@ -47,22 +56,21 @@ export default {
   computed: {
 
     //TEST pour chargement à la volée qd demande ouverture marge
-    displayMarginDepartments() {
+    /* displayMarginDepartments() {
       return this.$store.state.display_margin_departments;
-    },
+    }, */
     displayMarginBasket() {
       return this.$store.state.display_margin_basket;
-    }
+    },
     // FIN TEST
 
-    , products() {
-      return this.$store.state.products;
-    },
-    selected_department() {
-      return this.$store.state.selected_department;
-    },
     filters() {
       return this.$store.state.filters;
+    },
+    displayProductsInterface() {
+      const flagSearchProducts = Object.keys(this.$store.state.search_products_type).length > 0 ? true : false;
+      const productsFound = this.$store.state.products.length > 0 ? true : false;
+      return flagSearchProducts || productsFound;
     }
 
   }
@@ -90,10 +98,43 @@ export default {
   height: calc(100vh - 60px);
   overflow-y: auto;
   position: fixed;
+  /* z-index: -1; */ /* Pour laisser l'autocomplete au dessus */
   width: 250px;
 }
 
-
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 60px);
+}
+.accueilTexte {
+  font-size: 3vw;
+  line-height: 3.5vw;
+  position: absolute;
+  width: 40vw;
+  min-width: 250px;
+  max-width: 350px;
+  text-align: center;
+  margin: -30vh 0 0 0;
+}
+@media screen and (max-width: 600px) {
+  .accueilTexte {
+    font-size: 20px;
+    line-height: 25px;
+  }
+}
+@media screen and (min-width: 1000px) {
+  .accueilTexte {
+    font-size: 30px;
+    line-height: 35px;
+  }
+}
+.accueilSVG {
+  width: 30vw;
+  min-width: 250px;
+  max-width: 350px;
+}
 
 /* TEST transition */
 .TESTtransition-enter-active, .TESTtransition-leave-active {
