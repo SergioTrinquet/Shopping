@@ -18,17 +18,20 @@ export default new Vuex.Store({
     selected_department: null,
     nbMaxMarques: 3,
     listeTypeTri: [
-      { id:1, champBdd: "intitule", ordre: 1, texte: "intitulé (alphabétique)", selected: true },
-      { id:2, champBdd: "intitule", ordre: -1, texte: "intitulé (alpha. inverse)", selected: false },
-      { id:3, champBdd: "prix", ordre: 1, texte: "Prix (croissant)", selected: false },
-      { id:4, champBdd: "prix", ordre: -1, texte: "Prix (décroissant)", selected: false },
-      { id:5, champBdd: "prix_unite", ordre: 1, texte: "Prix au kg/l/pièce (croissant)", selected: false },
-      { id:6, champBdd: "prix_unite", ordre: -1, texte: "Prix au kg/l/pièce (décroissant)", selected: false }
+      { id:1, champBdd: "intitule_insensitive", ordre: 1, texte: "intitulé (alphabétique)" },
+      { id:2, champBdd: "intitule_insensitive", ordre: -1, texte: "intitulé (alpha. inverse)" },
+      { id:3, champBdd: "prix_final", ordre: 1, texte: "Prix (croissant)" },
+      { id:4, champBdd: "prix_final", ordre: -1, texte: "Prix (décroissant)" },
+      { id:5, champBdd: "prix_unite", ordre: 1, texte: "Prix au kg/l/pièce (croissant)" },
+      { id:6, champBdd: "prix_unite", ordre: -1, texte: "Prix au kg/l/pièce (décroissant)" }
     ],
+    scoreTypeTri: { id:0, champBdd: "score", ordre: -1, texte: "pertinence" },
     filters_query_string_parameters: "",
     tri_query_string_parameters: "",
     filter_to_remove: null,
-    autocompleteResults: []
+    autocompleteResults: [],
+
+    search_products_type: {} // TEST au 25/06
   },
 
 
@@ -46,16 +49,7 @@ export default new Vuex.Store({
       state.departments = payload;
     },
     SET_PRODUCTS(state, payload) {
-      // Ajout champ 'prix_reduc' qd il y a une promotion avec pourcentage
-      let items = [];
-      payload.forEach(p => {
-        if("promotion" in p && p.promotion !== null && p.promotion.pourcent) {
-          p.prix_reduc = p.prix - (p.prix/100 * p.promotion.info);
-          //console.warn(p.intitule, p.prix_reduc, p); //TEST
-        }
-        items.push(p);
-      })
-      state.products = items;
+      state.products = payload;
     },
     SET_DISPLAY_MARGIN_BASKET(state, payload) {
       state.display_margin_basket = payload;
@@ -109,6 +103,20 @@ export default new Vuex.Store({
     },
     SET_AUTOCOMPLETE_RESULTS(state, payload) {
       state.autocompleteResults = payload;
+    },
+
+    
+    // TEST au 25/06
+    SET_TYPE_OF_SEARCH_PRODUCTS(state, payload) { 
+      state.search_products_type = payload; 
+    },
+
+
+    ADD_LISTE_TRI_OPTION(state) {
+      state.listeTypeTri.unshift(state.scoreTypeTri); // Ajout option 'Pertinence' en 1ere place
+    },
+    REMOVE_LISTE_TRI_OPTION(state) {
+      state.listeTypeTri.shift(); // retrait 1ere option (qui doit être l'option 'Pertinence'
     }
   },
 
@@ -137,11 +145,11 @@ export default new Vuex.Store({
     },
 
     // Récupération des filtres utiles selon le rayon sélectionné 
-    setFilters({ commit }, payload) {
+    setFiltersFromDepartment({ commit }, payload) {
       commit('SET_LOADING', true);
       commit('SET_MESSAGE_ERROR', null);
 
-      return axios.get(`/api/filters/${payload}`)
+      return axios.get(`/api/department/filters/${payload}`)
         .then(res => {
           commit('SET_FILTERS', res.data);
         })
@@ -153,13 +161,47 @@ export default new Vuex.Store({
     },
 
 
-    // Qd click sur rayon dans marge coulissante, ou bien filtres ou encore sur select Tri
-    fetchProductsDepartment({ commit }, payload) {
+    // Récupération des filtres utiles selon les produits affichés après recherche dans le champ de recherche
+    setFiltersFromSearchString({ commit }, payload) {
       commit('SET_LOADING', true);
       commit('SET_MESSAGE_ERROR', null);
 
-      return axios.get(`/api/department_products?${payload}`)
+      axios.get(`api/searchstring/filters/${payload}`)
+        .then(res => { 
+          commit('SET_FILTERS', res.data);
+        })
+        .catch(err => {
+          console.error(err.response);
+          commit('SET_MESSAGE_ERROR', err.response);
+        })
+        .finally(() => commit('SET_LOADING', false));
+    },
+
+    
+    // Qd click sur rayon dans marge coulissante, ou bien filtres ou encore sur select Tri
+    fetchProductsDepartment({ commit, getters }) {
+      commit('SET_LOADING', true);
+      commit('SET_MESSAGE_ERROR', null);
+
+      return axios.get(`/api/department/products?${getters.getQueryStringParametersToFetchProducts}`)
         .then(res => {
+          commit('SET_PRODUCTS', res.data);
+        })
+        .catch(err => {
+          console.error(err.response);
+          commit('SET_MESSAGE_ERROR', err.response);
+        })
+        .finally(() => commit('SET_LOADING', false));
+    },
+
+
+    // Qd validation à partir du moteur de recherche produit (clic sur icone Loupe OU press enter sur input)
+    fetchProductsValidationSearchEngine({ commit, getters }) {
+      commit('SET_LOADING', true);
+      commit('SET_MESSAGE_ERROR', null);
+
+      axios.get(`api/searchstring/products?${getters.getQueryStringParametersToFetchProducts}`)
+        .then(res => { 
           commit('SET_PRODUCTS', res.data);
         })
         .catch(err => {
@@ -172,7 +214,7 @@ export default new Vuex.Store({
 
     // Qd saisie ds champ de saisie recherche : Appel pour récupérer produits coorespondants
     fetchProductsForAutocompleteSearchEngine({ commit }, payload) {
-        axios.get(`api/products/${payload}`)
+        axios.get(`api/autocomplete/products/${payload}`)
           .then(res => {
             commit('SET_AUTOCOMPLETE_RESULTS', res.data);
           })
@@ -205,29 +247,7 @@ export default new Vuex.Store({
           commit('SET_MESSAGE_ERROR', err.response);
         })
         .finally(() => commit('SET_LOADING', false));
-    },
-
-
-
-
-    // Qd clic sur icone Loupe dans le moteur de recherche
-    fetchProductsFromIconSearchEngine({ commit }, payload) {
-      commit('SET_LOADING', true);
-      commit('SET_MESSAGE_ERROR', null);
-
-      axios.get(`api/products/searchicon/${payload}`)
-        .then(res => { 
-          console.log("fetchProductsFromIconSearchEngine", res.data, res.data[0].prix.$numberDecimal); //TEST
-
-          commit('SET_PRODUCTS', res.data);
-        })
-        .catch(err => {
-          console.error(err.response);
-          commit('SET_MESSAGE_ERROR', err.response);
-        })
-        .finally(() => commit('SET_LOADING', false));
     }
-
     
   },
 
@@ -244,8 +264,7 @@ export default new Vuex.Store({
     getBasketTotalPrice(state) {
       let totalPrice = 0;
       for(let item of Object.values(state.basket)) {
-        let prix = "prix_reduc" in item ? item.prix_reduc : item.prix;
-        totalPrice += (parseFloat(prix) * item.qte)
+        totalPrice += (parseFloat(item.prix_final) * item.qte)
       }
       return totalPrice.toFixed(2);
     },
@@ -253,7 +272,8 @@ export default new Vuex.Store({
     // Traitement sur 'basket' pour classer items du Panier par ordre alpha sur 'intitule' puis par rayon
     getBasketSortedByDepartment(state) {
       let tempoSortedItems = [];
-      for(let item of Object.values(state.basket)) {
+      for(let item of Object.values(state.basket)) {    
+          //console.log('dept', item.rayon.intitule, 'prod', item); //TEST
           tempoSortedItems.push({dept: item.rayon.intitule, prod: item});
       }
       tempoSortedItems.sort((a, b) => (a.prod.intitule > b.prod.intitule) ? 1 : ((a.prod.intitule < b.prod.intitule) ? -1 : 0)); // Pour classer par 'intitule'...
@@ -283,14 +303,34 @@ export default new Vuex.Store({
 
     // Construction de la partie 'search' de l'URL utilisée pour l'API qui va récupérer les produits 
     // en concaténant les paramètres des filtres + l'id du rayon + les paramètres du tri
-    getQueryStringParametersToFetchProducts(state) {
+    getQueryStringParametersToFetchProducts(state) {    
       let searchParams = new URLSearchParams(state.filters_query_string_parameters);
-      searchParams.append("rayon", state.selected_department.id);
+
+      // Ajout paramètre id rayon OU texte saisi ds moteur de recherche, selon le type de recherche effectuée par l'utilisateur
+      searchParams.append(Object.keys(state.search_products_type)[0], Object.values(state.search_products_type)[0]);
+      
       // Ajout ID tri des produits à l'URL si classement sélectionné
       const selectedOrder = !!state.tri_query_string_parameters; 
       if(selectedOrder) { searchParams.append("tri", state.tri_query_string_parameters) }
 
+      console.log("Appel getter 'getQueryStringParametersToFetchProducts'", searchParams.toString()); //TEST
+
       return searchParams.toString();
+    },
+
+
+    // Aiguillage selon type de recherche entre produits à aller chercher via action 'fetchProductsDepartment' qd recherche par rayon,
+    // et produits via action 'fetchProductsValidationSearchEngine' qd recherche via moteur de recherche
+    getGoodActionName(state, getters) {   
+      let action = null;
+      const queryString = new URLSearchParams(getters.getQueryStringParametersToFetchProducts);
+      if(queryString.has('rayon')) {
+          action = 'fetchProductsDepartment';
+      } else if(queryString.has('searchstring')) {
+          action = 'fetchProductsValidationSearchEngine';
+      }
+
+      return action;
     }
 
   },
