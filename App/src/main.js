@@ -20,8 +20,15 @@ Vue.component('app-overlay', OverlayComponent)
 
 Vue.config.productionTip = false
 
+
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  errorCaptured(err, component, details) {
+    //this.$store.commit('SET_MESSAGE_ERROR', { err: err, details: details } ); // Pour afficher l'encart avec message d'erreur
+    this.$store.commit('SET_MESSAGE_ERROR', {data: { titre: err, message: details }} ); // Pour afficher l'encart avec message d'erreur
+    console.error("err => ", err, "\ncomponent => ", component, "\ndetails => ", details); 
+    return false; // Pour ne pas que l'erreur remonte jusqu'à "Vue.config.errorHandler" si présent
+  }
 }).$mount('#app')
