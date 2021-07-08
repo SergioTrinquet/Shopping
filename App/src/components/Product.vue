@@ -1,5 +1,5 @@
 <template>
-    <div class="product">   <!-- {{ dataProduct }} -->
+    <div class="product">   {{ dataProduct.rayon.intitule }}  {{ dataProduct.score }}
         <div class="intitule primary-txt">{{ dataProduct.intitule }}</div>
         <div class="marque" v-if="!!dataProduct.marque">{{ dataProduct.marque }}</div>
         <div class="bloc">
@@ -32,9 +32,9 @@
                 data-tooltip="nutriscore"
             ></div>
         </div>
-        <div class="bottom">     
+        <div class="bottom">   
             <div>   
-                <div v-if="isDiscount" class="prix tertiary-txt">{{ dataProduct.prix_reduc.toFixed(2) }}€</div>
+                <div v-if="isDiscount" class="prix tertiary-txt">{{ dataProduct.prix_final.toFixed(2) }}€</div>
                 <div :class="isDiscount ? 'prixAvantDiscount' : 'prix tertiary-txt'">{{ dataProduct.prix.toFixed(2) }}€</div>
             </div>
             <!-- NOTE :  Si 'dataProduct._id' se trouve dans 'basket', on récupère sa quantité -->
@@ -96,7 +96,7 @@ export default {
         },
         
         isDiscount() {
-            return ("prix_reduc" in this.dataProduct ? true : false);
+            return (this.dataProduct.prix !== this.dataProduct.prix_final ? true : false);
         }
     },
 
