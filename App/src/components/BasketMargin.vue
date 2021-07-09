@@ -146,19 +146,63 @@ export default {
         font-size: 15px;
     }
 
-
     .blocProduct {
         padding: 8px;
-        background-color: #ececec;
+        background-color: #e6e6e6;
         margin: 10px 0;
     }
 
+
+    /******* Surcharge du style pour CSS se trouvant ds composant enfant 'Product.vue' malgré le "scoped" grace à ">>>" *******/
+    .items >>> .product {
+        position: relative;
+        justify-content: flex-start;
+    }
+    .items >>> .illustration {
+        position: absolute;
+        width: 40%;
+    }
+    .items >>> .intitule,
+    .items >>> .marque,
+    .items >>> .bloc,
+    .items >>> .origine,
+    .items >>> .promotion,
+    .items >>> .label_nutriscore {
+        margin: 0 0 0 44%;
+        order: 0;
+    }
+
+    .items >>> .bloc {
+        padding: 3px 0;
+    }
     .items >>> .intitule {
+        font-size: 16px;
+        line-height: 14px;
+        padding: 0 0 3px 0;
+    }
+    .items >>> .marque {
         font-size: 15px;
+        line-height: 15px;
+        padding: 4px 0;
+    }    
+    .items >>> .origine {
+        font-size: 13px;
+        padding: 1px 0;
     }
     .items >>> .prix {
-        font-size: 19px;
+        font-size: 21px;
     }
+    .items >>> .promotion {
+        order: 1; 
+        margin: 0; 
+        padding: 5px 0 0 0;
+    }
+    .items >>> .bottom { 
+        order: 2;
+        margin: 0;
+    }
+    /******* FIN Surcharge *******/
+
 
 
     /* ESSAI POUR TRANSITION */
