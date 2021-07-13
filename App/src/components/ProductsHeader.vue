@@ -3,7 +3,7 @@
 
     <div class="lgn">
       <div>{{ Nb_products }} résultat{{ Nb_products > 1 ? "s" : "" }}</div>
-      <ProductsSelectOrder v-if="Nb_products > 1" />
+      <ProductsSelectOrder v-show="Nb_products > 1" />
     </div>
 
     <div class="rayonProduits" v-if="!!selected_department_name">
@@ -36,7 +36,12 @@ export default {
         return this.products.length;
       },
       selected_department_name() {
-        return this.$store.state.selected_department.intitule;
+        if(this.$store.state.selected_department !== null) {
+          return this.$store.state.selected_department.intitule;
+        } else {
+          return "";
+        }
+        //return this.$store.state.selected_department.intitule;
       },
       
       /* filters_presence() {
