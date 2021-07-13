@@ -1,15 +1,15 @@
 <template>
-  <div>
-      <span class="tag secondary" v-for="(tag, idx) in listetags" :key="idx">
-        <span>{{ tag.libelle }}</span>
-        <span class="tagCloseIcon">
-            <font-awesome-icon icon="times" 
-                class="tertiary-txt_hover" 
-                @click="closeTag({ nom: tag.queryStringParam, valeur: tag.queryStringValue })" 
-            />
+    <div>
+        <span class="tag secondary" v-for="(tag, idx) in listeTags" :key="idx">
+            <span>{{ tag.libelle }}</span>
+            <span class="tagCloseIcon">
+                <font-awesome-icon icon="times" 
+                    class="tertiary-txt_hover" 
+                    @click="closeTag({ nom: tag.queryStringParam, valeur: tag.queryStringValue })" 
+                />
+            </span>
         </span>
-      </span>
-  </div>
+    </div>
 </template>
 
 <script>
@@ -18,7 +18,7 @@ export default {
 
     data() {
         return {
-            listetags: []
+            listeTags: []
         }
     },
 
@@ -34,8 +34,7 @@ export default {
     methods: {
         // Retrait du paramètre correspondant au flag ds la query string et appel API pour chargement des produits
         closeTag(param) {
-            //console.log("nom param : " + param.nom, "valeur param : " + param.valeur); //TEST
-            this.$store.commit('SET_FILTER_TO_REMOVE', param);
+            this.$store.commit('REMOVE_FILTER_SELECTION', param);
         }
     },
 
@@ -44,7 +43,7 @@ export default {
         filters_query_string_parameters(val) {
             const searchParams = new URLSearchParams(val);
 
-            this.listetags = [];
+            this.listeTags = [];
             searchParams.forEach((value, key) => {
                 console.log("FiltersListags", key, value); //TEST
 
@@ -52,7 +51,7 @@ export default {
                     const n = this.filters.nutriscore.filter(n => {
                         if(n.id === value) return n;
                     });
-                    this.listetags.push({ 
+                    this.listeTags.push({ 
                         libelle: `nutriscore ${n[0].lettre}`, 
                         queryStringParam: key, 
                         queryStringValue: value 
@@ -62,26 +61,26 @@ export default {
                     const l = this.filters.label_qual.filter(l => {
                         if(l.id === value) return l;
                     });
-                    this.listetags.push({ 
+                    this.listeTags.push({ 
                         libelle: l[0].libelle, 
                         queryStringParam: key, 
                         queryStringValue: value 
                     });
 
                 } else if(key == 'prdsFr') {
-                    this.listetags.push({ 
+                    this.listeTags.push({ 
                         libelle: 'produits français', 
                         queryStringParam: key 
                     });
 
                 } else if(key == 'promos') {
-                    this.listetags.push({ 
+                    this.listeTags.push({ 
                         libelle: 'promotions', 
                         queryStringParam: key 
                     });
 
                 } else { // Marques
-                    this.listetags.push({ 
+                    this.listeTags.push({ 
                         libelle: value, 
                         queryStringParam: key, 
                         queryStringValue: value 
@@ -93,7 +92,7 @@ export default {
                         const n = this.filters.nutriscore.filter(n => {
                             if(n.id === value) return n;
                         })
-                        this.listetags.push({ 
+                        this.listeTags.push({ 
                             libelle: `nutriscore ${n[0].lettre}`, 
                             queryStringParam: key, 
                             queryStringValue: value 
@@ -103,26 +102,26 @@ export default {
                         const l = this.filters.label_qual.filter(l => {
                             if(l.id === value) return l;
                         })
-                        this.listetags.push({ 
+                        this.listeTags.push({ 
                             libelle: l[0].label, 
                             queryStringParam: key, 
                             queryStringValue: value 
                         });
                         break;
                     case 'prdsFr':
-                        this.listetags.push({ 
+                        this.listeTags.push({ 
                             libelle: 'produits français', 
                             queryStringParam: key 
                         });
                         break;
                     case 'promos':
-                        this.listetags.push({ 
+                        this.listeTags.push({ 
                             libelle: 'promotions', 
                             queryStringParam: key 
                         });
                         break;
                     case 'marque':
-                        this.listetags.push({ 
+                        this.listeTags.push({ 
                             libelle: value, 
                             queryStringParam: key, 
                             queryStringValue: value 
@@ -137,11 +136,12 @@ export default {
 
 <style scoped>
 .tag {
-    padding: 0 8px;
     font-size: 14px;
     color: #fff;
     border-radius: 2px;
+    padding: 0 8px;
     margin: 0 5px 0 0;
+    display: inline-block;
 }
 .tagCloseIcon {
     margin: 0 0 0 7px;
