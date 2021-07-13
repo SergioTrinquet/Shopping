@@ -1,6 +1,13 @@
 <template>
-    <div class="product">   {{ dataProduct.rayon.intitule }}  {{ dataProduct.score }}
-        <div class="intitule primary-txt">{{ dataProduct.intitule }}</div>
+    <div class="product">   <!-- {{ dataProduct.rayon.intitule }}  {{ dataProduct.score }} -->
+        <div class="intitule primary-txt">
+            <span>{{ dataProduct.intitule }}</span>
+            <font-awesome-icon 
+                icon="trash-alt" 
+                class="trashIcon tertiary-txt_hover" 
+                @click="deleteQuantity" 
+            />
+        </div>
         <div class="marque" v-if="!!dataProduct.marque">{{ dataProduct.marque }}</div>
         <div class="bloc">
             <div class="descriptif">{{ dataProduct.descriptif }}</div>
@@ -41,12 +48,12 @@
             <!-- <component 
                 :is="typeof basket[dataProduct._id] != 'undefined' ? 'buttonsSetQuantity' : 'buttonAddToBasket'"
                 :dataProduct="basket[dataProduct._id] || dataProduct._id"
-                @event-set-quantity="displayGoodComponent($event)"
+                @event-set-quantity="setQuantityToBasket($event)"
             /> -->
             <component 
                 :is="typeof basket[dataProduct._id] != 'undefined' ? 'buttonsSetQuantity' : 'buttonAddToBasket'"
                 :dataProduct="{ id: dataProduct._id, quantity: typeof basket[dataProduct._id] != 'undefined' ? basket[dataProduct._id].qte : 0 }"
-                @event-set-quantity="displayGoodComponent($event)"
+                @event-set-quantity="setQuantityToBasket($event)"
             />
             <!-- {{ basket[dataProduct._id].qte }} -->
         </div>
@@ -101,10 +108,13 @@ export default {
     },
 
     methods: {
-        displayGoodComponent(qte) {
-            console.log("Quantité commandée", qte); //TEST
-            // Enregistrement de la quantité saisie dans Panier
-            this.$store.commit('SET_QUANTITY_TO_BASKET', {produit: this.dataProduct, quantite: qte});
+        // Enregistrement de la quantité saisie dans Panier
+        setQuantityToBasket(qte) {
+            this.$store.commit('SET_QUANTITY_TO_BASKET', { produit: this.dataProduct, quantite: qte });
+        },
+        deleteQuantity(e) {   
+            e.stopPropagation(); // Evite à l'évenement click de se propager au DOM parents et d'executer des méthodes qui leurs sont propres
+            this.setQuantityToBasket(0);
         }
     }
     
@@ -112,6 +122,10 @@ export default {
 </script>
 
 <style scoped>
+.trashIcon {
+    cursor: pointer;
+    display: none;
+}
 .product {
     display: flex;
     flex-direction: column;
@@ -124,6 +138,9 @@ export default {
     font-size: 20px;
     line-height: 18px;
     text-transform: capitalize;
+
+    display: flex;
+    justify-content: space-between;
 }
 .marque {
     font-weight: bold;
@@ -132,6 +149,7 @@ export default {
 .bloc {
     margin: 6px 0 10px 0;
     line-height: 14px;
+    min-height: 28px;
 }
 .descriptif,
 .prixUnite {

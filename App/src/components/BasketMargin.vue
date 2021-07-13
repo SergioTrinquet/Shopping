@@ -154,6 +154,11 @@ export default {
 
 
     /******* Surcharge du style pour CSS se trouvant ds composant enfant 'Product.vue' malgré le "scoped" grace à ">>>" *******/
+    .items >>> .trashIcon {
+        display: block;
+        padding: 0 0 0px 6px;
+        transition: color 0.2s ease-in-out;
+    }
     .items >>> .product {
         position: relative;
         justify-content: flex-start;
