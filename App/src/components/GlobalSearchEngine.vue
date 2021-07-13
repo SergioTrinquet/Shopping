@@ -35,9 +35,8 @@
               @click="displayProduct(result._id)"
             >
               <div class="intituleProduit" v-html="highlight(result, 'intitule')"></div>
-              <div class="marqueProduit" v-html="highlight(result, 'marque')"></div>
+              <div class="marqueProduit" v-html="highlight(result, 'marque')"></div>{{result.score}}
             </div>
-            <!-- {{ autocompleteResults }} -->
           </div>
         </transition>
     </div>
@@ -60,6 +59,14 @@ export default {
       autocompleteResults() {
         return this.$store.state.autocompleteResults;
       },
+      // Pour servir de flag pour vider champ de rech. et l'autocomplete si présent 
+      searchByDepartment() {
+        return typeof this.$store.state.search_products_type.rayon !== "undefined";
+      },
+      // Pour servir de flag pour ajouter/retirer l'option 'pertinence' ds le select du tri
+      searchBySearchString() {  console.warn("Moteur Rech. => COMPUTED  de 'searchBySearchString'"); //TEST
+        return typeof this.$store.state.search_products_type.searchstring !== "undefined";
+      },
       componentsOpen() {
         return this.$store.getters.areComponentsOpen;
       }
@@ -68,8 +75,20 @@ export default {
     watch: {
       autocompleteResults(val) {
         this.displaySearchEngineResults = val.length > 0 ? true : false;
+      },
+
+      // Qd recherche par rayon, on vide le champ de recherche et l'autocomplete si présent
+      searchByDepartment(val) {   //console.warn("WATCH de 'searchByDepartment'", val); //TEST
+        if(val) { this.clearSearch() }
+      },
+
+      // Qd recherche par moteur de rech., ajout/retrait ds liste déroulante 'Tri' d'une option 'pertinence'
+      searchBySearchString(val) {
+        console.warn("WATCH de 'searchBySearchString'", val); //TEST
+        this.$store.commit(val ? 'ADD_LISTE_TRI_OPTION' : 'REMOVE_LISTE_TRI_OPTION');
       }
     },
+
 
     methods: {
       searchProductsForAutocomplete(e) {   
@@ -134,16 +153,35 @@ export default {
 
       // Qd click sur un produit ds l'autocomplete
       displayProduct(id) {
+        this.reinitialisationFiltresEtTri();
         this.$store.dispatch('fetchProductFromAutocompleteSearchEngine', id);
       },
 
+      // Pour réinitialiser les filtres si l'utilisateur avait choisi au pralable de voir les produits d'un rayon, ainsi que les filtres et le tri qu'il a pu sélectionner
+      reinitialisationFiltresEtTri() {
+        this.$store.commit('SET_FILTERS', {});
+        //this.$store.commit('SET_TYPE_OF_SEARCH_PRODUCTS', {});
+        this.$store.commit('SET_FILTERS_QUERY_STRING_PARAMETERS', "");
+        this.$store.commit('SET_TRI_QUERY_STRING_PARAMETERS', "");
+      },
 
-      // Qd click sur icone 'search' ds moteur de recherche
+
+      // Qd validation ds moteur de recherche produit (clic sur icone Loupe OU press enter sur input)
       searchProducts() {
         this.displaySearchEngineResults = false; // disparit° autocomplete sans vider son contenu car correspond au texte de recherche que l'utilisateur vient de valider
         const searchString = document.querySelector('.mainInputSearch').value.trim();
         if(searchString !== "") {
-          this.$store.dispatch('fetchProductsFromIconSearchEngine', searchString);
+          // Affectation 'selected_department' pour signifier que pas de rayon sélectionné et donc faire disparaitre div qui affiche nom du rayon
+          this.$store.commit('SET_SELECTED_DEPARTMENT', {});
+        
+          // Commit du paramètre pour construction de la queryString qui sera passée coté backend dans l'action 'fetchProductsDepartment' qui suit
+          // On indique par la même occasion quel moyen on recherche des produits (par rayon, ou par recherche ds le moteur)
+          this.$store.commit('SET_TYPE_OF_SEARCH_PRODUCTS', { 'searchstring': searchString });
+
+          // Appel API pour récup. des produits
+          this.$store.dispatch('fetchProductsValidationSearchEngine');
+          // Récupération des filtres à partir de la recherche
+          this.$store.dispatch('setFiltersFromSearchString', searchString);
         }
       }
     },
@@ -238,7 +276,7 @@ export default {
 #proposals .lgnProduit {
   display: flex;
   font-size: 14px;
-  padding: 3px;
+  padding: 5px;
   border-bottom: dotted 1px #254A7B;
   margin: 0 4px;
 }
