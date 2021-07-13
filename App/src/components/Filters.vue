@@ -1,7 +1,16 @@
 <template>
   <form ref="filtersForm" @change="changeFormValues"><!-- {{ filters }} -->
 
-      <div class="header primary-light">Affiner</div>
+      <div class="header primary-light">
+        <span>Affiner</span> 
+        <span 
+          class="linkRemoveFiltersSelection tertiary-txt"
+          :class="displayButton ? '' : 'hidden'"
+          @click="removeSelectionFormFilters"
+        >
+          Effacer les filtres
+        </span>  
+      </div>
 
       <div class="filterWrapper lgnChbx tertiary-txt_hover" v-if="displayFilters.promos">
         <input type="checkbox" id="chbxPromos" name="promos"  v-model="promos">
@@ -84,6 +93,7 @@ export default {
     }
   },
 
+
   computed: {
     filters() {
       return this.$store.state.filters;
@@ -92,7 +102,7 @@ export default {
       return this.$store.state.selected_department;
     },
     nbMaxMarques() {
-      return this.$store.state.nbMaxMarques;
+      return this.$store.state.nb_max_marques;
     },
     displayFilters() {
       let f = {};
@@ -110,16 +120,20 @@ export default {
     },
     ////
 
-
-    queryStringParameterstoFetchProducts() {
-        return this.$store.getters.getQueryStringParametersToFetchProducts;
+    actionName() { //console.log('GETTER actionName', this.$store.getters.getGoodActionName); //TEST
+        return this.$store.getters.getGoodActionName;
+    },
+    filter_selection_to_remove() { 
+      return this.$store.state.filter_selection_to_remove; 
     },
 
-    filter_to_remove() { 
-      return this.$store.state.filter_to_remove; 
+    // 12/07
+    displayButton() {
+        const filtersQueryStringParams = this.$store.state.filters_query_string_parameters;
+        return Array.from(new URLSearchParams(filtersQueryStringParams).keys()).length > 2;
     }
-
   },
+
 
   watch: {
     // Limitat° sur nb de marques à cocher
@@ -143,25 +157,12 @@ export default {
     // A chaque fois que des nouveaux filtres sont chargés (suite à validat° chp de recherche/click prd sur autocomplete/chgmt de rayon), 
     // on réinitialise la sélection des filtres
     filters() {
-      this.filters_type.forEach(f => {
-        if(f.typeChbx == 'single' && this[f.name]) {
-          this[f.name] = false;
-        }
-        if(f.typeChbx == 'multiple' && this[f.name].length > 0) {
-          this[f.name] = [];
-        }
-      });
-      // Déclenchement manuel de l'evenement on change pour executer methode 'changeFormValues'
-      this.$nextTick(()=>{
-        const e = new Event("change");
-        this.$refs.filtersForm.dispatchEvent(e);
-      })
+      this.removeSelectionFormFilters();
     },
 
 
     // Pour afficher nb de marques qd chgmt de rayon
     filterMarquesCount(val) {
-      console.log("Changement nb de marques suite à chgmt rayon", "chbxs.length", val); //TEST
       this.nbMarquesFiltrage = val;
     },
     
@@ -172,7 +173,7 @@ export default {
     },
 
     // Suppression filtre qd click sur tag du composant 'FiltersListTags'
-    filter_to_remove(val) { 
+    filter_selection_to_remove(val) { 
       // Ci-dessous référence aux v-models avec une écriture un peu différente (par ex: 'this["promos"]' est la m chose que 'this.promos')
       this.filters_type.forEach(f => { 
         if(f.name == val.nom && f.typeChbx == 'single') {
@@ -184,10 +185,7 @@ export default {
       })
       
       // Déclenchement manuel de l'evenement on change pour executer methode 'changeFormValues'
-      this.$nextTick(()=>{
-        const e = new Event("change");
-        this.$refs.filtersForm.dispatchEvent(e);
-      })
+      this.triggerEventFormFilters();
     }
 
   },
@@ -216,25 +214,37 @@ export default {
         const data = new FormData(form);
         const searchParams = new URLSearchParams(data);
 
-        // Enregistrement partie de la chaine de requête propre aux filtres
+        // Enregistrement partie de la chaine de requête propre aux filtres. Va mettre à jour la chaine de requete globale (filtres + tri + type de recherche) construite ds getter 'getQueryStringParameterstoFetchProducts'
         // NOTE: Fonctionne aussi en passant 'searchParams' sans le convertir en string via (.toString()) mais on évite car ds ce cas valeur pas lisible avec 'Vue.js devtools'
         this.$store.commit('SET_FILTERS_QUERY_STRING_PARAMETERS', searchParams.toString());
         
-        console.log("sélection (GET) => ", this.queryStringParameterstoFetchProducts); //TEST
-
-        // Aiguillage selon type de recherche entre produits à aller chercher via action 'fetchProductsDepartment' qd recherche par rayon,
-        // et produits via action 'fetchProductsValidationSearchEngine' qd recherche via moteur de recherche
-        let action = '';
-        const queryString = new URLSearchParams(this.queryStringParameterstoFetchProducts);
-        if(queryString.has('rayon')) {
-          action = 'fetchProductsDepartment';
-        } else if(queryString.has('searchstring')) {
-          action = 'fetchProductsValidationSearchEngine';
-        }
-
-        // Appel API pour récup. des produits à afficher selon les filtres sélectionnés
-        this.$store.dispatch(action, this.queryStringParameterstoFetchProducts);
+        // Appel API pour récup. des produits à afficher selon les filtres sélectionnés : 
+        // Le getter 'this.actionName' correspond soit à 'fetchProductsDepartment' qd produits affichés suite à recherche par rayon,
+        // soit à 'fetchProductsValidationSearchEngine' qd produits affichés suite à recherche via moteur de recherche
+        this.$store.dispatch(this.actionName);
       }
+    },
+
+    // 12/07
+    removeSelectionFormFilters() {
+      this.filters_type.forEach(f => {
+        if(f.typeChbx == 'single' && this[f.name]) {
+          this[f.name] = false;
+        }
+        if(f.typeChbx == 'multiple' && this[f.name].length > 0) {
+          this[f.name] = [];
+        }
+      });
+      // Déclenchement manuel de l'evenement on change pour executer methode 'changeFormValues'
+      this.triggerEventFormFilters();
+    },
+
+    triggerEventFormFilters() {
+      // Déclenchement manuel de l'evenement on change pour executer methode 'changeFormValues'
+      this.$nextTick(() => {
+        const e = new Event("change");
+        this.$refs.filtersForm.dispatchEvent(e);
+      })
     }
 
   },
@@ -268,6 +278,9 @@ export default {
   font-weight: bold;
   margin: 0 0 5px 0;
   padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .champFiltre {
@@ -318,5 +331,30 @@ label {
   margin: 0 0 0 5px;
   height: 18px;
   align-self: center;
+}
+
+
+.linkRemoveFiltersSelection {
+  font-size: 12px; 
+  font-weight: bold; 
+  text-align: right;
+  text-decoration: underline;
+  cursor: pointer;
+
+  /* V2 */
+  text-decoration: none;
+  border: solid 2px;
+  padding: 0 5px;
+  border-radius: 15px;
+  line-height: 17px;
+  color: #2c3e50c2;
+
+  /* V3 */
+  /* line-height: 19px;
+  padding: 0 8px;
+  color: #fff;
+  background-color: #295187ed;
+  border: 0;
+  */
 }
 </style>
