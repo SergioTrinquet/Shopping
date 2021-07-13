@@ -58,5 +58,6 @@ export default {
 .productItem.ordered {
   /* border: dotted 1px #2A538A; */
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  background-color: #d7d7dd;
 }
 </style>
