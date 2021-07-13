@@ -41,21 +41,21 @@ export default {
     watch: {
         // Pour fermer la marge listant rayons juste après clic sur un de ces rayons
         products() {
-        this.$store.commit("SET_DISPLAY_MARGIN_DEPARTMENTS", false);
+            this.$store.commit("SET_DISPLAY_MARGIN_DEPARTMENTS", false);
         }
     },
 
     methods: {
         displayDataDepartment(dept) {
-            // TEST au 25/06 : On indique par quel moyen on recherche des produits (par rayon, ou par recherche ds le moteur)
-            this.$store.commit('SET_TYPE_OF_SEARCH_PRODUCTS', { type: 'rayon' , value: dept._id });
-
             // Affectation 'selected_department' pour enregistrer le rayon sélectionné
             this.$store.commit('SET_SELECTED_DEPARTMENT', { id: dept._id, intitule: dept.intitule });
-            // Creat° partie chaine de requete
-            let searchParam = new URLSearchParams({ "rayon": dept._id }).toString();
+            
+            // Commit du paramètre pour construction de la queryString qui sera passée coté backend dans l'action 'fetchProductsDepartment' qui suit
+            // On indique par la même occasion par quel moyen on recherche des produits (par rayon, ou par recherche ds le moteur)
+            this.$store.commit('SET_TYPE_OF_SEARCH_PRODUCTS', { 'rayon': dept._id });
+
             // Appel API pour récup. des produits du rayon sélectionné
-            this.$store.dispatch('fetchProductsDepartment', searchParam);
+            this.$store.dispatch('fetchProductsDepartment');
 
             // Récup. filtres présents ds produits du rayon sélectionné
             this.$store.dispatch('setFiltersFromDepartment', dept._id);
@@ -96,7 +96,7 @@ export default {
         box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
         overflow-y: auto;
     }
-    /* Sélecteur utilisant class qui sont décarées ds composant enfant */
+    /* Sélecteur utilisant class qui sont déclarées ds composant enfant */
     .overlay.display #marge {
         margin-left: 0;
     }
