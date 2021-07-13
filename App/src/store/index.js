@@ -16,8 +16,8 @@ export default new Vuex.Store({
     basket: {},
     filters: {},
     selected_department: null,
-    nbMaxMarques: 3,
-    listeTypeTri: [
+    nb_max_marques: 3,
+    liste_type_tri: [
       { id:1, champBdd: "intitule_insensitive", ordre: 1, texte: "intitulé (alphabétique)" },
       { id:2, champBdd: "intitule_insensitive", ordre: -1, texte: "intitulé (alpha. inverse)" },
       { id:3, champBdd: "prix_final", ordre: 1, texte: "Prix (croissant)" },
@@ -25,10 +25,10 @@ export default new Vuex.Store({
       { id:5, champBdd: "prix_unite", ordre: 1, texte: "Prix au kg/l/pièce (croissant)" },
       { id:6, champBdd: "prix_unite", ordre: -1, texte: "Prix au kg/l/pièce (décroissant)" }
     ],
-    scoreTypeTri: { id:0, champBdd: "score", ordre: -1, texte: "pertinence" },
+    score_type_tri: { id:0, champBdd: "score", ordre: -1, texte: "pertinence" },
     filters_query_string_parameters: "",
     tri_query_string_parameters: "",
-    filter_to_remove: null,
+    filter_selection_to_remove: null,
     autocompleteResults: [],
 
     search_products_type: {} // TEST au 25/06
@@ -98,8 +98,8 @@ export default new Vuex.Store({
     SET_TRI_QUERY_STRING_PARAMETERS(state, payload) {
       state.tri_query_string_parameters = payload;
     },
-    SET_FILTER_TO_REMOVE(state, payload) { 
-      state.filter_to_remove = payload 
+    REMOVE_FILTER_SELECTION(state, payload) { 
+      state.filter_selection_to_remove = payload 
     },
     SET_AUTOCOMPLETE_RESULTS(state, payload) {
       state.autocompleteResults = payload;
@@ -113,10 +113,10 @@ export default new Vuex.Store({
 
 
     ADD_LISTE_TRI_OPTION(state) {
-      state.listeTypeTri.unshift(state.scoreTypeTri); // Ajout option 'Pertinence' en 1ere place
+      state.liste_type_tri.unshift(state.score_type_tri); // Ajout option 'Pertinence' en 1ere place
     },
     REMOVE_LISTE_TRI_OPTION(state) {
-      state.listeTypeTri.shift(); // retrait 1ere option (qui doit être l'option 'Pertinence'
+      state.liste_type_tri.shift(); // retrait 1ere option (qui doit être l'option 'Pertinence'
     }
   },
 
