@@ -7,8 +7,8 @@ import '@/assets/css/main.css' // Import css global maison
 
 /* Ajout pour font-awesome */
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faBars, faSearch, faHeart, faShoppingBasket, faShoppingCart, faChevronRight, faCircleNotch, faExclamationCircle, faTimes, faPlusCircle, faMinusCircle, faBackspace } from '@fortawesome/free-solid-svg-icons'
-library.add(faBars, faSearch, faHeart, faShoppingBasket, faShoppingCart, faChevronRight, faCircleNotch, faExclamationCircle, faTimes, faPlusCircle, faMinusCircle, faBackspace)
+import { faBars, faSearch, faHeart, faShoppingBasket, faShoppingCart, faChevronRight, faCircleNotch, faExclamationCircle, faTimes, faPlusCircle, faMinusCircle, faBackspace, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+library.add(faBars, faSearch, faHeart, faShoppingBasket, faShoppingCart, faChevronRight, faCircleNotch, faExclamationCircle, faTimes, faPlusCircle, faMinusCircle, faBackspace, faTrashAlt)
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 Vue.component('font-awesome-icon', FontAwesomeIcon)
