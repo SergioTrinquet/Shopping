@@ -9,8 +9,8 @@
     <div class="rayonProduits" v-if="!!selected_department_name">
       Produits du rayon <b class="secondary-txt">"{{ selected_department_name }}"</b>
     </div>
-
-    <!-- <FiltersListTags v-if="!!filters_presence" /> --><FiltersListTags />
+ 
+    <FiltersListTags v-if="filters_presence" />
     
   </div>
 </template>
@@ -43,10 +43,9 @@ export default {
         }
         //return this.$store.state.selected_department.intitule;
       },
-      
-      /* filters_presence() {
-          return this.$store.state.filters_query_string_parameters.length;
-      } */
+      filters_presence() {
+          return this.$store.state.filters_query_string_parameters.length > 0;
+      }
     }
 }
 </script>
