@@ -82,14 +82,8 @@ export default {
 
 <style scoped>
     #marge {
-        position: fixed;
-        z-index: 2;
-        margin: 0;
         right: -360px;     right: 0; 
         width: 360px;
-        height: calc(100% - 60px);
-        background-color: #f5f5f5;
-        box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
         box-sizing: border-box;
         display: flex;
         flex-direction: column;

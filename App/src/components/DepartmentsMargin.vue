@@ -83,15 +83,9 @@ export default {
 
 <style scoped>
     #marge {
-        position: fixed;
-        z-index: 2;
-        margin: 0;
         left: 0;
         width: 300px;
-        margin-left: -300px;        margin-left: 0;
-        height: calc(100% - 60px);
-        background-color: #f5f5f5;
-        box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
+        margin-left: -300px;    margin-left: 0;
         overflow-y: auto;
     }
 
