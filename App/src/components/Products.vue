@@ -10,6 +10,7 @@
             <Product :dataProduct="produit" />
           </div>
       </div>
+      <div class="noProducts" v-if="products.length == 0">Aucun produit trouvé,<br/>désolé :-(</div>
   </div>
 </template>
 
@@ -59,5 +60,12 @@ export default {
   /* border: dotted 1px #2A538A; */
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   background-color: #d7d7dd;
+}
+.noProducts {
+  text-align: center;
+  margin: 30px;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 14px;
 }
 </style>
