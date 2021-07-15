@@ -1,13 +1,11 @@
 <template>
   <div>
-    <!-- <DepartmentsMargin v-if="displayMarginDepartments" /> -->
-    <DepartmentsMargin />
+    <DepartmentsMargin v-if="displayMarginDepartments" />
 
-    <!-- <transition name="TESTtransition">
-      <BasketMargin v-if="displayMarginBasket" />
-    </transition> -->
-    <BasketMargin />
-    {{displayProductsInterface}}
+    <BasketMargin v-if="displayMarginBasket" />
+    
+    <!-- {{displayProductsInterface}} --><!-- TEST -->
+
     <div class="center" v-if="!displayProductsInterface">
       <div class="accueilTexte">Bienvenue sur mon appli de courses en ligne!</div>
       <img 
@@ -54,16 +52,12 @@ export default {
   },
 
   computed: {
-
-    //TEST pour chargement à la volée qd demande ouverture marge
-    /* displayMarginDepartments() {
+    displayMarginDepartments() {
       return this.$store.state.display_margin_departments;
-    }, */
+    },
     displayMarginBasket() {
       return this.$store.state.display_margin_basket;
     },
-    // FIN TEST
-
     filters() {
       return this.$store.state.filters;
     },
@@ -72,8 +66,8 @@ export default {
       const productsFound = this.$store.state.products.length > 0 ? true : false;
       return flagSearchProducts || productsFound;
     }
-
   }
+
 }
 </script>
 
@@ -135,13 +129,4 @@ export default {
   min-width: 250px;
   max-width: 350px;
 }
-
-/* TEST transition */
-.TESTtransition-enter-active, .TESTtransition-leave-active {
-  transition: opacity 0.5s ease-in-out;
-}
-.TESTtransition-enter, .TESTtransition-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-/* FIN TEST transition */
 </style>
