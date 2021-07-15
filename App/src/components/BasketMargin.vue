@@ -1,34 +1,41 @@
 <template>
-    <app-overlay 
-        :display="displayMarginBasket" 
-        @click.native="closeMarge"
-        class="addTransition"
-    >
-<!-- <transition name="ESSAI"> --><!-- TEST -->
-        <div id="marge">
-            <div class="marge_top">
-                <div class="header primary-light">
-                    <span>Aperçu panier</span>
-                    <span><font-awesome-icon icon="times" id="close" class="tertiary-txt_hover" @click="closeMargeFromButton" /></span>
-                </div>      
-                <div class="nbItems">{{ displayNbItems }}</div>
-            </div>
-            <div class="marge_middle">
-                <div
-                    v-for="item in basketSortedByDepartment" 
-                    :key="item.prod.id"
-                    class="items"
-                >
-                    <div class="department_title secondary-txt">{{ item.dept }}</div>
-                    <div v-for="product in item.prod" :key="product.id" class="blocProduct">
-                        <Product :dataProduct="product" />
-                    </div>             
+    <transition name="fade" appear>
+        <app-overlay 
+            :display="displayMarginBasket" 
+            @click.native="closeMarge"
+            data-overlay="true"
+        >
+            <div id="marge">
+                <div class="marge_top">
+                    <div class="header primary-light">
+                        <span>Aperçu panier</span>
+                        <span>
+                            <font-awesome-icon 
+                                icon="times" 
+                                id="close" 
+                                class="tertiary-txt_hover" 
+                                @click="closeMargeFromButton" 
+                            />
+                        </span>
+                    </div>      
+                    <div class="nbItems">{{ displayNbItems }}</div>
                 </div>
+                <div class="marge_middle">
+                    <div
+                        v-for="item in basketSortedByDepartment" 
+                        :key="item.prod.id"
+                        class="items"
+                    >
+                        <div class="department_title secondary-txt">{{ item.dept }}</div>
+                        <div v-for="product in item.prod" :key="product.id" class="blocProduct">
+                            <Product :dataProduct="product" />
+                        </div>             
+                    </div>
+                </div>
+                <div class="marge_bottom primary">eerze</div>
             </div>
-            <div class="marge_bottom primary">eerze</div>
-        </div>
-<!-- </transition> --><!-- TEST -->
-    </app-overlay>
+        </app-overlay>
+    </transition>
 </template>
 
 <script>
@@ -59,7 +66,7 @@ export default {
     methods: {
         // Pour fermer la marge listant rayons qd click en dehors de celle-ci
         closeMarge(e) {
-            if(e.target.className.includes('addTransition')) {
+            if(e.target.querySelectorAll('[data-overlay]')) {
                 this.$store.commit("SET_DISPLAY_MARGIN_BASKET", false);
             }
         },
@@ -74,29 +81,18 @@ export default {
 </script>
 
 <style scoped>
-    /* Surcharge possible sur class '.overlay' présente dans composant enfant 'app-overlay', alors que pas utilisée ici !! */
-    /* .overlay { */
-    .addTransition {
-        transition: background-color 0.5s ease-in-out;
-    }
-
     #marge {
         position: fixed;
         z-index: 2;
         margin: 0;
-        right: -360px;
+        right: -360px;     right: 0; 
         width: 360px;
         height: calc(100% - 60px);
         background-color: #f5f5f5;
-        transition: right 0.3s ease-in-out;
         box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
-    }
-    /* Sélecteur utilisant class qui sont décarées ds composant enfant */
-    .overlay.display #marge {
-        right: 0;
     }
     .marge_top {
         padding: 10px 10px 0 10px;
@@ -209,13 +205,34 @@ export default {
     /******* FIN Surcharge *******/
 
 
+    /* transition overlay */
+    .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s ease-in-out;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+    }
+    /* transition marge dans overlay */
+    .fade-enter-active #marge, .fade-leave-active #marge {
+        transition: right 0.3s ease-in-out;
+    }
+    .fade-enter #marge, .fade-leave-to #marge {
+        right: -360px;
+    }
 
-    /* ESSAI POUR TRANSITION */
-    .ESSAI-enter-active, .ESSAI-leave-active {
-        transition: right .5s ease-in-out;
+    /* V2 : transition marge dans overlay */
+    /* #marge {
+        animation: slide-right-to-left 0.5s ease-in-out;
     }
-    .ESSAI-enter, .ESSAI-leave-to /* .fade-leave-active below version 2.1.8 */ {
-        right: 0;
+    .overlay.fade-leave-active #marge {
+        animation: slide-left-to-right 0.5s ease-in-out;
+    } 
+    @keyframes slide-right-to-left {
+        0% { right: -360px; }
+        100% {  right: 0px; }
     }
-    /* FIN */
+    @keyframes slide-left-to-right {
+        0% { right: 0px; }
+        100% { right: -360px; }
+    } */
 </style>

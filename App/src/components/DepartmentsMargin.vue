@@ -1,21 +1,23 @@
-<template>
-    <app-overlay 
-        :display="displayMarginDepartments" 
-        @click.native="closeMarge"
-        class="addTransition"
-    >
-        <div id="marge">
-            <div 
-                class="rayon"
-                v-for="department in departments" 
-                :key="department._id"
-                @click="displayDataDepartment(department)"
-            >
-                <span class="primary-txt">{{ department.intitule | uppercase }}</span>
-                <font-awesome-icon icon="chevron-right" class="secondary-txt" />
+<template>          
+    <transition name="fade" appear>
+        <app-overlay 
+            :display="displayMarginDepartments" 
+            @click.native="closeMarge"
+            data-overlay="true"
+        >
+            <div id="marge">
+                <div 
+                    class="rayon"
+                    v-for="department in departments" 
+                    :key="department._id"
+                    @click="displayDataDepartment(department)"
+                >
+                    <span class="primary-txt">{{ department.intitule | uppercase }}</span>
+                    <font-awesome-icon icon="chevron-right" class="secondary-txt" />
+                </div>
             </div>
-        </div>
-    </app-overlay>
+        </app-overlay>
+    </transition>
 </template>
 
 <script>
@@ -63,42 +65,34 @@ export default {
 
         // Pour fermer la marge listant rayons qd click en dehors de celle-ci
         closeMarge(e) {
-            if(e.target.className.includes('addTransition')) {
+            if(e.target.querySelectorAll('[data-overlay]')) {
                 this.$store.commit("SET_DISPLAY_MARGIN_DEPARTMENTS", false);
             }
         }
     },
 
     mounted() {
+        if(this.departments.length == 0) {
         // Chargement liste des rayons
         this.$store.dispatch('setDepartments');
+
+        }
     }
 }
 </script>
 
 <style scoped>
-    /* Surcharge possible sur class '.overlay' présente dans composant enfant 'app-overlay', alors que pas utilisée ici !! */
-    /* .overlay { */
-    .addTransition {
-        transition: background-color 0.5s ease-in-out;
-    }
-
     #marge {
         position: fixed;
         z-index: 2;
         margin: 0;
         left: 0;
         width: 300px;
-        margin-left: -300px;
+        margin-left: -300px;        margin-left: 0;
         height: calc(100% - 60px);
         background-color: #f5f5f5;
-        transition: margin-left 0.3s ease-in-out;
         box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
         overflow-y: auto;
-    }
-    /* Sélecteur utilisant class qui sont déclarées ds composant enfant */
-    .overlay.display #marge {
-        margin-left: 0;
     }
 
     .rayon {
@@ -137,4 +131,22 @@ export default {
     .rayon:hover > span:before {
         width: 100%;
     }
+
+
+
+/* transition overlay */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease-in-out;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0);
+}
+/* transition marge dans overlay */
+.fade-enter-active #marge, .fade-leave-active #marge {
+    transition: margin-left 0.3s ease-in-out;
+}
+.fade-enter #marge, .fade-leave-to #marge {
+    margin-left: -300px;
+}
 </style>
