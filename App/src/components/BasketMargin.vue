@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import Product from '@/components/Product'
+const Product = () => import(/* webpackChunkName: "Product" */ '@/components/Product')
 
 export default {
     name: 'BasketMargin',
