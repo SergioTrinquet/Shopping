@@ -35,10 +35,10 @@
 // Le composants suivants ne seront pas chargés directement mais scindés de 'app.js' et chargés 
 // de manière asynchrone après coup en tache de fond (lazy loading + code splitting)
 const DepartmentsMargin = () => import(/* webpackChunkName: "DepartmentsMargin" */ '@/components/DepartmentsMargin')
-const Filters = () => import(/* webpackChunkName: "Filters" */ '@/components/Filters')
-const Products = () => import(/* webpackChunkName: "Products" */ '@/components/Products')
-const ProductsHeader = () => import(/* webpackChunkName: "ProductsHeader" */ '@/components/ProductsHeader')
 const BasketMargin = () => import(/* webpackChunkName: "BasketMargin" */ '@/components/BasketMargin')
+const Filters = () => import(/* webpackChunkName: "Filters" */ '@/components/Filters')
+const ProductsHeader = () => import(/* webpackChunkName: "ProductsHeader" */ '@/components/ProductsHeader')
+const Products = () => import(/* webpackChunkName: "Products" */ '@/components/Products')
 
 export default {
   name: 'Shopping',
