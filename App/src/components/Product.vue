@@ -61,8 +61,8 @@
 </template>
 
 <script>
-import buttonAddToBasket from '@/components/ProductsButtonAddToBasket'
-import buttonsSetQuantity from '@/components/ProductsButtonsSetQuantity'
+const buttonAddToBasket = () => import(/* webpackChunkName: "ProductsButtonAddToBasket" */ '@/components/ProductsButtonAddToBasket')
+const buttonsSetQuantity = () => import(/* webpackChunkName: "ProductsButtonsSetQuantity" */ '@/components/ProductsButtonsSetQuantity')
 
 export default {
     name: 'Product',
