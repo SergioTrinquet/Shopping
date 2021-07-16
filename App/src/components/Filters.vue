@@ -1,12 +1,12 @@
 <template>
-  <form ref="filtersForm" @change="changeFormValues"><!-- {{ filters }} -->
+  <form ref="filtersForm" @change="changeFormValues">
 
       <div class="header primary-light">
         <span>Affiner</span> 
         <span 
-          class="linkRemoveFiltersSelection tertiary-txt"
+          class="linkRemoveFiltersSelection tertiary_hover"
           :class="displayButton ? '' : 'hidden'"
-          @click="removeSelectionFormFilters"
+          @click="confirmRemoveFilters"
         >
           Effacer les filtres
         </span>  
@@ -126,8 +126,6 @@ export default {
     filter_selection_to_remove() { 
       return this.$store.state.filter_selection_to_remove; 
     },
-
-    // 12/07
     displayButton() {
         const filtersQueryStringParams = this.$store.state.filters_query_string_parameters;
         return Array.from(new URLSearchParams(filtersQueryStringParams).keys()).length > 2;
@@ -225,7 +223,13 @@ export default {
       }
     },
 
-    // 12/07
+    confirmRemoveFilters() {
+      let c = confirm("Etes-vous sûr de vouloir supprimer tous les filtres ?");
+      if(c) {
+        this.removeSelectionFormFilters();
+      }
+    },
+
     removeSelectionFormFilters() {
       this.filters_type.forEach(f => {
         if(f.typeChbx == 'single' && this[f.name]) {
@@ -340,6 +344,7 @@ label {
   text-align: right;
   text-decoration: underline;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
 
   /* V2 */
   text-decoration: none;
@@ -350,11 +355,10 @@ label {
   color: #2c3e50c2;
 
   /* V3 */
-  /* line-height: 19px;
+  line-height: 19px;
   padding: 0 8px;
   color: #fff;
   background-color: #295187ed;
   border: 0;
-  */
 }
 </style>
