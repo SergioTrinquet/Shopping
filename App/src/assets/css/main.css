@@ -51,8 +51,9 @@ body {
     border: solid 1px #82c91e;
 }
 
-.tertiary {
-    background-color: #fb4b4b;
+.tertiary,
+.tertiary_hover:hover {
+    background-color: #fb4b4b !important;
 }
 .tertiary-txt,
 .tertiary-txt_hover:hover {
