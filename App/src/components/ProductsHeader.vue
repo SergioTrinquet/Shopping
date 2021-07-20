@@ -3,7 +3,7 @@
 
     <div class="lgn">
       <div>{{ Nb_products }} résultat{{ Nb_products > 1 ? "s" : "" }}</div>
-      <ProductsSelectOrder v-show="Nb_products > 1" />
+      <ProductsSelectOrder v-if="Nb_products > 1" />
     </div>
 
     <div class="rayonProduits" v-if="!!selected_department_name">
@@ -16,9 +16,8 @@
 </template>
 
 <script>
-
 const FiltersListTags = () => import(/* webpackChunkName: "FiltersListTags" */ '@/components/FiltersListTags')
-import ProductsSelectOrder from '@/components/ProductsSelectOrder'
+const ProductsSelectOrder = () => import(/* webpackChunkName: "ProductsSelectOrder" */ '@/components/ProductsSelectOrder')
 
 export default {
     name: 'ProductsHeader',
