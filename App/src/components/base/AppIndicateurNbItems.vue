@@ -47,12 +47,10 @@
 }
 
 
-
-            /* TEST */
-            .flash {
-              animation: scaling 0.4s ease-in;
-            }
-            @keyframes scaling {
-              100% { transform: scale(2); opacity: 0.5; }
-            }
+.flash {
+  animation: scaling 0.4s ease-in;
+}
+@keyframes scaling {
+  100% { transform: scale(2); opacity: 0.5; }
+}
 </style>
