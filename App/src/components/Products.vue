@@ -18,20 +18,20 @@
 const Product = () => import(/* webpackChunkName: "Product" */ '@/components/Product')
 
 export default {
-  name: 'Products',
+	name: 'Products',
 
-  components: {
-    Product
-  },
+	components: {
+		Product
+	},
 
-  computed: {
-    products() {
-      return this.$store.state.products;
-    },
-    basket() {
-      return this.$store.state.basket;
-    }
-  }
+	computed: {
+		products() {
+			return this.$store.state.products;
+		},
+		basket() {
+			return this.$store.state.basket;
+		}
+	}
 
 }
 </script>
@@ -64,8 +64,8 @@ export default {
 .noProducts {
   text-align: center;
   margin: 30px;
-  font-weight: bold;
   font-size: 20px;
-  line-height: 14px;
+  line-height: 28px;
+  color: #274d80;
 }
 </style>
