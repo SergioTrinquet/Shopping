@@ -5,7 +5,7 @@
             @click.native="closeMarge"
             data-overlay="true"
         >
-            <div id="marge">
+            <div id="marge" @click="stopPropagation">
                 <div 
                     class="rayon"
                     v-for="department in departments" 
@@ -22,11 +22,14 @@
 
 <script>
 import uppercase from '@/filters/uppercase'
+import stopPropagation from '@/mixins/stopPropagation'
 
 export default {
     name: 'DepartmentsMargin',
 
     filters: { uppercase },
+
+    mixins: [ stopPropagation ],
 
     computed: {
         displayMarginDepartments() {
@@ -73,9 +76,8 @@ export default {
 
     mounted() {
         if(this.departments.length == 0) {
-        // Chargement liste des rayons
-        this.$store.dispatch('setDepartments');
-
+            // Chargement liste des rayons
+            this.$store.dispatch('setDepartments');
         }
     }
 }

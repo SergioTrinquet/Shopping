@@ -5,7 +5,7 @@
             @click.native="closeMarge"
             data-overlay="true"
         >
-            <div id="marge">
+            <div id="marge" @click="stopPropagation">
                 <div class="marge_top">
                     <div class="header primary-light">
                         <span>Aperçu panier</span>
@@ -40,6 +40,7 @@
 
 <script>
 const Product = () => import(/* webpackChunkName: "Product" */ '@/components/Product')
+import stopPropagation from '@/mixins/stopPropagation'
 
 export default {
     name: 'BasketMargin',
@@ -47,6 +48,8 @@ export default {
     components: {
         Product
     },
+
+    mixins: [ stopPropagation ],
 
     computed: {
         displayMarginBasket() {
@@ -203,7 +206,7 @@ export default {
     .fade-enter-active, .fade-leave-active {
     transition: opacity 0.5s ease-in-out;
     }
-    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    .fade-enter, .fade-leave-to {
     opacity: 0;
     }
     /* transition marge dans overlay */
