@@ -213,7 +213,7 @@ export default new Vuex.Store({
 
 
     // Qd saisie ds champ de saisie recherche : Appel pour récupérer produits coorespondants
-    fetchProductsForAutocompleteSearchEngine({ commit }, payload) {
+    fetchProductsForAutocomplete({ commit }, payload) {
         axios.get(`api/autocomplete/products/${payload}`)
           .then(res => {
             commit('SET_AUTOCOMPLETE_RESULTS', res.data);
@@ -226,7 +226,7 @@ export default new Vuex.Store({
 
 
     // Qd clic sur un produit dans l'autocomplete du moteur de recherche
-    fetchProductFromAutocompleteSearchEngine({ commit }, payload) {
+    fetchProductFromAutocomplete({ commit }, payload) {
       commit('SET_LOADING', true);
       commit('SET_MESSAGE_ERROR', null);
 
