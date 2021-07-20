@@ -28,7 +28,7 @@
 
       <div class="basketIcon" @click="marginBasket">
         <!-- <router-link to="/myBasket"> -->
-          <IndicateurNbItems v-if="basketNbItems > 0">{{ basketNbItems }}</indicateurNbItems>
+          <IndicateurNbItems v-if="basketNbItems > 0" />
           <font-awesome-icon icon="shopping-basket" />
           <BasketPrice />
         <!-- </router-link> -->
@@ -36,7 +36,7 @@
     </div>
 
 
-    <div id="content">
+    <div id="content">    <span style="color: red; position: fixed; top: 10px; left: 80px; width: 200px; background-color: yellow; font-size: 11px;">{{search_products_type}}</span>
       <router-view/>
     </div>
 
@@ -46,9 +46,9 @@
 <script>
   import AppLoader from '@/components/base/AppLoader'
   const AppErrorMsg = () => import(/* webpackChunkName: "EncartMsgErreur" */ '@/components/base/AppError');
-  import SearchEngine from '@/components/GlobalSearchEngine'
+  import SearchEngine from '@/components/SearchEngine'
   const IndicateurNbItems = () => import(/* webpackChunkName: "IndicateurNbItems" */ '@/components/base/AppIndicateurNbItems')
-  const BasketPrice = () => import(/* webpackChunkName: "BasketPrice" */ '@/components/BasketPrice')
+  import BasketPrice from '@/components/BasketPrice'
 
   export default {
     components: {
@@ -57,12 +57,6 @@
       SearchEngine,
       IndicateurNbItems,
       BasketPrice
-    },
-
-    data() {
-      return {
-        
-      }
     },
 
     computed: {
@@ -83,8 +77,14 @@
       },
       componentsOpen() {
           return this.$store.getters.areComponentsOpen;
-      }
+      },
+
+
+      //// A VIRER ////
+      search_products_type() { return this.$store.state.search_products_type }
+      //// A VIRER ////
     },
+
 
     methods: {
       marginDepartments() {
@@ -165,6 +165,7 @@
   display: inline-block;
   padding: 0 0 0 20px;
   line-height: 17px;
+  min-width: 45px;
   position: relative;
 }
 
