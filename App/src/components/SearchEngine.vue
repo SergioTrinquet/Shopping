@@ -72,7 +72,7 @@ export default {
       },
 
       // Qd recherche par moteur de rech., ajout/retrait ds liste déroulante 'Tri' d'une option 'pertinence'
-      searchBySearchString(val) {
+      searchBySearchString(val) { console.warn("WATCH searchBySearchString", val); //TEST
         this.$store.commit(val ? 'ADD_LISTE_TRI_OPTION' : 'REMOVE_LISTE_TRI_OPTION');
       }
     },
@@ -129,14 +129,15 @@ export default {
           // Affectation 'selected_department' pour signifier que pas de rayon sélectionné et donc faire disparaitre div qui affiche nom du rayon
           this.$store.commit('SET_SELECTED_DEPARTMENT', {});
         
-          // Commit du paramètre pour construction de la queryString qui sera passée coté backend dans l'action 'fetchProductsDepartment' qui suit
+          // Commit du paramètre pour construction de la queryString qui sera passée coté backend vai l'action 'fetchProducts' qui suit
           // On indique par la même occasion quel moyen on recherche des produits (par rayon, ou par recherche ds le moteur)
           this.$store.commit('SET_TYPE_OF_SEARCH_PRODUCTS', { 'searchstring': searchString });
 
           // Appel API pour récup. des produits
-          this.$store.dispatch('fetchProductsValidationSearchEngine');
+          this.$store.dispatch('fetchProducts');
+
           // Récupération des filtres à partir de la recherche
-          this.$store.dispatch('setFiltersFromSearchString', searchString);
+          this.$store.dispatch('setFilters');
         }
       }
     },

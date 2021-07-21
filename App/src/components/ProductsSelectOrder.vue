@@ -25,10 +25,6 @@ export default {
     computed: {
         listeTypeTri() {
             return this.$store.state.liste_type_tri;
-        },
-
-        actionName() {      //console.log('GETTER actionName', this.$store.getters.getGoodActionName); //TEST
-            return this.$store.getters.getGoodActionName;
         }
     },
 
@@ -51,7 +47,7 @@ export default {
     },
 
     methods: {
-        sendOrderChoice() {
+        sendOrderChoice() {     
             const searchParams = new URLSearchParams(this.selectOrderProducts);
 
             // Enregistrement ds le store de la value du classement sélectionné sous forme de chaine de requête. Va mettre à jour la chaine de requete globale (filtres + tri + type de recherche) construite ds getter 'getQueryStringParameterstoFetchProducts'
@@ -59,9 +55,7 @@ export default {
             this.$store.commit('SET_TRI_QUERY_STRING_PARAMETERS', searchParams.toString());
 
             // Appel API pour récup. des produits à afficher ds l'ordre du tri sélectionné : 
-            // Le getter 'this.actionName' correspond soit à 'fetchProductsDepartment' qd produits affichés suite à recherche par rayon,
-            // soit à 'fetchProductsValidationSearchEngine' qd produits affichés suite à recherche via moteur de recherche
-            this.$store.dispatch(this.actionName);
+            this.$store.dispatch('fetchProducts');
         }
     }
 }

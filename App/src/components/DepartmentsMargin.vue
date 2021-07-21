@@ -55,15 +55,15 @@ export default {
             // Affectation 'selected_department' pour enregistrer le rayon sélectionné
             this.$store.commit('SET_SELECTED_DEPARTMENT', { id: dept._id, intitule: dept.intitule });
             
-            // Commit du paramètre pour construction de la queryString qui sera passée coté backend dans l'action 'fetchProductsDepartment' qui suit
+            // Commit du paramètre pour construction de la queryString qui sera passée coté backend via l'action 'fetchProducts' qui suit
             // On indique par la même occasion par quel moyen on recherche des produits (par rayon, ou par recherche ds le moteur)
             this.$store.commit('SET_TYPE_OF_SEARCH_PRODUCTS', { 'rayon': dept._id });
 
             // Appel API pour récup. des produits du rayon sélectionné
-            this.$store.dispatch('fetchProductsDepartment');
+            this.$store.dispatch('fetchProducts');
 
             // Récup. filtres présents ds produits du rayon sélectionné
-            this.$store.dispatch('setFiltersFromDepartment', dept._id);
+            this.$store.dispatch('setFilters');
         },
 
         // Pour fermer la marge listant rayons qd click en dehors de celle-ci

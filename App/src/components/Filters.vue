@@ -120,9 +120,6 @@ export default {
     },
     ////
 
-    actionName() { //console.log('GETTER actionName', this.$store.getters.getGoodActionName); //TEST
-        return this.$store.getters.getGoodActionName;
-    },
     filter_selection_to_remove() { 
       return this.$store.state.filter_selection_to_remove; 
     },
@@ -217,9 +214,7 @@ export default {
         this.$store.commit('SET_FILTERS_QUERY_STRING_PARAMETERS', searchParams.toString());
         
         // Appel API pour récup. des produits à afficher selon les filtres sélectionnés : 
-        // Le getter 'this.actionName' correspond soit à 'fetchProductsDepartment' qd produits affichés suite à recherche par rayon,
-        // soit à 'fetchProductsValidationSearchEngine' qd produits affichés suite à recherche via moteur de recherche
-        this.$store.dispatch(this.actionName);
+        this.$store.dispatch('fetchProducts');
       }
     },
 
