@@ -5,7 +5,7 @@
     <AppErrorMsg :message="dataError" v-if="dataError != null" /><!-- Encart msg d'erreur général -->
 
     <div id="nav">
-      <div id="MenuRayons" class="secondary" @click="marginDepartments">
+      <div id="MenuRayons" class="secondary hover" @click="marginDepartments">
         <font-awesome-icon icon="bars" />
         <span>Rayons</span>
       </div>
@@ -36,7 +36,11 @@
     </div>
 
 
-    <div id="content">    <span style="color: red; position: fixed; top: 10px; left: 80px; width: 200px; background-color: yellow; font-size: 11px;">{{search_products_type}}</span>
+    <div id="content">    
+      
+      <span style="color: red; position: fixed; top: 10px; left: 80px; width: 200px; background-color: yellow; font-size: 11px;">{{search_products_type}}</span>
+      <!-- <span style="background-color: red; padding: 10px; color: #fff;">{{typeof dataError}} - {{JSON.stringify(dataError)}} - {{dataError}}</span> -->
+      
       <router-view/>
     </div>
 
@@ -61,7 +65,7 @@
 
     computed: {
       loading() {
-        return this.$store.state.loading;
+        return this.$store.state.loading > 0;
       },
       dataError() {
         return this.$store.state.data_error;
@@ -83,6 +87,7 @@
       //// A VIRER ////
       search_products_type() { return this.$store.state.search_products_type }
       //// A VIRER ////
+
     },
 
 
@@ -177,6 +182,7 @@
   padding: 9px 10px;
   align-self: stretch; /* Pour prendre tte la hauteur */
   cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
 }
 
 #nav svg {
