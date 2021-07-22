@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import axios from 'axios'
+import APIcall from '/helpers/APIcall'
 
 Vue.use(Vuex)
 
@@ -31,7 +31,7 @@ export default new Vuex.Store({
     filter_selection_to_remove: null,
     autocompleteResults: [],
 
-    search_products_type: {} // TEST au 25/06
+    search_products_type: {} // 25/06
   },
 
 
@@ -106,7 +106,7 @@ export default new Vuex.Store({
     },
 
     
-    // TEST au 25/06
+    // 25/06
     SET_TYPE_OF_SEARCH_PRODUCTS(state, payload) { 
       state.search_products_type = payload; 
     },
@@ -118,25 +118,18 @@ export default new Vuex.Store({
     REMOVE_LISTE_TRI_OPTION(state) {
       state.liste_type_tri.shift(); // retrait 1ere option (qui doit être l'option 'Pertinence'
     }
+
   },
 
 
   actions: {
     // Pour alimenter marge coulissante listant rayons
-    setDepartments({ commit }) {
-      commit('SET_LOADING', true);
-      commit('SET_MESSAGE_ERROR', null);
-
-      return axios.get('/api/departments')
-        .then((res) => {
-          commit('SET_DEPARTMENTS', res.data);
-        })
-        .catch((err) => {
-          console.error(err.response);
-          commit('SET_MESSAGE_ERROR', err.response);
-        })
-        .finally(() => commit('SET_LOADING', false));
+    async setDepartments(context) {
+      const path = '/api/departments';
+      const data = await APIcall(context, path);
+      if(data) context.commit('SET_DEPARTMENTS', data);
     },
+
 
     // Pour fermer tous les composants étant potentiellement ouverts avant d'ouvrir celui sur lequel l'utilisateur vient de cliquer
     closeComponents({ commit }) {
@@ -144,109 +137,52 @@ export default new Vuex.Store({
       commit('SET_DISPLAY_MARGIN_BASKET', false);
     },
 
-    // Récupération des filtres utiles selon le rayon sélectionné 
-    setFiltersFromDepartment({ commit }, payload) {
-      commit('SET_LOADING', true);
-      commit('SET_MESSAGE_ERROR', null);
 
-      return axios.get(`/api/department/filters/${payload}`)
-        .then(res => {
-          commit('SET_FILTERS', res.data);
-        })
-        .catch(err => {
-          console.error(err.response);
-          commit('SET_MESSAGE_ERROR', err.response);
-        })
-        .finally(() => commit('SET_LOADING', false));
+    // Récupération des filtres utiles
+    async setFilters(context) {
+      const pathSegment = context.getters.getAPISegmentPath;
+      const searchArg = Object.values(context.state.search_products_type)[0];
+      const path = `/api/${pathSegment}/filters/${searchArg}`;
+
+      const data = await APIcall(context, path);
+      if(data) context.commit('SET_FILTERS', data);
     },
-
-
-    // Récupération des filtres utiles selon les produits affichés après recherche dans le champ de recherche
-    setFiltersFromSearchString({ commit }, payload) {
-      commit('SET_LOADING', true);
-      commit('SET_MESSAGE_ERROR', null);
-
-      axios.get(`api/searchstring/filters/${payload}`)
-        .then(res => { 
-          commit('SET_FILTERS', res.data);
-        })
-        .catch(err => {
-          console.error(err.response);
-          commit('SET_MESSAGE_ERROR', err.response);
-        })
-        .finally(() => commit('SET_LOADING', false));
-    },
-
     
-    // Qd click sur rayon dans marge coulissante, ou bien filtres ou encore sur select Tri
-    fetchProductsDepartment({ commit, getters }) {
-      commit('SET_LOADING', true);
-      commit('SET_MESSAGE_ERROR', null);
 
-      return axios.get(`/api/department/products?${getters.getQueryStringParametersToFetchProducts}`)
-        .then(res => {
-          commit('SET_PRODUCTS', res.data);
-        })
-        .catch(err => {
-          console.error(err.response);
-          commit('SET_MESSAGE_ERROR', err.response);
-        })
-        .finally(() => commit('SET_LOADING', false));
+    // Qd click sur rayon dans marge coulissante, ou bien filtres ou encore sur select Tri,
+    // ou bien encore qd validation à partir du moteur de recherche produit (clic sur icone Loupe OU press enter sur input)
+    async fetchProducts(context) {
+      const queryStringParameters = context.getters.getQueryStringParametersToFetchProducts;
+      const pathSegment = context.getters.getAPISegmentPath;
+      const path = `api/${pathSegment}/products?${queryStringParameters}`;
+
+      const data = await APIcall(context, path);  
+      if(data) context.commit('SET_PRODUCTS', data);
     },
 
 
-    // Qd validation à partir du moteur de recherche produit (clic sur icone Loupe OU press enter sur input)
-    fetchProductsValidationSearchEngine({ commit, getters }) {
-      commit('SET_LOADING', true);
-      commit('SET_MESSAGE_ERROR', null);
-
-      axios.get(`api/searchstring/products?${getters.getQueryStringParametersToFetchProducts}`)
-        .then(res => { 
-          commit('SET_PRODUCTS', res.data);
-        })
-        .catch(err => {
-          console.error(err.response);
-          commit('SET_MESSAGE_ERROR', err.response);
-        })
-        .finally(() => commit('SET_LOADING', false));
-    },
-
-
-    // Qd saisie ds champ de saisie recherche : Appel pour récupérer produits coorespondants
-    fetchProductsForAutocomplete({ commit }, payload) {
-        axios.get(`api/autocomplete/products/${payload}`)
-          .then(res => {
-            commit('SET_AUTOCOMPLETE_RESULTS', res.data);
-          })
-          .catch((err) => {
-            console.error(err.response);
-            commit('SET_MESSAGE_ERROR', err.response);
-          })
+    // Qd saisie ds champ de saisie recherche : Appel pour récupérer produits correspondants
+    async fetchProductsForAutocomplete(context, payload) {
+      const path = `api/autocomplete/products/${payload}`;
+      const data = await APIcall(context, path, false);  
+      if(data) context.commit('SET_AUTOCOMPLETE_RESULTS', data);
     },
 
 
     // Qd clic sur un produit dans l'autocomplete du moteur de recherche
-    fetchProductFromAutocomplete({ commit }, payload) {
-      commit('SET_LOADING', true);
-      commit('SET_MESSAGE_ERROR', null);
+    async fetchProductFromAutocomplete(context, payload) {
+      const path = `api/product/${payload}`;
+      let data = await APIcall(context, path);
+      if(data) {
+        // Affectation 'selected_department' pour enregistrer le rayon sélectionné
+        context.commit('SET_SELECTED_DEPARTMENT', 
+        { 
+          id: data[0].rayon._id, 
+          intitule: data[0].rayon.intitule 
+        });
 
-      axios.get(`api/product/${payload}`)
-        .then(res => {
-
-          // Affectation 'selected_department' pour enregistrer le rayon sélectionné
-          commit('SET_SELECTED_DEPARTMENT', 
-          { 
-            id: res.data[0].rayon._id, 
-            intitule: res.data[0].rayon.intitule 
-          });
-
-          commit('SET_PRODUCTS', res.data);
-        })
-        .catch(err => {
-          console.error(err.response);
-          commit('SET_MESSAGE_ERROR', err.response);
-        })
-        .finally(() => commit('SET_LOADING', false));
+        context.commit('SET_PRODUCTS', data);
+      }
     }
     
   },
@@ -319,22 +255,18 @@ export default new Vuex.Store({
     },
 
 
-    // Aiguillage selon type de recherche entre produits à aller chercher via action 'fetchProductsDepartment' qd recherche par rayon,
-    // et produits via action 'fetchProductsValidationSearchEngine' qd recherche via moteur de recherche
-    getGoodActionName(state, getters) {   
-      let action = null;
-      const queryString = new URLSearchParams(getters.getQueryStringParametersToFetchProducts);
-      if(queryString.has('rayon')) {
-          action = 'fetchProductsDepartment';
-      } else if(queryString.has('searchstring')) {
-          action = 'fetchProductsValidationSearchEngine';
+    getAPISegmentPath(state, getters) {
+      const queryStringParameters = getters.getQueryStringParametersToFetchProducts;
+      const parameters = new URLSearchParams(queryStringParameters);
+      let pathSegment = '';
+      if(parameters.has('rayon')) {
+        pathSegment = 'department';
+      } else if(parameters.has('searchstring')) {
+        pathSegment = 'searchstring';
       }
-
-      return action;
+      return pathSegment;
     }
 
-  },
-
-  modules: {
   }
+
 })
