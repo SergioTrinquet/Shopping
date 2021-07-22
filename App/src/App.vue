@@ -35,6 +35,8 @@
       </div>
     </div>
 
+    <DepartmentsMargin v-if="displayMarginDepartments" />
+    <BasketMargin v-if="displayMarginBasket" />
 
     <div id="content">    
       
@@ -53,6 +55,9 @@
   import SearchEngine from '@/components/SearchEngine'
   const IndicateurNbItems = () => import(/* webpackChunkName: "IndicateurNbItems" */ '@/components/base/AppIndicateurNbItems')
   import BasketPrice from '@/components/BasketPrice'
+  const DepartmentsMargin = () => import(/* webpackChunkName: "DepartmentsMargin" */ '@/components/DepartmentsMargin')
+  const BasketMargin = () => import(/* webpackChunkName: "BasketMargin" */ '@/components/BasketMargin')
+
 
   export default {
     components: {
@@ -60,7 +65,9 @@
       AppErrorMsg,
       SearchEngine,
       IndicateurNbItems,
-      BasketPrice
+      BasketPrice,
+      DepartmentsMargin, 
+      BasketMargin
     },
 
     computed: {
@@ -93,19 +100,19 @@
 
     methods: {
       marginDepartments() {
-        this.closeOtherComponents();
+        //this.closeOtherComponents();
         this.$store.commit("SET_DISPLAY_MARGIN_DEPARTMENTS", !this.displayMarginDepartments);
       },
       marginBasket() {
-        this.closeOtherComponents();
+        //this.closeOtherComponents();
         this.$store.commit("SET_DISPLAY_MARGIN_BASKET", !this.displayMarginBasket);
       },
       // Pour fermer ts les composants pouvant être ouverts
-      closeOtherComponents() {
+      /* closeOtherComponents() {
         if(this.componentsOpen) {
           this.$store.dispatch("closeComponents");
         }
-      }
+      } */
     }
   }
 </script>
