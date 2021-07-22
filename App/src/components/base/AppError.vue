@@ -1,11 +1,14 @@
 <template>
     <app-overlay 
-        :display="message !== null && closeEncart == false" 
+        :display="message !== null" 
         :onTop="true"
     >
         <div class="encartErreur">
-            <!-- {{ "closeEncart => " + closeEncart }} - {{ message !== null && closeEncart == false }} --> <!-- TEST -->
-            <font-awesome-icon icon="times" id="close" @click="closeEncart = true" />
+            <font-awesome-icon 
+                icon="times" 
+                id="close" 
+                @click="closeEncart" 
+            />
             <div class="header">
                 <font-awesome-icon icon="exclamation-circle" />
                 ERREUR
@@ -46,7 +49,6 @@ export default {
 
     data() {
         return {
-            closeEncart: false,
             displayStack: false
         }
     },
@@ -55,6 +57,12 @@ export default {
         // Si 'message' est un objet, signifie que erreur coté Node.js, et on change l'interface car plusieurs champs à afficher au lieu d'un seul
         isObject() {
             return (typeof this.message === "object" ? true : false);
+        }
+    },
+
+    methods: {
+        closeEncart() {
+            this.$store.commit('SET_MESSAGE_ERROR', null);
         }
     }
 }
@@ -69,6 +77,7 @@ export default {
     transform: translate(-50%, -50%);
     box-sizing: border-box;
     max-height: 80vh;
+    min-width: 200px;
     background-color: #ff5858;
     color: #fff;
     border-radius: 5px;
