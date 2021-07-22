@@ -68,5 +68,6 @@ select {
     padding: 4px;
     font-size: 12px;
     font-family: 'Baloo 2', cursive;
+    cursor: pointer;
 }
 </style>
