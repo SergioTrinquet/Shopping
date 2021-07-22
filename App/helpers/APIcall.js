@@ -1,8 +1,7 @@
 import axios from 'axios'
 
 export default (context, path, withLoader = true) => {
-    if(withLoader) context.commit('SET_LOADING', true); 
-    //if(withLoader) context.commit('ADD_LOADING'); 
+    if(withLoader) context.commit('ADD_LOADING'); 
 
     return axios.get(path)
         .then(res => {
@@ -21,7 +20,6 @@ export default (context, path, withLoader = true) => {
           if(context.state.data_error == null)  context.commit('SET_MESSAGE_ERROR', String(err)); */
         })
         .finally(() => { 
-            if(withLoader) context.commit('SET_LOADING', false); 
-            //if(withLoader) context.commit('REMOVE_LOADING');
+            if(withLoader) context.commit('REMOVE_LOADING');
         });
 }

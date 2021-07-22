@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    loading: false,
+    loading: 0,
     data_error: null,
     display_margin_departments: false,
     display_margin_basket: false,
@@ -36,8 +36,13 @@ export default new Vuex.Store({
 
 
   mutations: {
-    SET_LOADING(state, payload) {
-      state.loading = payload;
+    // Qd state 'loading' est un booleen, si plusieurs appels async. parallèles, le 1er qui se terminait faisiat disparaitre le loader : 
+    // Ici plus le cas car 'loaderInt' doit être = 0 pour disparaitre  
+    ADD_LOADING(state) { 
+      state.loading += 1;
+    },
+    REMOVE_LOADING(state) { 
+      state.loading -= 1;
     },
     SET_MESSAGE_ERROR(state, payload) {
       state.data_error = payload;
@@ -104,19 +109,17 @@ export default new Vuex.Store({
     SET_AUTOCOMPLETE_RESULTS(state, payload) {
       state.autocompleteResults = payload;
     },
-
-    
-    // 25/06
-    SET_TYPE_OF_SEARCH_PRODUCTS(state, payload) { 
-      state.search_products_type = payload; 
-    },
-
-
     ADD_LISTE_TRI_OPTION(state) {
       state.liste_type_tri.unshift(state.score_type_tri); // Ajout option 'Pertinence' en 1ere place
     },
     REMOVE_LISTE_TRI_OPTION(state) {
       state.liste_type_tri.shift(); // retrait 1ere option (qui doit être l'option 'Pertinence'
+    },
+
+    
+    // 25/06
+    SET_TYPE_OF_SEARCH_PRODUCTS(state, payload) { 
+      state.search_products_type = payload; 
     }
 
   },
