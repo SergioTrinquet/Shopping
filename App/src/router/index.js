@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Shopping from '@/views/Shopping'
+import Accueil from '@/views/Accueil'
  // route level code-splitting
 // this generates a separate chunk (basket.[hash].js) for this route
 // which is lazy-loaded when the route is visited.
+const Shopping = () => import(/* webpackChunkName: "shopping" */ '@/views/Shopping')
 const Basket = () => import(/* webpackChunkName: "basket" */ '@/views/Basket')
 const UnknownURL = () => import(/* webpackChunkName: "404" */ '@/components/base/404')
 
@@ -14,6 +15,11 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    name: 'Accueil',
+    component: Accueil
+  },
+  {
+    path: '/shopping',
     name: 'Shopping',
     component: Shopping
   },
