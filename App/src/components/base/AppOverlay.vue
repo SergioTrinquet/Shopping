@@ -13,7 +13,8 @@ export default {
 
     props: {
         display: {
-            type: Boolean
+            type: Boolean,
+            required: true
         },
         onTop: {
             type: Boolean
