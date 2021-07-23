@@ -91,6 +91,9 @@ export default new Vuex.Store({
       // ou
       state.basket = {...state.basket};
     },
+    REMOVE_BASKET(state) {
+      state.basket = {};
+    },
     SET_FILTERS(state, payload) {
       state.filters = payload;
     },
