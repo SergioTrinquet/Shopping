@@ -1,5 +1,5 @@
 <template>
-  <app-overlay>
+  <app-overlay display="true">
         <div class="encartConfirmationCommande">
             <font-awesome-icon 
                 icon="times" 
@@ -15,6 +15,8 @@
 
 <script>
 export default {
+    name: 'ValidationOrderModal',
+
     methods: {
         emitEventCloseModal() {
             this.$emit('event-close-modal');
