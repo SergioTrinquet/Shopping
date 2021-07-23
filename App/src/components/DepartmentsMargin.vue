@@ -6,14 +6,19 @@
             data-overlay="true"
         >
             <div id="marge" @click="stopPropagation">
-                <div 
-                    class="rayon"
-                    v-for="department in departments" 
-                    :key="department._id"
-                    @click="displayDataDepartment(department)"
-                >
-                    <span class="primary-txt">{{ department.intitule | uppercase }}</span>
-                    <font-awesome-icon icon="chevron-right" class="secondary-txt" />
+                <div class="marge_top">
+                    <div class="header secondary">Rayons</div>   
+                </div>
+                <div>
+                    <div 
+                        class="rayon"
+                        v-for="department in departments" 
+                        :key="department._id"
+                        @click="displayDataDepartment(department)"
+                    >
+                        <span class="primary-txt">{{ department.intitule | uppercase }}</span>
+                        <font-awesome-icon icon="chevron-right" class="secondary-txt" />
+                    </div>
                 </div>
             </div>
         </app-overlay>
@@ -52,6 +57,9 @@ export default {
 
     methods: {
         displayDataDepartment(dept) {
+            // Redirection vers pg de présentation des produits              
+            this.$router.push({ name: 'Shopping' });
+
             // Affectation 'selected_department' pour enregistrer le rayon sélectionné
             this.$store.commit('SET_SELECTED_DEPARTMENT', { id: dept._id, intitule: dept.intitule });
             
@@ -91,6 +99,15 @@ export default {
         overflow-y: auto;
     }
 
+    .marge_top {
+        padding: 10px;
+    }
+    .header {
+        font-weight: bold;
+        padding: 5px 10px;
+        color: #fff;
+    }
+
     .rayon {
         padding: 10px;
         border-top: dotted 1px #747474;
@@ -115,7 +132,6 @@ export default {
 
     .rayon > span:before {
         content: "";
-        background: rgba(0, 0, 0, 0.1);
         background: rgba(130,201,30, 0.2);
         width: 0%;
         height: 100%;
@@ -129,20 +145,19 @@ export default {
     }
 
 
-
-/* transition overlay */
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s ease-in-out;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-  background-color: rgba(0, 0, 0, 0);
-}
-/* transition marge dans overlay */
-.fade-enter-active #marge, .fade-leave-active #marge {
-    transition: margin-left 0.3s ease-in-out;
-}
-.fade-enter #marge, .fade-leave-to #marge {
-    margin-left: -300px;
-}
+    /* transition overlay */
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity 0.5s ease-in-out;
+    }
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
+        background-color: rgba(0, 0, 0, 0);
+    }
+    /* transition marge dans overlay */
+    .fade-enter-active #marge, .fade-leave-active #marge {
+        transition: margin-left 0.3s ease-in-out;
+    }
+    .fade-enter #marge, .fade-leave-to #marge {
+        margin-left: -300px;
+    }
 </style>
