@@ -1,5 +1,10 @@
 <template>
   <div class="center">
+      <validation-order-modal 
+        v-if="displayMsgValidationCommande" 
+        @event-close-modal="closeModal" 
+      />
+
       <div class="accueilTexte">Bienvenue sur mon appli de courses en ligne!</div>
       <img 
         src="../assets/imgs/illustration_undraw_shopping_app.svg" 
@@ -10,8 +15,30 @@
 </template>
 
 <script>
-export default {
+const ValidationOrderModal = () => import(/* webpackChunkName: "ValidationOrderModal" */ '@/components/ValidationOrderModal');
 
+export default {
+    components: {
+        ValidationOrderModal
+    },
+
+    data() {
+        return {
+            displayMsgValidationCommande: false
+        }
+    },
+
+    methods: {
+        closeModal() {
+            this.displayMsgValidationCommande = false;
+        }
+    },
+
+    created() {
+        if(this.$route.params.validatedOrder) {
+            this.displayMsgValidationCommande = true;
+        }
+    }
 }
 </script>
 
