@@ -2,11 +2,11 @@
     <app-overlay 
         :display="message !== null" 
         :onTop="true"
-    >
+    >       <!-- Pas sur que prop. 'display' ds 'App-overlay' soit utile étant donné que le composant 'AppError' est en lazy loading AVEC CONDIITON ! -->
         <div class="encartErreur">
             <font-awesome-icon 
                 icon="times" 
-                id="close" 
+                id="iconClose" 
                 @click="closeEncart" 
             />
             <div class="header">
@@ -99,15 +99,9 @@ export default {
     max-height: calc(80vh - 80px); /* Voir si pas meilleure façon de faire */
 }
 
-#close {
-    position: absolute;
+#iconClose {
     top: 18px;
     right: 18px;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-}
-#close:hover {
-    transform: rotate(180deg);
 }
 
 .status {

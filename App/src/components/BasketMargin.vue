@@ -12,7 +12,7 @@
                         <span>
                             <font-awesome-icon 
                                 icon="times" 
-                                id="close" 
+                                id="iconClose" 
                                 class="tertiary-txt_hover" 
                                 @click="closeMargeFromButton" 
                             />
@@ -150,15 +150,9 @@ export default {
         text-align: right;
     }
 
-    #close {
-        cursor: pointer;
+    #iconClose {
         font-size: 20px;
-        position: absolute;
         margin: 2px 0 0 -13px;
-        transition: transform 0.3s ease-in-out;
-    }
-    #close:hover {
-        transform: rotate(180deg);
     }
 
     .department_title {

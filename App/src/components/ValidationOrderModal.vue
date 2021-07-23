@@ -3,7 +3,7 @@
         <div class="encartConfirmationCommande">
             <font-awesome-icon 
                 icon="times" 
-                id="close" 
+                id="iconClose" 
                 class="tertiary-txt_hover" 
                 @click="emitEventCloseModal"
             />
@@ -44,15 +44,9 @@ export default {
     line-height: 22px;
 }
 
-#close {
-    position: absolute;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
+#iconClose {
     top: 12px;
     right: 12px;
     font-size: 18px;
-}
-#close:hover {
-    transform: rotate(180deg);
 }
 </style>
