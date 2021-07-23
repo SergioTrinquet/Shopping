@@ -27,6 +27,8 @@ export default {
     .overlay {
         position: fixed;
         z-index: 1000;
+        top: 0;
+        left: 0;
         background-color: rgba(0, 0, 0, 0);
         width: 0;
         height: 100%;
