@@ -69,3 +69,12 @@ body {
     background-color: #f5f5f5;
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
 }
+
+#iconClose {
+    position: absolute;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+#iconClose:hover {
+    transform: rotate(180deg);
+}
