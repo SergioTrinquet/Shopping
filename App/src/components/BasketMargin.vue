@@ -32,7 +32,20 @@
                         </div>             
                     </div>
                 </div>
-                <div class="marge_bottom primary">eerze</div>
+                <div class="marge_bottom">
+
+                    <div class="TotalWrapper tertiary-txt">
+                        <span class="libelle">Total:</span>
+                        <span class="somme">{{ basketTotalPrice }}</span>
+                    </div>
+                    <button 
+                        class="btValidationOrder secondary tertiary_hover"
+                        :disabled="basketNbItems == 0"
+                        @click="validationOrder"
+                    >
+                        Valider la commande
+                    </button>
+                </div>
             </div>
         </app-overlay>
     </transition>
@@ -63,11 +76,14 @@ export default {
         },
         basketSortedByDepartment() {   
             return this.$store.getters.getBasketSortedByDepartment;
+        },
+        basketTotalPrice() {
+            return this.$store.getters.getBasketTotalPrice;
         }
     },
 
     methods: {
-        // Pour fermer la marge listant rayons qd click en dehors de celle-ci
+        // Pour fermer la marge listant les articles du panier qd click en dehors de celle-ci
         closeMarge(e) {
             if(e.target.querySelectorAll('[data-overlay]')) {
                 this.$store.commit("SET_DISPLAY_MARGIN_BASKET", false);
@@ -77,6 +93,18 @@ export default {
         closeMargeFromButton(e) {
             this.$store.commit("SET_DISPLAY_MARGIN_BASKET", false);
             e.stopPropagation(); // Sinon execution après de la méthode 'closeMarge' car appelée sur click sur DOM parent
+        },
+
+        validationOrder() {
+            let c = confirm("Confirmez votre validation svp.");
+            if(c) {
+                // On supprime les articles du panier
+                this.$store.commit("REMOVE_BASKET");
+                // Fermeture marge panier
+                this.$store.commit("SET_DISPLAY_MARGIN_BASKET", false);
+                // Renvoi sur pg d'accueil avec paramètre pour apparition encart de confirmation de commande
+                this.$router.push({ name: 'Accueil', params: { validatedOrder: true } });
+            }
         }
     }
 
@@ -98,10 +126,15 @@ export default {
         overflow-y: auto;
         flex-grow: 1; /* Pour prendre tt l'espace restant par rapport aux autres bloc column */
         padding: 0 10px 10px 10px;
+        box-sizing: border-box;
+        border: dotted 1px #b3c7e3;
+        border-left-width: 0;
+        border-right-width: 0;
     }
     .marge_bottom {
-        padding: 10px;
-        color: #fff;
+        padding: 8px;
+        display: flex;
+        justify-content: space-between;
     }
 
     .header {
@@ -143,6 +176,38 @@ export default {
         padding: 8px;
         background-color: #e6e6e6;
         margin: 10px 0;
+    }
+
+    .TotalWrapper {
+        font-weight: bold;
+        line-height: 17px;
+    }
+    .TotalWrapper .libelle {
+        font-size: 13px;
+        display: block;
+    }
+    .TotalWrapper .somme {
+        font-size: 22px;
+    }
+    .TotalWrapper .somme:after {
+        content: "€";
+    }
+
+    .btValidationOrder {
+        width: 60%;
+        border: solid 2px rgba(255, 255, 255, 0.6);
+        padding: 2px;
+        border-radius: 4px;
+        color: #fff;
+        font-weight: bold;
+        font-family: 'Baloo 2', cursive;
+        font-size: 17px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+    }
+    .btValidationOrder:disabled {
+        opacity: 0.5;
+        pointer-events: none;
     }
 
 
