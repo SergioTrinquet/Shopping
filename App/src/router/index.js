@@ -7,7 +7,7 @@ import Accueil from '@/views/Accueil'
 // which is lazy-loaded when the route is visited.
 const Shopping = () => import(/* webpackChunkName: "shopping" */ '@/views/Shopping')
 const Basket = () => import(/* webpackChunkName: "basket" */ '@/views/Basket')
-const UnknownURL = () => import(/* webpackChunkName: "404" */ '@/components/base/404')
+const UnknownURL = () => import(/* webpackChunkName: "404" */ '@/views/404')
 
 
 Vue.use(VueRouter)
