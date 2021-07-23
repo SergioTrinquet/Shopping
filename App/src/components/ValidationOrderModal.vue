@@ -32,15 +32,16 @@ export default {
     background-color: #fff;
     border-radius: 5px;
     padding: 30px 50px;
-    box-shadow: 0 0 0 100vh rgba(0, 0,0, 0.5);
+    box-shadow: 0 4px 10px rgba(0, 0,0, 0.3);
     text-align: center;
     top: 50vh;
     left: 50vw;
     transform: translate(-50%, -50%);
 }
 .encartConfirmationCommande p {
-    margin: 2px;
+    margin: 8px;
     font-size: 17px;
+    line-height: 22px;
 }
 
 #close {
