@@ -19,19 +19,15 @@
         <SearchEngine />
       </div>
 
-      <div>
-        <router-link to="/myBasket">
+      <div style="opacity: 0.5; cursor not-allowed;"><!-- Pas encore opérationnel mais en projet -->
           <font-awesome-icon icon="heart" />
           <span>Listes</span>
-        </router-link>
       </div>
 
       <div class="basketIcon" @click="marginBasket">
-        <!-- <router-link to="/myBasket"> -->
           <IndicateurNbItems v-if="basketNbItems > 0" />
           <font-awesome-icon icon="shopping-basket" />
           <BasketPrice />
-        <!-- </router-link> -->
       </div>
     </div>
 
@@ -53,7 +49,7 @@
   import AppLoader from '@/components/base/AppLoader'
   const AppErrorMsg = () => import(/* webpackChunkName: "EncartMsgErreur" */ '@/components/base/AppError');
   import SearchEngine from '@/components/SearchEngine'
-  const IndicateurNbItems = () => import(/* webpackChunkName: "IndicateurNbItems" */ '@/components/base/AppIndicateurNbItems')
+  const IndicateurNbItems = () => import(/* webpackChunkName: "IndicateurNbItems" */ '@/components/BasketIndicateurNbItems')
   import BasketPrice from '@/components/BasketPrice'
   const DepartmentsMargin = () => import(/* webpackChunkName: "DepartmentsMargin" */ '@/components/DepartmentsMargin')
   const BasketMargin = () => import(/* webpackChunkName: "BasketMargin" */ '@/components/BasketMargin')
