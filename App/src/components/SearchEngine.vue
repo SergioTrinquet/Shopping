@@ -4,7 +4,6 @@
             type="text" 
             class="mainInputSearch" 
             placeholder="Rechercher un produit par son nom ou sa marque"
-            @click="closeMargins"
             @keyup="searchProductsForAutocomplete"
             @keypress.enter="searchProducts"
         >
@@ -55,9 +54,6 @@ export default {
       // Pour servir de flag pour ajouter/retirer l'option 'pertinence' ds le select du tri
       searchBySearchString() {  console.warn("Moteur Rech. => COMPUTED  de 'searchBySearchString'"); //TEST
         return typeof this.$store.state.search_products_type.searchstring !== "undefined";
-      },
-      componentsOpen() {
-        return this.$store.getters.areComponentsOpen;
       }
     },
 
@@ -111,13 +107,6 @@ export default {
       
       setDisplayIconClearSearch(inputValue) {
         this.displayIconClearSearch = inputValue.length > 0 ? true : false;
-      },
-
-
-      closeMargins() {
-        if(this.componentsOpen) {
-          this.$store.dispatch("closeComponents");
-        }
       },
 
 

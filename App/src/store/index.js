@@ -137,13 +137,6 @@ export default new Vuex.Store({
     },
 
 
-    // Pour fermer tous les composants étant potentiellement ouverts avant d'ouvrir celui sur lequel l'utilisateur vient de cliquer
-    closeComponents({ commit }) {
-      commit('SET_DISPLAY_MARGIN_DEPARTMENTS', false);
-      commit('SET_DISPLAY_MARGIN_BASKET', false);
-    },
-
-
     // Récupération des filtres utiles
     async setFilters(context) {
       const pathSegment = context.getters.getAPISegmentPath;
@@ -238,10 +231,6 @@ export default new Vuex.Store({
       return finalSortedItems;
     },
 
-    // Signale si au moins un des composants est ouvert (composant marge des rayons et composant marge panier)
-    areComponentsOpen(state) {
-      return state.display_margin_departments || state.display_margin_basket;
-    },
 
     // Construction de la partie 'search' de l'URL utilisée pour l'API qui va récupérer les produits 
     // en concaténant les paramètres des filtres + l'id du rayon + les paramètres du tri
