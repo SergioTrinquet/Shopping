@@ -6,25 +6,22 @@
   </transition>
 </template>
 
-
-        <script>
-        export default {
-          computed: {
-            basketNbItems() {
-              return this.$store.getters.getBasketNbItems;
-            }
-          },
-          watch: {
-            basketNbItems() {
-              const titi = document.querySelector('.indicateurNbItems');
-              titi.classList.add('flash');
-              setTimeout(() => { titi.classList.remove('flash') }, 500);
-            }
-          },
-        }
-        </script>
-
-
+<script>
+  export default {
+    computed: {
+      basketNbItems() {
+        return this.$store.getters.getBasketNbItems;
+      }
+    },
+    watch: {
+      basketNbItems() {
+        const titi = document.querySelector('.indicateurNbItems');
+        titi.classList.add('flash');
+        setTimeout(() => { titi.classList.remove('flash') }, 500);
+      }
+    },
+  }
+</script>
 
 <style scoped>
 .indicateurNbItems {
@@ -45,7 +42,6 @@
 .scale-enter, .scale-leave-to {
   transform: scale(0.1);
 }
-
 
 .flash {
   animation: scaling 0.4s ease-in;
