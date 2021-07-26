@@ -36,7 +36,6 @@
 
     <div id="content">    
       
-      <span style="color: red; position: fixed; top: 10px; left: 80px; width: 200px; background-color: yellow; font-size: 11px;">{{search_products_type}}</span>
       <!-- <span style="background-color: red; padding: 10px; color: #fff;">{{typeof dataError}} - {{JSON.stringify(dataError)}} - {{dataError}}</span> -->
       
       <router-view/>
@@ -81,34 +80,17 @@
       },
       basketNbItems() {
         return this.$store.getters.getBasketNbItems;
-      },
-      componentsOpen() {
-          return this.$store.getters.areComponentsOpen;
-      },
-
-
-      //// A VIRER ////
-      search_products_type() { return this.$store.state.search_products_type }
-      //// A VIRER ////
-
+      }
     },
 
 
     methods: {
       marginDepartments() {
-        //this.closeOtherComponents();
         this.$store.commit("SET_DISPLAY_MARGIN_DEPARTMENTS", !this.displayMarginDepartments);
       },
       marginBasket() {
-        //this.closeOtherComponents();
         this.$store.commit("SET_DISPLAY_MARGIN_BASKET", !this.displayMarginBasket);
-      },
-      // Pour fermer ts les composants pouvant être ouverts
-      /* closeOtherComponents() {
-        if(this.componentsOpen) {
-          this.$store.dispatch("closeComponents");
-        }
-      } */
+      }
     }
   }
 </script>
