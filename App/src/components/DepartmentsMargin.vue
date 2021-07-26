@@ -29,6 +29,7 @@
 import uppercase from '@/filters/uppercase'
 import stopPropagation from '@/mixins/stopPropagation'
 
+
 export default {
     name: 'DepartmentsMargin',
 
@@ -45,6 +46,9 @@ export default {
         },
         products() {
             return this.$store.state.products;
+        },
+        currentRouteName() {
+            return this.$route.name;
         }
     },
 
@@ -57,8 +61,8 @@ export default {
 
     methods: {
         displayDataDepartment(dept) {
-            // Redirection vers pg de présentation des produits              
-            this.$router.push({ name: 'Shopping' });
+            // Redirection vers pg de présentation des produits si besoin            
+            if(this.currentRouteName !== 'Shopping') this.$router.push({ name: 'Shopping' });
 
             // Affectation 'selected_department' pour enregistrer le rayon sélectionné
             this.$store.commit('SET_SELECTED_DEPARTMENT', { id: dept._id, intitule: dept.intitule });
