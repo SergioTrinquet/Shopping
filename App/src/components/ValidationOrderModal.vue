@@ -1,5 +1,5 @@
 <template>
-  <app-overlay display="true">
+  <app-overlay :display="true">
         <div class="encartConfirmationCommande">
             <font-awesome-icon 
                 icon="times" 
