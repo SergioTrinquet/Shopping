@@ -27,9 +27,12 @@
                         class="items"
                     >
                         <div class="department_title secondary-txt">{{ item.dept }}</div>
-                        <div v-for="product in item.prod" :key="product.id" class="blocProduct">
+
+<!-- <transition-group name="scaleOut"> -->
+                        <div v-for="(product, i) in item.prod" :key="i" class="blocProduct">
                             <Product :dataProduct="product" />
                         </div>             
+<!-- </transition-group> -->
                     </div>
                 </div>
                 <div class="marge_bottom">
@@ -55,6 +58,8 @@
 const Product = () => import(/* webpackChunkName: "Product" */ '@/components/Product')
 import stopPropagation from '@/mixins/stopPropagation'
 
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'BasketMargin',
 
@@ -68,18 +73,14 @@ export default {
         displayMarginBasket() {
             return this.$store.state.display_margin_basket;
         },
-        basketNbItems() {
-            return this.$store.getters.getBasketNbItems;
-        },
         displayNbItems() {
             return (this.basketNbItems == 0 ? "Aucun article pour le moment" : this.basketNbItems + " article" + (this.basketNbItems > 1 ? "s" : "" ));
         },
-        basketSortedByDepartment() {   
-            return this.$store.getters.getBasketSortedByDepartment;
-        },
-        basketTotalPrice() {
-            return this.$store.getters.getBasketTotalPrice;
-        }
+        ...mapGetters({
+            basketNbItems: 'getBasketNbItems',
+            basketSortedByDepartment: 'getBasketSortedByDepartment',
+            basketTotalPrice: 'getBasketTotalPrice'
+        })
     },
 
     methods: {
@@ -236,6 +237,7 @@ export default {
         font-size: 16px;
         line-height: 14px;
         padding: 0 0 3px 0;
+        min-height: 36px;
     }
     .items >>> .marque {
         font-size: 15px;
