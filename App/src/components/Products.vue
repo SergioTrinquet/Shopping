@@ -17,6 +17,8 @@
 <script>
 const Product = () => import(/* webpackChunkName: "Product" */ '@/components/Product')
 
+import { mapState } from 'vuex' 
+
 export default {
 	name: 'Products',
 
@@ -25,12 +27,10 @@ export default {
 	},
 
 	computed: {
-		products() {
-			return this.$store.state.products;
-		},
-		basket() {
-			return this.$store.state.basket;
-		}
+    ...mapState([
+      'products', 
+      'basket'
+    ])
 	}
 
 }
@@ -57,7 +57,6 @@ export default {
 
 }
 .productItem.ordered {
-  /* border: dotted 1px #2A538A; */
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   background-color: #d7d7dd;
 }

@@ -72,6 +72,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data() {
     return {
@@ -95,15 +97,13 @@ export default {
 
 
   computed: {
-    filters() {
-      return this.$store.state.filters;
-    },
-    selected_department() {
-      return this.$store.state.selected_department;
-    },
-    nbMaxMarques() {
-      return this.$store.state.nb_max_marques;
-    },
+    ...mapState({
+      filters: 'filters',
+      selectedDepartment: 'selected_department',
+      nbMaxMarques: 'nb_max_marques',
+      filterSelectionToRemove: 'filter_selection_to_remove',
+      filterMarquesCount: state => state.filters.marques.length
+    }),
     displayFilters() {
       let f = {};
       f.promos = this.filters.PromosPresence;
@@ -112,16 +112,6 @@ export default {
       f.nutriscores = (this.filters.nutriscore.length > 0 ? true : false);
       f.labels = (this.filters.label_qual.length > 0 ? true : false);
       return f;
-    },
-
-    ////
-    filterMarquesCount() {
-      return this.$store.state.filters.marques.length;
-    },
-    ////
-
-    filter_selection_to_remove() { 
-      return this.$store.state.filter_selection_to_remove; 
     },
     displayButton() {
         const filtersQueryStringParams = this.$store.state.filters_query_string_parameters;
@@ -162,13 +152,12 @@ export default {
     },
     
     // Réinitialisation 'champFiltreMarque' à chaque chgt de rayon
-    selected_department() {
-      console.log("Changement de rayon"); //TEST
+    selectedDepartment() {
       this.champFiltreMarque = "";
     },
 
     // Suppression filtre qd click sur tag du composant 'FiltersListTags'
-    filter_selection_to_remove(val) { 
+    filterSelectionToRemove(val) { 
       // Ci-dessous référence aux v-models avec une écriture un peu différente (par ex: 'this["promos"]' est la m chose que 'this.promos')
       this.filters_type.forEach(f => { 
         if(f.name == val.nom && f.typeChbx == 'single') {

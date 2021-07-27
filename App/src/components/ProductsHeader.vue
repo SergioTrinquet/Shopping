@@ -2,8 +2,8 @@
   <div class="container">
 
     <div class="lgn">
-      <div>{{ Nb_products }} résultat{{ Nb_products > 1 ? "s" : "" }}</div>
-      <ProductsSelectOrder v-if="Nb_products > 1" />
+      <div>{{ nb_products }} résultat{{ nb_products > 1 ? "s" : "" }}</div>
+      <ProductsSelectOrder v-if="nb_products > 1" />
     </div>
 
     <div class="rayonProduits" v-if="!!selected_department_name">
@@ -19,6 +19,8 @@
 const FiltersListTags = () => import(/* webpackChunkName: "FiltersListTags" */ '@/components/FiltersListTags')
 const ProductsSelectOrder = () => import(/* webpackChunkName: "ProductsSelectOrder" */ '@/components/ProductsSelectOrder')
 
+import { mapState } from 'vuex'
+
 export default {
     name: 'ProductsHeader',
 
@@ -28,23 +30,15 @@ export default {
     },
 
     computed: {
-      products() {
-        return this.$store.state.products;
-      },
-      Nb_products() {
-        return this.products.length;
-      },
-      selected_department_name() {
-        if(this.$store.state.selected_department !== null) {
-          return this.$store.state.selected_department.intitule;
-        } else {
-          return "";
-        }
-        //return this.$store.state.selected_department.intitule;
-      },
-      filters_presence() {
-          return this.$store.state.filters_query_string_parameters.length > 0;
-      }
+      ...mapState({
+        products: 'products',
+        nb_products: state => state.products.length,
+        selected_department_name: state => {
+          const selectedDpt = state.selected_department;
+          return selectedDpt !== null ? selectedDpt.intitule : ""; 
+        },
+        filters_presence: state => state.filters_query_string_parameters.length > 0
+      })
     }
 }
 </script>

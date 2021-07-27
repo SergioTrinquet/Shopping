@@ -6,16 +6,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: "BasketPrice",
 
     computed: {
-        basketNbItems() {
-            return this.$store.getters.getBasketNbItems;
-        },
-        basketTotalPrice() {
-            return this.$store.getters.getBasketTotalPrice;
-        }
+        ...mapGetters({
+            basketNbItems: 'getBasketNbItems',
+            basketTotalPrice: 'getBasketTotalPrice'
+        })
     }
 }
 </script>

@@ -29,6 +29,7 @@
 import uppercase from '@/filters/uppercase'
 import stopPropagation from '@/mixins/stopPropagation'
 
+import { mapState } from 'vuex'
 
 export default {
     name: 'DepartmentsMargin',
@@ -38,15 +39,11 @@ export default {
     mixins: [ stopPropagation ],
 
     computed: {
-        displayMarginDepartments() {
-            return this.$store.state.display_margin_departments;
-        },
-        departments() {
-            return this.$store.state.departments;
-        },
-        products() {
-            return this.$store.state.products;
-        },
+        ...mapState({
+            displayMarginDepartments: 'display_margin_departments',
+            departments: 'departments',
+            products: 'products'
+        }),
         currentRouteName() {
             return this.$route.name;
         }

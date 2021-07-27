@@ -46,13 +46,14 @@
 
 <script>
   import AppLoader from '@/components/base/AppLoader'
-  const AppErrorMsg = () => import(/* webpackChunkName: "EncartMsgErreur" */ '@/components/base/AppError');
+  const AppErrorMsg = () => import(/* webpackChunkName: "EncartMsgErreur" */ '@/components/base/AppError')
   import SearchEngine from '@/components/SearchEngine'
   const IndicateurNbItems = () => import(/* webpackChunkName: "IndicateurNbItems" */ '@/components/BasketIndicateurNbItems')
   import BasketPrice from '@/components/BasketPrice'
   const DepartmentsMargin = () => import(/* webpackChunkName: "DepartmentsMargin" */ '@/components/DepartmentsMargin')
   const BasketMargin = () => import(/* webpackChunkName: "BasketMargin" */ '@/components/BasketMargin')
 
+  import { mapState } from 'vuex'
 
   export default {
     components: {
@@ -66,18 +67,12 @@
     },
 
     computed: {
-      loading() {
-        return this.$store.state.loading > 0;
-      },
-      dataError() {
-        return this.$store.state.data_error;
-      },
-      displayMarginDepartments() {
-        return this.$store.state.display_margin_departments;
-      },
-      displayMarginBasket() {
-        return this.$store.state.display_margin_basket;
-      },
+      ...mapState({
+        loading: state => state.loading > 0,
+        dataError: 'data_error',
+        displayMarginDepartments: 'display_margin_departments',
+        displayMarginBasket: 'display_margin_basket'
+      }),
       basketNbItems() {
         return this.$store.getters.getBasketNbItems;
       }

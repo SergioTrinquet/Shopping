@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
     name: 'FiltersListTags',
 
@@ -23,12 +25,10 @@ export default {
     },
 
     computed: {
-        filters() {
-            return this.$store.state.filters;
-        },
-        filters_query_string_parameters() {
-            return this.$store.state.filters_query_string_parameters;
-        }
+        ...mapState([
+            'filters',
+            'filters_query_string_parameters'
+        ])
     },
 
     methods: {
