@@ -29,9 +29,8 @@ export default new Vuex.Store({
     filters_query_string_parameters: "",
     tri_query_string_parameters: "",
     filter_selection_to_remove: null,
-    autocompleteResults: [],
-
-    search_products_type: {} // 25/06
+    autocomplete_results: [],
+    search_products_type: {}
   },
 
 
@@ -110,7 +109,7 @@ export default new Vuex.Store({
       state.filter_selection_to_remove = payload 
     },
     SET_AUTOCOMPLETE_RESULTS(state, payload) {
-      state.autocompleteResults = payload;
+      state.autocomplete_results = payload;
     },
     ADD_LISTE_TRI_OPTION(state) {
       state.liste_type_tri.unshift(state.score_type_tri); // Ajout option 'Pertinence' en 1ere place

@@ -25,7 +25,7 @@ export default {
 
     computed: {
       autocompleteResults() {
-        return this.$store.state.autocompleteResults;
+        return this.$store.state.autocomplete_results;
       }
     },
 
