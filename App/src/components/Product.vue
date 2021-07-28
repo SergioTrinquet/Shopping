@@ -87,9 +87,12 @@ export default {
             let libelle = "";
             const prd = this.dataProduct;
             if("promotion" in prd && prd.promotion !== null) {
-                libelle = prd.promotion.pourcent ? 
-                            `PROMO: -${prd.promotion.info}%` : 
-                            prd.promotion.info;
+                const promo = prd.promotion;
+                if("pourcent" in promo) {
+                    libelle = `PROMO: -${promo.pourcent}%`
+                } else if("reduction" in promo) {
+                    libelle = `${promo.reduction.qte} achetés = -${promo.reduction.somme}€`
+                }
             }
             return libelle;
         },

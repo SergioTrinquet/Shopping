@@ -304,7 +304,7 @@ const buildMongodbStageArguments = (query, sortStageArgument) => {
             // Paramètres pour le filtrage de produits
             } else {
                 if(p == "promos") {
-                    matchStageArguments["promotion.pourcent"] = { $exists:true } // Check présence prop. pourcent permet par la même occasion de savoir si présence prop. 'promotion'
+                    matchStageArguments["promotion"] = { $exists: true,  $nin: ["", {}, null] } // Check présence prop. 'promotion'
                 } else if(p == "prdsFr") {
                     matchStageArguments["origine"] = "FRANCE";
                 } else if(p == "nutriscore" || p == "label_qualite") { 

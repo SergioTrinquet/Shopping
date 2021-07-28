@@ -147,7 +147,7 @@ module.exports = {
                     stage,
                     { 
                         $match: { 
-                            "promotion.pourcent": { $exists: true,  $nin: ["", null] } 
+                            "promotion": { $exists: true,  $nin: ["", {}, null] }  
                         }
                     },
                     { 
@@ -215,9 +215,9 @@ module.exports = {
                         $addFields: {
                             'prix_final': {
                                 $cond: {
-                                    if: { $eq: [ "$promotion.pourcent", true ] },
+                                    if: { $eq: [ { $isNumber : "$promotion.pourcent" }, true ] },
                                     then: { 
-                                        // Ici calcul du pourcentage de réduction pour déterminer prix après promotion => (prix * (100 - promotion.info)) / 100
+                                        // Ici calcul du pourcentage de réduction pour déterminer prix après promotion => (prix * (100 - promotion.pourcent)) / 100
                                         $divide: 
                                         [
                                             {
@@ -227,12 +227,7 @@ module.exports = {
                                                     {
                                                         $subtract: [
                                                             100,
-                                                            {
-                                                                $convert: {
-                                                                    input: '$promotion.info',
-                                                                    to: 'double'
-                                                                }
-                                                            }
+                                                            "$promotion.pourcent"
                                                         ]
 
                                                     }
@@ -247,7 +242,7 @@ module.exports = {
                                 }
                             }, 
 
-                            // Pour que le tri par intitulé ne osit pas faussé à cause de certains intiulés avec des maj. et pas d'autres
+                            // Pour que le tri par intitulé ne soit pas faussé à cause de certains intiulés avec des maj. et pas d'autres
                             'intitule_insensitive': { 
                                 '$toLower': '$intitule' 
                             }
