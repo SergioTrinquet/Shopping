@@ -1,5 +1,5 @@
 <template>
-    <div class="product">   <!-- {{ dataProduct.rayon.intitule }}  {{ dataProduct.score }} -->
+    <div class="product">   <!-- {{ dataProduct.score }} -->
         <div class="intitule primary-txt">
             <span>{{ dataProduct.intitule }}</span>
             <font-awesome-icon 
@@ -13,9 +13,7 @@
             <div class="descriptif">{{ dataProduct.descriptif }}</div>
             <div class="prixUnite">{{ dataProduct.prix_unite.toFixed(2) }}€ / {{ dataProduct.unite }}</div>
         </div>
-        <img alt="photo" :src="require('@/assets/imgs/produits/' + dataProduct.nom_image + '.jpg')" class="illustration" /> <!-- Faire un computed pour gérer cas ou img n'existe pas. On afficherait alors une img par défaut -->
-        <!-- <img alt="photo" :src="publicPath + dataProduct.nom_image + '.jpg'" class="illustration" /> -->
-        <!-- <img alt="photo" :src="require(dataProduct.imgPath)" class="illustration" /> -->
+        <img alt="photo" :src="loadImg(dataProduct.nom_image)" class="illustration" />
         <div class="origine">
             <span v-if="!!dataProduct.origine">
                 <span>Origine: {{ dataProduct.origine }}</span>
@@ -79,12 +77,6 @@ export default {
         }
     },
 
-    /*data () {
-        return {
-            publicPath: process.env.BASE_URL
-        }
-    },*/
-
     computed: {
         basket() {
             return this.$store.state.basket;
@@ -108,12 +100,19 @@ export default {
     },
 
     methods: {
+        loadImg(img) {
+            try {
+                return require('@/assets/imgs/produits/' + img + '.jpg')
+            } catch(e) {
+                return 'https://dummyimage.com/200x200/ffffff/0011ff.png&text=Pas+de+photo+disponible'
+            }
+        },
         // Enregistrement de la quantité saisie dans Panier
         setQuantityToBasket(qte) {
             this.$store.commit('SET_QUANTITY_TO_BASKET', { produit: this.dataProduct, quantite: qte });
         },
         deleteQuantity(e) {   
-            e.stopPropagation(); // Evite à l'évenement click de se propager au DOM parents et d'executer des méthodes qui leurs sont propres
+            e.stopPropagation(); // Evite à l'évenement click de se propager au DOM parent et d'executer des méthodes qui leur sont propres
             this.setQuantityToBasket(0);
         }
     }
