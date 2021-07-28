@@ -338,6 +338,169 @@ db.products.insertMany([
         "nom_image":"lingettes-bebe-natural-caresse_BEBE-CADUM_2-paquets-60",
         "rayon": ObjectId("609086a042b2205d269d7e00")
     },
+    {
+        "intitule":"Couches taille 3 : 6-10kg",
+        "descriptif":"le paquet de 74 couches",
+        "marque":"PAMPERS",
+        "prix_unite": NumberDecimal("0.35"),
+        "unite":"pièce",
+        "prix": NumberDecimal("26.25"),
+        "nom_image":"couches-taille-3-6a10kg_PAMPERS_paquet-74",
+        "rayon": ObjectId("609086a042b2205d269d7e00")
+    },
+
+
+
+
+
+
+    {
+        "intitule":"Croquettes pour chat stérilisés Senior poulet",
+        "descriptif":"le sac de 1,4 kg",
+        "marque":"PERFECT FIT",
+        "prix_unite": NumberDecimal("6.65"),
+        "unite":"kg",
+        "prix": NumberDecimal("4.75"),
+        "nom_image":"croquettes-chat-sterilises-Senior-poulet_PERFECT-FIT_sac-1kg4",
+        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "promotion":{
+            "pourcent": 20
+        }
+    }, 
+    {
+        "intitule":"Croquettes pour chien au bœuf",
+        "descriptif":"le sac de 1,4 kg",
+        "marque":"NOOD",
+        "prix_unite": NumberDecimal("4.64"),
+        "unite":"kg",
+        "prix": NumberDecimal("6.03"),
+        "nom_image":"croquettes-chien-au-bœuf_NOOD_sac-1kg4",
+        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "promotion":{
+            "pourcent": 20
+        }
+    }, 
+    {
+        "intitule":"Sticks pour chats saumon",
+        "descriptif":"les 6 sticks de 5g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("0.99"),
+        "unite":"kg",
+        "prix": NumberDecimal("33.00"),
+        "nom_image":"sticks-pour-chats-saumon_CARREFOUR_6x5g",
+        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "promotion":{
+            "pourcent": 10
+        }
+    }, 
+    {
+        "intitule":"Sticks pour chats au bœuf",
+        "descriptif":"les 6 sticks de 5g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("0.99"),
+        "unite":"kg",
+        "prix": NumberDecimal("33.00"),
+        "nom_image":"sticks-pour-chats-boeuf_CARREFOUR_6x5g",
+        "rayon": ObjectId("609087dc42b2205d269d7e02")
+    }, 
+    {
+        "intitule":"Sticks pour chats poulet",
+        "descriptif":"les 6 sticks de 5g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("0.99"),
+        "unite":"kg",
+        "prix": NumberDecimal("33.00"),
+        "nom_image":"sticks-pour-chats-poulet_CARREFOUR_6x5g",
+        "rayon": ObjectId("609087dc42b2205d269d7e02")
+    },
+    {
+        "intitule":"Pâtée pour chats au saumon Bio",
+        "descriptif":"la boite de 100g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("0.58"),
+        "unite":"kg",
+        "prix": NumberDecimal("5.80"),
+        "nom_image":"patee-chats-saumon-Bio_CARREFOUR_bte-100g",
+        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "pourcent": 10
+        }
+    }, 
+    {
+        "intitule":"Boules de graisse oiseaux de la nature",
+        "descriptif":"les 10 boules de 90g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("1.75"),
+        "unite":"kg",
+        "prix": NumberDecimal("1.94"),
+        "nom_image":"boules-graisse-oiseaux-de-la-nature_CARREFOUR_10x90g",
+        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "promotion":{
+            "reduction": { "qte": 3, "somme": 1 }
+        }
+    }, 
+    {
+        "intitule":"Friandises pour chat au poulet",
+        "descriptif":"le sachet de 60g",
+        "marque":"CATISFACTIONS",
+        "prix_unite": NumberDecimal("1.59"),
+        "unite":"kg",
+        "prix": NumberDecimal("26.50"),
+        "nom_image":"friandises-chat-au-poulet_CATISFACTIONS_sachet-60g",
+        "rayon": ObjectId("609087dc42b2205d269d7e02")
+    },
+    {
+        "intitule":"Friandises pour chat au saumon",
+        "descriptif":"le sachet de 60g",
+        "marque":"CATISFACTIONS",
+        "prix_unite": NumberDecimal("1.30"),
+        "unite":"kg",
+        "prix": NumberDecimal("21.67"),
+        "nom_image":"friandises-chat-au-saumon_CATISFACTIONS_sachet-60g",
+        "rayon": ObjectId("609087dc42b2205d269d7e02")
+    },
+    {
+        "intitule":"Friandises pour chat au fromage",
+        "descriptif":"le sachet de 60g",
+        "marque":"CATISFACTIONS",
+        "prix_unite": NumberDecimal("1.30"),
+        "unite":"kg",
+        "prix": NumberDecimal("21.67"),
+        "nom_image":"friandises-chat-au-fromage_CATISFACTIONS_sachet-60g",
+        "rayon": ObjectId("609087dc42b2205d269d7e02")
+    },
+
+    {
+        "intitule":"Friandise pour chats au saumon Les Irrésistibles",
+        "descriptif":"la boite de 60g",
+        "marque":"WHISKAS",
+        "prix_unite": NumberDecimal("0.95"),
+        "unite":"kg",
+        "prix": NumberDecimal("15.83"),
+        "nom_image":"friandise-chats-au-saumon-Les-Irrésistibles_WHISKAS_bte60g",
+        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "reduction": { "qte": 3, "somme": 3 }
+        }
+    },
+    {
+        "intitule":"Croquettes chats poulet caille légumes",
+        "descriptif":"le sachet de 1,5 kg",
+        "marque":"BREKKIES",
+        "prix_unite": NumberDecimal("3.42"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.28"),
+        "nom_image":"croquettes-chats-poulet-caille-legumes_BREKKIES_sachet-1kg5",
+        "rayon": ObjectId("609087dc42b2205d269d7e02")
+    },
+
+
     /* {
         "intitule":"",
         "descriptif":"",
@@ -354,18 +517,10 @@ db.products.insertMany([
         ],
         "promotion":{
             "pourcent": 30
+            "reduction": { "qte": 2, "somme": 2 }
         }
     }, */
-    {
-        "intitule":"Couches taille 3 : 6-10kg",
-        "descriptif":"le paquet de 74 couches",
-        "marque":"PAMPERS",
-        "prix_unite": NumberDecimal("0.35"),
-        "unite":"pièce",
-        "prix": NumberDecimal("26.25"),
-        "nom_image":"couches-taille-3-6a10kg_PAMPERS_paquet-74",
-        "rayon": ObjectId("609086a042b2205d269d7e00")
-    },
+
     
 ]);
 
