@@ -57,7 +57,6 @@
 <script>
 const Product = () => import(/* webpackChunkName: "Product" */ '@/components/Product')
 import stopPropagation from '@/mixins/stopPropagation'
-
 import { mapGetters } from 'vuex'
 
 export default {
@@ -237,7 +236,7 @@ export default {
         font-size: 16px;
         line-height: 14px;
         padding: 0 0 3px 0;
-        min-height: 36px;
+        min-height: 42px;
     }
     .items >>> .marque {
         font-size: 15px;
