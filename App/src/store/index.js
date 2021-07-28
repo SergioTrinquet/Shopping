@@ -59,10 +59,6 @@ export default new Vuex.Store({
       state.display_margin_basket = payload;
     },
     SET_QUANTITY_TO_BASKET(state, payload) {
-      // Remplace un article du panier (chgmt quantité)
-      // Supprime un article du panier (qté saisie = 0 alors qu'avant non)
-      // Ajout d'un article dans le panier (qté > 0 alors qu'avant non)
-      
       // Test si déjà existence de l'article dans le panier
       let present = false;
       if(typeof state.basket[payload.produit._id] != 'undefined') {
@@ -117,9 +113,6 @@ export default new Vuex.Store({
     REMOVE_LISTE_TRI_OPTION(state) {
       state.liste_type_tri.shift(); // retrait 1ere option (qui doit être l'option 'Pertinence'
     },
-
-    
-    // 25/06
     SET_TYPE_OF_SEARCH_PRODUCTS(state, payload) { 
       state.search_products_type = payload; 
     }
@@ -199,6 +192,13 @@ export default new Vuex.Store({
       let totalPrice = 0;
       for(let item of Object.values(state.basket)) {
         totalPrice += (parseFloat(item.prix_final) * item.qte)
+
+        // Calcul Promo du type "1€ offert pour X achetés"...
+        if(typeof item.promotion !== 'undefined' && typeof item.promotion.reduction !== 'undefined') {
+          if(item.qte >= item.promotion.reduction.qte) {
+            totalPrice -= item.promotion.reduction.somme
+          }
+        }
       }
       return totalPrice.toFixed(2);
     },
