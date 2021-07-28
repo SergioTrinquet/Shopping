@@ -42,7 +42,7 @@
           <div 
             v-for="(mq, idx) in filters.marques" :key="idx" 
             class="lgnChbx chbx_m  tertiary-txt_hover" 
-            :data-nommarque="mq"
+            :data-nommarque="mq.libelle"
           >
             <input type="checkbox" :id="idx" :value="mq.libelle" name="marque"   v-model="marque">
             <label :for="idx">{{ mq.libelle }}</label>
@@ -291,6 +291,10 @@ export default {
   flex-grow: 1;
 }
 
+#inputFiltreMarques {
+  width: 70%;
+}
+
 .nbMarques {
   font-weight: normal;
 }
@@ -321,24 +325,14 @@ label {
   align-self: center;
 }
 
-
 .linkRemoveFiltersSelection {
   font-size: 12px; 
   font-weight: bold; 
   text-align: right;
-  text-decoration: underline;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-
-  /* V2 */
   text-decoration: none;
-  border: solid 2px;
-  padding: 0 5px;
   border-radius: 15px;
-  line-height: 17px;
-  color: #2c3e50c2;
-
-  /* V3 */
   line-height: 19px;
   padding: 0 8px;
   color: #fff;
