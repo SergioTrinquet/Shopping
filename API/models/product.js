@@ -46,9 +46,9 @@ const productSchema = new Schema({
     }),
 }, { timestamps: true });
 
-productSchema.virtual('imgPath').get(() => {
-    return "@/assets/imgs/" + this.nom_image + '.jpg';
-})
+/* productSchema.virtual('imgPath').get(() => {
+    return "@/assets/imgs/produits/" + this.nom_image + '.jpg';
+}) */
 
 const Product = mongoose.model('Product', productSchema);
 
