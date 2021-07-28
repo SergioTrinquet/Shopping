@@ -26,9 +26,8 @@ new Vue({
   store,
   render: h => h(App),
   errorCaptured(err, component, details) {
-    //this.$store.commit('SET_MESSAGE_ERROR', { err: err, details: details } ); // Pour afficher l'encart avec message d'erreur
-    this.$store.commit('SET_MESSAGE_ERROR', {data: { titre: err, message: details }} ); // Pour afficher l'encart avec message d'erreur
-    console.error("err => ", err, "\ncomponent => ", component, "\ndetails => ", details); 
+    this.$store.commit('SET_MESSAGE_ERROR', {data: {titre: err, message: details}} ); // Pour afficher l'encart avec message d'erreur
+    console.error("err => ", err, "\ncomponent => ", component.$vnode.elm, "\ndetails => ", details);   //component.$vnode.componentOptions.tag
     return false; // Pour ne pas que l'erreur remonte jusqu'à "Vue.config.errorHandler" si présent
   }
 }).$mount('#app')
