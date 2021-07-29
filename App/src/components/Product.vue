@@ -202,7 +202,11 @@ export default {
     margin: 3px 0 8px 0;
     height: 25px;
 }
+.labels {
+    flex-basis: 60%;
+}
 .labels > div {
+    display: inline-block;
     width: 25px;
     height: 25px;
     margin: 0 5px 0 0;
@@ -214,7 +218,8 @@ export default {
     background-color: #2c3e50;
     color: #fff;
     font-size: 13px;
-    padding: 2px 5px;
+    line-height: 13px;
+    padding: 4px 5px;
     border-radius: 3px;
 }
 .labels > div:hover::before {
