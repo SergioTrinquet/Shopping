@@ -161,6 +161,7 @@ export default {
   position: relative;
   display: inline-block;
   width: 80%;
+  max-width: 800px;
   text-align: left;
   background-color: #fff;
   border-radius: 4px;
