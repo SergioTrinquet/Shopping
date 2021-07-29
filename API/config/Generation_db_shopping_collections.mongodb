@@ -501,6 +501,401 @@ db.products.insertMany([
     },
 
 
+    {
+        "intitule":"Essuie-tout Ultra Absorbant",
+        "descriptif":"les 6 rouleaux",
+        "marque":"CARREFOUR",
+        "origine":"france",
+        "prix_unite": NumberDecimal("0.53"),
+        "unite":"Pièce",
+        "prix": NumberDecimal("3.17"),
+        "nom_image":"essuie-tout-Ultra-Absorbant_CARREFOUR_6-rouleaux",
+        "rayon": ObjectId("609087c942b2205d269d7e01"),
+        "promotion":{
+            "pourcent": 10
+        }
+    },
+    {
+        "intitule":"Lessive capsule alpine all in 1",
+        "descriptif":"la boîte de 27 capsules",
+        "marque":"ARIEL",
+        "prix_unite": NumberDecimal("20.33"),
+        "unite":"kg",
+        "prix": NumberDecimal("13.83"),
+        "nom_image":"lessive-capsule-alpine-all-in-1_ARIEL_bte-27-cap",
+        "rayon": ObjectId("609087c942b2205d269d7e01"),
+        "promotion":{
+            "reduction": { "qte": 2, "somme": 5 }
+        }
+    },
+    {
+        "intitule":"Lingettes linge Décolor Stop",
+        "descriptif":"la boite de 50 lingettes",
+        "marque":"EAU ECARLATE",
+        "prix_unite": NumberDecimal("0.15"),
+        "unite":"Pièce",
+        "prix": NumberDecimal("7.40"),
+        "nom_image":"lingettes-linge-Decolor-Stop_EAU-ECARLATE_bte50",
+        "rayon": ObjectId("609087c942b2205d269d7e01"),
+        "promotion":{
+            "reduction": { "qte": 3, "somme": 7.40 }
+        }
+    },
+    {
+        "intitule":"Tablettes Classic",
+        "descriptif":"le paquet de 60 - 978g",
+        "marque":"FINISH",
+        "prix_unite": NumberDecimal("8.89"),
+        "unite":"kg",
+        "prix": NumberDecimal("8.69"),
+        "nom_image":"tablettes-Classic_FINISH_paquet60",
+        "rayon": ObjectId("609087c942b2205d269d7e01")
+    },
+    {
+        "intitule":"Lingettes antibactériennes",
+        "descriptif":"le paquet de 40",
+        "marque":"ST MARC",
+        "prix_unite": NumberDecimal("0.02"),
+        "unite":"pièce",
+        "prix": NumberDecimal("1.55"),
+        "nom_image":"lingettes-antibacteriennes_ST-MARC_paquet40",
+        "rayon": ObjectId("609087c942b2205d269d7e01")
+    },
+    
+    {
+        "intitule":"Œufs Bio de Plein Air Calibre Moyen",
+        "descriptif":"la boite de 6",
+        "marque":"CARREFOUR",
+        "origine":"france",
+        "prix_unite": NumberDecimal("0.34"),
+        "unite":"pièce",
+        "prix": NumberDecimal("2.02"),
+        "nom_image":"oeufs-Bio-Plein-Air-Calibre-Moyen_CARREFOUR_boite6",
+        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "pourcent": 10
+        }
+    },
+    {
+        "intitule":"Fromage Râpé Emmental",
+        "descriptif":"le sachet de 500g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("6.64"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.32"),
+        "nom_image":"fromage-rape-emmental_CARREFOUR_sachet500g",
+        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "nutriscore":{"_id":"n4","lettre":"D"}
+    },
+    {
+        "intitule":"Jambon cuit au torchon avec couenne",
+        "descriptif":"la barquette de 4 tranches - 240g",
+        "marque":"CARREFOUR",
+        "origine":"france",
+        "prix_unite": NumberDecimal("19.12"),
+        "unite":"kg",
+        "prix": NumberDecimal("4.59"),
+        "nom_image":"jambon-cuit-torchon-avec-couenne_CARREFOUR_4tranches",
+        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"},
+            {"_id": "lb_4", "label": "Commerce Equitable"}
+        ]
+    },
+    {
+        "intitule":"Beurre Doux 60% Matière Grasse",
+        "descriptif":"la plaquette de 250 g ",
+        "marque":"ELLE & VIRE",
+        "origine":"france",
+        "prix_unite": NumberDecimal("8.00"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.00"),
+        "nom_image":"beurre-doux-60pc-matiere-grasse_ELLE&VIRE_plaquette250g",
+        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "nutriscore":{"_id":"n4","lettre":"D"},
+        "promotion":{
+            "pourcent": 10
+        }
+    },
+    {
+        "intitule":"Beurre Demi-sel Moulé",
+        "descriptif":"la plaquette de 500 g",
+        "marque":"PAYSAN BRETON",
+        "origine":"france",
+        "prix_unite": NumberDecimal("10.48"),
+        "unite":"kg",
+        "prix": NumberDecimal("5.24"),
+        "nom_image":"beurre-demi-sel-moule_PAYSAN-BRETON_plaquette500g",
+        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "nutriscore":{"_id":"n5","lettre":"E"}
+    },
+    {
+        "intitule":"Yaourt nature",
+        "descriptif":"les 4 pots de 125g",
+        "marque":"DANONE",
+        "prix_unite": NumberDecimal("1.90"),
+        "unite":"kg",
+        "prix": NumberDecimal("0.95"),
+        "nom_image":"yaourt-nature_DANONE_4pots125g",
+        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ]
+    },
+    {
+        "intitule":"Lait Demi-Ecreme",
+        "descriptif":"e pack de 6 bouteilles d'1L",
+        "marque":"CANDIA",
+        "prix_unite": NumberDecimal("0.97"),
+        "unite":"litre",
+        "prix": NumberDecimal("5.82"),
+        "nom_image":"lait-demi-ecreme_CANDIA_6x1L",
+        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+        "promotion":{
+            "pourcent": 15
+        }
+    },
+
+    {
+        "intitule":"Glace bâtonnet double chocolat noisette",
+        "descriptif":"la boite de 292g",
+        "marque":"MAGNUM",
+        "prix_unite": NumberDecimal("13.36"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.90"),
+        "nom_image":"glace-batonnet-double-choco-noisette_MAGNUM_bte292g",
+        "rayon": ObjectId("609080bf42b2205d269d7dfc"),
+        "nutriscore":{"_id":"n5","lettre":"E"}
+    },
+    {
+        "intitule":"Glace citron",
+        "descriptif":"le bac de 585g",
+        "marque":"CARTE D'OR",
+        "prix_unite": NumberDecimal("5.98"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.50"),
+        "nom_image":"glace-citron_CARTE-DOR_bac585g",
+        "rayon": ObjectId("609080bf42b2205d269d7dfc"),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "reduction": { "qte": 2, "somme": 1 }
+        }
+    },
+    {
+        "intitule":"Pizza Bolognaise",
+        "descriptif":"la boite de 345g",
+        "marque":"BUITONI",
+        "prix_unite": NumberDecimal("8.20"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.83"),
+        "nom_image":"pizza-bolognaise_BUITONI_bte345g",
+        "rayon": ObjectId("609080bf42b2205d269d7dfc"),
+        "nutriscore":{"_id":"n2","lettre":"B"}
+    },
+    {
+        "intitule":"Tarte aux poireaux",
+        "descriptif":"la boite de 400g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("4.85"),
+        "unite":"kg",
+        "prix": NumberDecimal("1.94"),
+        "nom_image":"tarte-aux-poireaux_CARREFOUR_bte400g",
+        "rayon": ObjectId("609080bf42b2205d269d7dfc"),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "promotion":{
+            "reduction": { "qte": 3, "somme": 2 }
+        }
+    },
+    {
+        "intitule":"Lasagne aux légumes à la provençale Bio",
+        "descriptif":"la boite de 850g",
+        "marque":"MARIE",
+        "prix_unite": NumberDecimal("6.71"),
+        "unite":"kg",
+        "prix": NumberDecimal("5.70"),
+        "nom_image":"lasagne-legumes-provençale-Bio_MARIE_850g",
+        "rayon": ObjectId("609080bf42b2205d269d7dfc"),
+        "nutriscore":{"_id":"n2","lettre":"B"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ]
+    },
+
+    {
+        "intitule":"Merguez bœuf et mouton",
+        "descriptif":"la barquette de 6 - 330g",
+        "marque":"CARREFOUR",
+        "origine":"france",
+        "prix_unite": NumberDecimal("10.00"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.30"),
+        "nom_image":"merguez-boeuf-et-mouton_CARREFOUR_barquette6",
+        "rayon": ObjectId("60907dbc42b2205d269d7df9"),
+        "nutriscore":{"_id":"n5","lettre":"E"},
+        "label_qualite":[
+            {"_id": "lb_3", "label": "Label Rouge"}
+        ]
+    },
+    {
+        "intitule":"Pavés de bœuf marinés 3 poivre",
+        "descriptif":"les 2 pavés de 130g",
+        "marque":"CHARAL",
+        "origine":"france",
+        "prix_unite": NumberDecimal("22.31"),
+        "unite":"kg",
+        "prix": NumberDecimal("5.80"),
+        "nom_image":"paves-de-boeuf-marines-3-poivre_CHARAL_2x130g",
+        "rayon": ObjectId("60907dbc42b2205d269d7df9"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
+    },
+    {
+        "intitule":"Aiguillettes de poulet jaune",
+        "descriptif":"la barquette de 210g",
+        "marque":"LE GAULOIS",
+        "prix_unite": NumberDecimal("17.48"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.67"),
+        "nom_image":"aiguillettes-poulet-jaune_LE-GAULOIS_barquette210g",
+        "rayon": ObjectId("60907dbc42b2205d269d7df9"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
+        "promotion":{
+            "pourcent": 20
+        }
+    },
+    {
+        "intitule":"Escalopes de dinde",
+        "descriptif":"la barquette de 6 - 720g",
+        "marque":"LE GAULOIS",
+        "prix_unite": NumberDecimal("12.57"),
+        "unite":"kg",
+        "prix": NumberDecimal("9.05"),
+        "nom_image":"escalopes-de-dinde_LE-GAULOIS_6x720g",
+        "rayon": ObjectId("60907dbc42b2205d269d7df9"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
+    },
+
+    {
+        "intitule":"Petits pois carottes bio en rondelles",
+        "descriptif":"le bocal de 420g net égoutté",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("6.64"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.79"),
+        "nom_image":"petits-pois-carottes-bio_CARREFOUR_bocal420g",
+        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "pourcent": 10
+        }
+    },
+    {
+        "intitule":"",
+        "descriptif":"",
+        "marque":"",
+        "origine":"france",
+        "prix_unite": NumberDecimal("0.00"),
+        "unite":"",
+        "prix": NumberDecimal("0.00"),
+        "nom_image":"",
+        "rayon": ObjectId(""),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "pourcent": 30
+            "reduction": { "qte": 2, "somme": 2 }
+        }
+    },
+    {
+        "intitule":"",
+        "descriptif":"",
+        "marque":"",
+        "origine":"france",
+        "prix_unite": NumberDecimal("0.00"),
+        "unite":"",
+        "prix": NumberDecimal("0.00"),
+        "nom_image":"",
+        "rayon": ObjectId(""),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "pourcent": 30
+            "reduction": { "qte": 2, "somme": 2 }
+        }
+    },
+    {
+        "intitule":"",
+        "descriptif":"",
+        "marque":"",
+        "origine":"france",
+        "prix_unite": NumberDecimal("0.00"),
+        "unite":"",
+        "prix": NumberDecimal("0.00"),
+        "nom_image":"",
+        "rayon": ObjectId(""),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "pourcent": 30
+            "reduction": { "qte": 2, "somme": 2 }
+        }
+    },
+    {
+        "intitule":"",
+        "descriptif":"",
+        "marque":"",
+        "origine":"france",
+        "prix_unite": NumberDecimal("0.00"),
+        "unite":"",
+        "prix": NumberDecimal("0.00"),
+        "nom_image":"",
+        "rayon": ObjectId(""),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "pourcent": 30
+            "reduction": { "qte": 2, "somme": 2 }
+        }
+    },
+    {
+        "intitule":"",
+        "descriptif":"",
+        "marque":"",
+        "origine":"france",
+        "prix_unite": NumberDecimal("0.00"),
+        "unite":"",
+        "prix": NumberDecimal("0.00"),
+        "nom_image":"",
+        "rayon": ObjectId(""),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ],
+        "promotion":{
+            "pourcent": 30
+            "reduction": { "qte": 2, "somme": 2 }
+        }
+    },
+
     /* {
         "intitule":"",
         "descriptif":"",
