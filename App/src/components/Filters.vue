@@ -277,6 +277,7 @@ export default {
 
 .lgnChbx {
   display: flex;
+  margin: 0 2px 0 0;
 }
 .lgnChbx.tertiary-txt_hover,
 .lgnChbx.tertiary-txt_hover .nb {
