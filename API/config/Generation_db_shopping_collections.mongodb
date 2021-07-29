@@ -348,12 +348,6 @@ db.products.insertMany([
         "nom_image":"couches-taille-3-6a10kg_PAMPERS_paquet-74",
         "rayon": ObjectId("609086a042b2205d269d7e00")
     },
-
-
-
-
-
-
     {
         "intitule":"Croquettes pour chat stérilisés Senior poulet",
         "descriptif":"le sac de 1,4 kg",
@@ -511,6 +505,9 @@ db.products.insertMany([
         "prix": NumberDecimal("3.17"),
         "nom_image":"essuie-tout-Ultra-Absorbant_CARREFOUR_6-rouleaux",
         "rayon": ObjectId("609087c942b2205d269d7e01"),
+        "label_qualite":[
+            {"_id": "lb_2", "label": "ecolabel"}
+        ],
         "promotion":{
             "pourcent": 10
         }
@@ -801,101 +798,250 @@ db.products.insertMany([
         }
     },
     {
-        "intitule":"",
-        "descriptif":"",
-        "marque":"",
-        "origine":"france",
-        "prix_unite": NumberDecimal("0.00"),
-        "unite":"",
-        "prix": NumberDecimal("0.00"),
-        "nom_image":"",
-        "rayon": ObjectId(""),
+        "intitule":"Sel fin iodé",
+        "descriptif":"la boite de 500g",
+        "marque":"CEREBOS",
+        "prix_unite": NumberDecimal("1.24"),
+        "unite":"kg",
+        "prix": NumberDecimal("0.62"),
+        "nom_image":"sel-fin-iode_CEREBOS_bte500g",
+        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
+    },
+    {
+        "intitule":"Chips Tortilla Nacho Cheese",
+        "descriptif":"le sachet de 170g",
+        "marque":"DORITOS",
+        "prix_unite": NumberDecimal("10.47"),
+        "unite":"kg",
+        "prix": NumberDecimal("1.78"),
+        "nom_image":"chips-tortilla-nacho-cheese_DORITOS_sachet170g",
+        "rayon": ObjectId("6090865442b2205d269d7dfd"),
         "nutriscore":{"_id":"n3","lettre":"C"},
-        "label_qualite":[
-            {"_id": "lb_1", "label": "Bio"}
-        ],
         "promotion":{
-            "pourcent": 30
-            "reduction": { "qte": 2, "somme": 2 }
+            "reduction": { "qte": 3, "somme": 1 }
         }
     },
     {
-        "intitule":"",
-        "descriptif":"",
-        "marque":"",
+        "intitule":"Pâtes Farfalle",
+        "descriptif":"la boite de 500g",
+        "marque":"BARILLA",
+        "prix_unite": NumberDecimal("1.88"),
+        "unite":"kg",
+        "prix": NumberDecimal("0.94"),
+        "nom_image":"pates-farfalle_BARILLA_bte500g",
+        "rayon": ObjectId("6090865442b2205d269d7dfd")
+    },
+    {
+        "intitule":"Pâtes les crozets au sarrasin",
+        "descriptif":"la boite de 400g",
+        "marque":"ALPINA SAVOIE",
         "origine":"france",
-        "prix_unite": NumberDecimal("0.00"),
-        "unite":"",
-        "prix": NumberDecimal("0.00"),
-        "nom_image":"",
-        "rayon": ObjectId(""),
-        "nutriscore":{"_id":"n3","lettre":"C"},
-        "label_qualite":[
-            {"_id": "lb_1", "label": "Bio"}
-        ],
+        "prix_unite": NumberDecimal("8.88"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.55"),
+        "nom_image":"pates-crozets-au-sarrasin_ALPINA-SAVOIR_bte400g",
+        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
+    },
+    {
+        "intitule":"Purée en flocons nature",
+        "descriptif":"les 8 sachets de 130g",
+        "marque":"MOUSLINE",
+        "prix_unite": NumberDecimal("4.00"),
+        "unite":"kg",
+        "prix": NumberDecimal("4.16"),
+        "nom_image":"puree-flocons-nature_MOUSLINE_8x130g",
+        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
+    },
+    {
+        "intitule":"Couscous moyen",
+        "descriptif":"le paquet de 1 kg",
+        "marque":"FERRERO",
+        "prix_unite": NumberDecimal("2.81"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.81"),
+        "nom_image":"couscous-moyen_FERRERO_paquet1kg",
+        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "nutriscore":{"_id":"n1","lettre":"A"},
         "promotion":{
-            "pourcent": 30
-            "reduction": { "qte": 2, "somme": 2 }
+            "reduction": { "qte": 3, "somme": 1 }
         }
     },
     {
-        "intitule":"",
-        "descriptif":"",
-        "marque":"",
-        "origine":"france",
-        "prix_unite": NumberDecimal("0.00"),
-        "unite":"",
-        "prix": NumberDecimal("0.00"),
-        "nom_image":"",
-        "rayon": ObjectId(""),
-        "nutriscore":{"_id":"n3","lettre":"C"},
-        "label_qualite":[
-            {"_id": "lb_1", "label": "Bio"}
-        ],
-        "promotion":{
-            "pourcent": 30
-            "reduction": { "qte": 2, "somme": 2 }
-        }
+        "intitule":"Pâtes macaroni",
+        "descriptif":"le paquet de 500g",
+        "marque":"PANZANI",
+        "prix_unite": NumberDecimal("1.66"),
+        "unite":"kg",
+        "prix": NumberDecimal("0.83"),
+        "nom_image":"pates-macaroni_PANZANI_paquet500g",
+        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
     },
     {
-        "intitule":"",
-        "descriptif":"",
-        "marque":"",
-        "origine":"france",
-        "prix_unite": NumberDecimal("0.00"),
-        "unite":"",
-        "prix": NumberDecimal("0.00"),
-        "nom_image":"",
-        "rayon": ObjectId(""),
-        "nutriscore":{"_id":"n3","lettre":"C"},
-        "label_qualite":[
-            {"_id": "lb_1", "label": "Bio"}
-        ],
-        "promotion":{
-            "pourcent": 30
-            "reduction": { "qte": 2, "somme": 2 }
-        }
-    },
-    {
-        "intitule":"",
-        "descriptif":"",
-        "marque":"",
-        "origine":"france",
-        "prix_unite": NumberDecimal("0.00"),
-        "unite":"",
-        "prix": NumberDecimal("0.00"),
-        "nom_image":"",
-        "rayon": ObjectId(""),
-        "nutriscore":{"_id":"n3","lettre":"C"},
-        "label_qualite":[
-            {"_id": "lb_1", "label": "Bio"}
-        ],
-        "promotion":{
-            "pourcent": 30
-            "reduction": { "qte": 2, "somme": 2 }
-        }
+        "intitule":"Pâtes coquillettes",
+        "descriptif":"le paquet de 500g",
+        "marque":"PANZANI",
+        "prix_unite": NumberDecimal("1.64"),
+        "unite":"kg",
+        "prix": NumberDecimal("0.82"),
+        "nom_image":"pates-coquillettes_PANZANI_paquet500g",
+        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "nutriscore":{"_id":"n1","lettre":"A"}
     },
 
+
+
+
+    {
+        "intitule":"Café bio équilibré",
+        "descriptif":"le paquet de 250g",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("12.88"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.22"),
+        "nom_image":"cafe-bio-equilibre_CARREFOUR_paquet250g",
+        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"},
+            {"_id": "lb_4", "label": "Commerce Equitable"}
+        ],
+        "promotion":{
+            "reduction": { "qte": 2, "somme": 5 }
+        }
+    },
+    {
+        "intitule":"Café capsules Espresso Forte",
+        "descriptif":"les 32 capsules - 171g",
+        "marque":"CAFE ROYAL",
+        "prix_unite": NumberDecimal("57.47"),
+        "unite":"kg",
+        "prix": NumberDecimal("10.92"),
+        "nom_image":"cafe-capsules-espresso-forte_CAFE-ROYAL_32x171g",
+        "rayon": ObjectId("6090866c42b2205d269d7dfe")
+    },
+    {
+        "intitule":"Glaces chocolat & vanille",
+        "descriptif":"les 4 bâtonnets de 71g",
+        "marque":"MILKA",
+        "prix_unite": NumberDecimal("13.35"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.79"),
+        "nom_image":"glaces-chocolat-vanille_MILKA_4x71g",
+        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "nutriscore":{"_id":"n5","lettre":"E"}
+    },
+    {
+        "intitule":"Glace vanille fraise",
+        "descriptif":"la boite de 6",
+        "marque":"CARREFOUR",
+        "prix_unite": NumberDecimal("5.84"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.36"),
+        "nom_image":"glace-vanille-fraise_CARREFOUR_bte6",
+        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "nutriscore":{"_id":"n4","lettre":"D"}
+    },
+    {
+        "intitule":"Thé bio vert citron",
+        "descriptif":"la boite de 20 sachets - 35g",
+        "marque":"CLIPPER",
+        "prix_unite": NumberDecimal("85.43"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.99"),
+        "nom_image":"the-bio-vert-citron_CLIPPER_bte20",
+        "rayon": ObjectId("6090866c42b2205d269d7dfe")
+    },
+    {
+        "intitule":"Madeleines",
+        "descriptif":"le sachet de 500g",
+        "marque":"ST MICHEL",
+        "origine":"france",
+        "prix_unite": NumberDecimal("5.32"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.66"),
+        "nom_image":"madeleines_ST-MICHEL_sachet500g",
+        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "nutriscore":{"_id":"n4","lettre":"D"},
+        "label_qualite":[
+            {"_id": "lb_1", "label": "Bio"}
+        ]
+    },
+    {
+        "intitule":"Quatre-quarts beurre frais",
+        "descriptif":"la barre de 500g",
+        "marque":"BONNE MAMAN",
+        "origine":"france",
+        "prix_unite": NumberDecimal("7.40"),
+        "unite":"kg",
+        "prix": NumberDecimal("3.70"),
+        "nom_image":"quatre-quarts-beurre-frais_BONNE-MAMAN_500g",
+        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "nutriscore":{"_id":"n5","lettre":"E"}
+    },
+    {
+        "intitule":"Pain d'épices au miel",
+        "descriptif":"le paquet de 350g",
+        "marque":"BROSSARD",
+        "prix_unite": NumberDecimal("7.26"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.54"),
+        "nom_image":"pain-depices-au-miel_BROSSARD_paquet350g",
+        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "nutriscore":{"_id":"n3","lettre":"C"},
+        "promotion":{
+            "reduction": { "qte": 2, "somme": 2 }
+        }
+    },
+    {
+        "intitule":"Barres chocolatées crème au lait et miel amandes",
+        "descriptif":"les 10 barres de 18,5g",
+        "marque":"BALISTO",
+        "prix_unite": NumberDecimal("13.68"),
+        "unite":"kg",
+        "prix": NumberDecimal("2.53"),
+        "nom_image":"barres-choco-creme-et-miel-amandes_BALISTO_10x18p5g",
+        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "nutriscore":{"_id":"n5","lettre":"E"},
+        "promotion":{
+            "reduction": { "qte": 3, "somme": 1.5 }
+        }
+    },
+    {
+        "intitule":"Comté Au Lait Cru",
+        "descriptif":"le sachet de 450g",
+        "marque":"CARREFOUR",
+        "origine":"france",
+        "prix_unite": NumberDecimal("11.73"),
+        "unite":"kg",
+        "prix": NumberDecimal("5.28"),
+        "nom_image":"comte-au-lait-cru-AOP_CARREFOUR_sachet450g",
+        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "nutriscore":{"_id":"n4","lettre":"D"},
+        "label_qualite":[
+            {"_id": "lb_5", "label": "Appellation d'origine protégée"}
+        ],
+        "promotion":{
+            "pourcent": 10
+        }
+    },
+    {
+        "intitule":"Fromage Fourme d'Ambert",
+        "descriptif":"le fromage de 185g",
+        "marque":"",
+        "origine":"france",
+        "prix_unite": NumberDecimal("24.32"),
+        "unite":"kg",
+        "prix": NumberDecimal("4.50"),
+        "nom_image":"fromage-fourme-dAmbert_185g",
+        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "nutriscore":{"_id":"n5","lettre":"E"},
+        "label_qualite":[
+            {"_id": "lb_5", "label": "Appellation d'origine protégée"}
+        ]
+    },
     /* {
         "intitule":"",
         "descriptif":"",
