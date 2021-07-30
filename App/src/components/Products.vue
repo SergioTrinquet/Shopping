@@ -42,19 +42,23 @@ export default {
   padding: 10px;
 }
 .containerProductItems {
-  display: flex;
-  flex-wrap: wrap;
+  /*display: flex;
+  flex-wrap: wrap;*/
+  
+  /* Version avec grid */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }
 .productItem {
-  width: 30%;
+  /*width: 30%;
   min-width: 180px;
+  margin: 10px;*/
   max-width: 230px;
   background-color: #e6e6e6;
   padding: 10px;
-  margin: 10px;
+  margin: 5px;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-
 }
 .productItem.ordered {
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
