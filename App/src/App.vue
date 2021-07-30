@@ -10,7 +10,7 @@
         <span>Rayons</span>
       </div>
 
-      <div>
+      <div id="nomApp">
         <font-awesome-icon icon="shopping-cart" />
         <router-link to="/"><span class="titreApp">Mes courses en ligne</span></router-link>
       </div>
@@ -19,7 +19,12 @@
         <SearchEngine />
       </div>
 
-      <div style="opacity: 0.5; cursor not-allowed;"><!-- Pas encore opérationnel mais en projet -->
+      <div class="accountIcon disabled" title="Option pas encore disponible"><!-- Pas encore opérationnel mais en projet -->
+          <font-awesome-icon icon="user" />
+          <span>Compte</span>
+      </div>
+
+      <div class="listsIcon disabled" title="Option pas encore disponible"><!-- Pas encore opérationnel mais en projet -->
           <font-awesome-icon icon="heart" />
           <span>Listes</span>
       </div>
@@ -34,10 +39,7 @@
     <DepartmentsMargin v-if="displayMarginDepartments" />
     <BasketMargin v-if="displayMarginBasket" />
 
-    <div id="content">    
-      
-      <!-- <span style="background-color: red; padding: 10px; color: #fff;">{{typeof dataError}} - {{JSON.stringify(dataError)}} - {{dataError}}</span> -->
-      
+    <div id="content">
       <router-view/>
     </div>
 
@@ -111,6 +113,7 @@
 
 #nav {
   position: fixed;
+  z-index:100;
   top: 0;
   left: 0;
   width: 100%;
@@ -142,16 +145,24 @@
 }
 
 #nav a,
-#nav .basketIcon {
+#nav .basketIcon,
+#nav .listsIcon {
   cursor: pointer;
   font-weight: bold;
   color: #fff;
   text-decoration: none;
   display: inline-block;
-  padding: 0 0 0 20px;
+  padding: 0 0 0 14px;
   line-height: 17px;
   min-width: 45px;
   position: relative;
+}
+@media screen and (max-width: 700px) {
+  #nav .accountIcon,
+  #nav .listsIcon,
+  #nomApp {
+    display: none !important;
+  }
 }
 
 #nav a.router-link-exact-active {
@@ -177,5 +188,10 @@
   display: inline-block;
   width: 90px;
   text-align: left;
+}
+
+.disabled {
+  opacity: 0.5; 
+  cursor: not-allowed;
 }
 </style>
