@@ -41,8 +41,8 @@ const productSchema = new Schema({
     nutriscore: nutriscoreSchema,
     label_qualite: [labelQualiteSchema],
     promotion: new Schema({
-        pourcent: Boolean,
-        info: String
+        pourcent: Number,
+        reduction: new Schema({ qte: Number, somme: Number })
     }),
 }, { timestamps: true });
 
