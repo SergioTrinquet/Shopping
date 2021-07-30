@@ -1065,8 +1065,6 @@ db.products.insertMany([
     
 ]);
 
-// Run a find command
-//db.products.find();
 
 // Commande find() pour mettre en capitale le champ 'origine'
 /* 
@@ -1078,8 +1076,6 @@ db.products.find().forEach(function(doc) {
        { multi: true }
    )
 }); */
-
-
 db.products.find().forEach(function(doc) { 
     if('origine' in doc) {
         db.products.updateOne(
@@ -1099,114 +1095,51 @@ db.products.find().forEach(function(doc) {
 });
 
 
-// TEST
-use('db_shopping');
-    db.products.aggregate([
-        { 
-            $match: { 
-                //rayon: ObjectId("60907d7d42b2205d269d7df8")
-            }
-        },
-        {   // Pipeline '$lookup' pour faire un 'join' sur la collection 'departments' et récupérer l'intitulé des rayons
-            $lookup: {
-                from: 'departments',
-                localField: 'rayon',
-                foreignField: '_id',
-                as: 'rayon'
-            }
-        },
-        /* {
-            $project: {
-                'intitule': 1,
-                'descriptif': 1,
-                'marque': 1, 
-                'nom_image': 1,
-                // Convertion des 'prix' et 'prix_unite' en 'double', sinon bug du coté front avec '.toFixed()'
-                'prix': {
-                    $convert: {
-                        input: '$prix',
-                        to: 'double'
-                    }
-                },
-                'prix_unite': {
-                    $convert: {
-                        input: '$prix_unite',
-                        to: 'double'
-                    }
-                },
-                'unite': 1,
-                'origine': 1,
-                'rayon': { $arrayElemAt: [ "$rayon", 0 ] }, // Pour 'aplatir' (flatten) l'array généré par le pipeline '$lookup' juste avant celui-ci
-                'nutriscore': 1,
-                'label_qualite': 1,
-                'promotion': 1,
-                // 'score': { '$meta': 'searchScore'}
-            }
-        },  */
 
 
-        { 
-            $addFields: {
-                'prix_final': {
-                    $cond: {
-                        if: { $eq: [ "$promotion.pourcent", true ] },
-                        then: { 
-                            // Ici calcul du pourcentage de réduction pour déterminer prix après promotion => (prix_unite * (100 - promotion.pourcent)) / 100
-                            $divide: 
-                            [
-                                {
-                                    $multiply: 
-                                    [ 
-                                        '$prix',
-                                        {
-                                            $subtract: [
-                                                100,
-                                                "$promotion.pourcent"
-                                            ]
+//////////////////// Pour collection 'departments' ///////////////////////
+//use('db_shopping');
+db.departments.drop();
 
-                                        }
-                                    ]
-                                }
-                                , 
-                                100
-                            ] 
-                        },
-                        else: '$prix'
-                    }
-                }
+// Insert a few documents into the 'departments' collection.
+db.departments.insertMany([
+    { 
+        "intitule":"fruits et légumes" 
+    },
+    { 
+        "intitule":"viandes et poissons" 
+    },
+    { 
+        "intitule":"pains et pâtisseries" 
+    },
+    { 
+        "intitule":"frais" 
+    },
+    { 
+        "intitule":"surgelés" 
+    },
+    { 
+        "intitule":"épicerie salée" 
+    },
+    { 
+        "intitule":"épicerie sucrée" 
+    },
+    { 
+        "intitule":"boissons" 
+    },
+    { 
+        "intitule":"bébé" 
+    },
+    { 
+        "intitule":"entretien et nettoyage" 
+    },
+    { 
+        "intitule":"animalerie" 
+    }
+]);
 
-                ,
-                // Convertion des 'prix' et 'prix_unite' en 'double', sinon bug du coté front avec '.toFixed()'
-                'prix': {
-                    $convert: {
-                        input: '$prix',
-                        to: 'double'
-                    }
-                },
-                'prix_unite': {
-                    $convert: {
-                        input: '$prix_unite',
-                        to: 'double'
-                    }
-                },
-                'rayon': { $arrayElemAt: [ "$rayon", 0 ] } // Pour 'aplatir' (flatten) l'array généré par le pipeline '$lookup' juste avant celui-ci
-                
-
-            }
-        },
-
-
-        {
-            '$sort': {
-                'score': -1,
-                'intitule': 1
-            }
-        }
-    ])  
-// FIN TEST
-
-
-
+// Run a find command
+db.departments.find();
 
 
 //////////////////// Pour collection 'labelqualites' ///////////////////////
