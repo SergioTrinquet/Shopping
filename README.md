@@ -2,7 +2,7 @@
 
 ## Documentation utilisateur
 
-Le but de cette application était de tenter de reproduire les sites que l'on utilise pour faire ses courses en ligne. Après avoir regardé ce qui existe, je me suis inspiré de certains d'entre eux pour ce qui est des fonctionnalités (moteur de recherche, classification des articles par rayons, présentation des produits,...).
+Le but de cette application était de tenter de reproduire un site de  course en ligne. Après avoir regardé ce qui existe, je me suis inspiré de certains d'entre eux pour ce qui est des fonctionnalités (moteur de recherche, classification des articles par rayons, présentation des produits,...).
 
 _Page d'accueil_
 ![page d'accueil](\App\src\assets\imgs\README_screenshots\pg_accueil.png)
@@ -82,9 +82,7 @@ Vue.js + Node.js + mongoDB
 
 ### Démarches pour MongoDB Atlas
 
-Les requêtes qui vont interroger la bdd pour obtenir les intitulés de rayons, les produits et leurs caractéristiques sont faites avec mongoDB.
-
-Les données propres aux rayons et aux articles de l'application sont stockées avec mongoDB, et plus précisément avec mongoDB Atlas qui est la version dans le Cloud de ce système de gestion de bases de données NoSQL.  
+Les données de l'application propres aux rayons et aux articles sont stockées avec mongoDB Atlas qui est la version Cloud de ce système de gestion de bases de données NoSQL.  
 Mais avant de pouvoir l'exploiter, il va falloir faire quelques installations.  
 Je vous invite à regarder l'excellent tutoriel de The Net Ninja (tuto #9 Node.js Crash Course Tutorial) pour vous aider dans cette tache ([lien tuto]()) : 
 
@@ -94,17 +92,13 @@ Je vous invite à regarder l'excellent tutoriel de The Net Ninja (tuto #9 Node.j
 - un Project, 
 - un cluster, 
 - une database avec comme nom 'db_shopping', 
-- une collection,
+- des collections aux noms de 'departments' et 'products',
 - un user
 4. Alimenter les collections créées à l'étape précédente avec Mongo shell, ou bien si vous travaillez avec l'éditeur Visual Studio Code (comme beaucoup de gens :-)), téléchargez l'extension 'MongoDB for VS Code' (icone sur le bord gauche de l'éditeur pour accéder au marketplace), puis connectez-vous à votre cluster et executez le fichier 'Generation_db_shopping_collections.mongodb' dans le projet.  
 L'exécution de ce fichier va alimenter les collections 'departments' et 'products' que vous aurez créées au préalable.
 
-# Démarches pour MongoDB Atlas Search
-Pour permettre au champ de recherche articles de fonctionner, il faut d'abord créer des index dans mongoDB Atlas.
-https://developer.mongodb.com/how-to/build-movie-search-application/
 
-
-PS :Ne pas oublier de dire qu'il faut créer un fichier 'identifiants_mongoDB.js' dans le réperrtoire 'API/config' du style
+**PS :Ne pas oublier de dire qu'il faut créer un fichier 'identifiants_mongoDB.js' dans le répertoire 'API/config' du style pour pouvoir accéder à sa collection dans mongoDB Atlas**
 ```
 module.exports = {
     "username": "XXXXX",
@@ -112,7 +106,15 @@ module.exports = {
     "db": "XXXXX"
 }
 ```
-pour pouvoir accéder à sa collection dans mongoDB Atlas
+
+
+### Démarches pour MongoDB Atlas Search
+Pour permettre au champ de recherche articles (en haut de page) de fonctionner, il faut d'abord créer des indexs dans mongoDB Atlas.
+https://developer.mongodb.com/how-to/build-movie-search-application/
+
+_interface mongoDB Atlas: page de création des indexs_
+![Autocomplete](\App\src\assets\imgs\README_screenshots\mongodb_index.png)
+
 
 ## Moteur de recherche
 La recherche sur les produits et marques est géré avec mongodb Atlas via l'interface.
