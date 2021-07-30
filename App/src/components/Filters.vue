@@ -302,6 +302,7 @@ export default {
 .listeMarques {
   overflow-y: auto;
   max-height: 150px;
+  scrollbar-width: thin;
 }
 
 input[type="checkbox"],

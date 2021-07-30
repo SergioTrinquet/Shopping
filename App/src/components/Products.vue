@@ -53,10 +53,11 @@ export default {
   /*width: 30%;
   min-width: 180px;
   margin: 10px;*/
+  
   max-width: 230px;
   background-color: #e6e6e6;
   padding: 10px;
-  margin: 5px;
+  margin: 8px;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
 }

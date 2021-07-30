@@ -145,6 +145,7 @@
 }
 
 #nav a,
+#nav .accountIcon,
 #nav .basketIcon,
 #nav .listsIcon {
   cursor: pointer;
