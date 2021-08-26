@@ -96,7 +96,7 @@ export default {
     #marge {
         left: 0;
         width: 300px;
-        margin-left: -300px;    margin-left: 0;
+        margin-left: 0;
         overflow-y: auto;
     }
 

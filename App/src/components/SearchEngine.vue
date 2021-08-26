@@ -52,7 +52,7 @@ export default {
         return typeof this.$store.state.search_products_type.rayon !== "undefined";
       },
       // Pour servir de flag pour ajouter/retirer l'option 'pertinence' ds le select du tri
-      searchBySearchString() {  console.warn("Moteur Rech. => COMPUTED  de 'searchBySearchString'"); //TEST
+      searchBySearchString() {  
         return typeof this.$store.state.search_products_type.searchstring !== "undefined";
       }
     },
@@ -63,7 +63,7 @@ export default {
       },
 
       // Qd recherche par rayon, on vide le champ de recherche et l'autocomplete si présent
-      searchByDepartment(val) {   //console.warn("WATCH de 'searchByDepartment'", val); //TEST
+      searchByDepartment(val) {
         if(val) { this.clearSearch() }
       },
 
@@ -106,7 +106,7 @@ export default {
 
       
       setDisplayIconClearSearch(inputValue) {
-        this.displayIconClearSearch = inputValue.length > 0 ? true : false;
+        this.displayIconClearSearch = inputValue.length > 0;
       },
 
 

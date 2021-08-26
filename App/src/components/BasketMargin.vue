@@ -113,7 +113,7 @@ export default {
 
 <style scoped>
     #marge {
-        right: -360px;     right: 0; 
+        right: 0; 
         width: 360px;
         box-sizing: border-box;
         display: flex;
