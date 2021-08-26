@@ -16,11 +16,14 @@
 
 <script>
 const ValidationOrderModal = () => import(/* webpackChunkName: "ValidationOrderModal" */ '@/components/ValidationOrderModal');
+import clearSearchEngine from '@/mixins/clearSearchEngine'
 
 export default {
     components: {
         ValidationOrderModal
     },
+
+    mixins: [ clearSearchEngine ],
 
     data() {
         return {
@@ -32,13 +35,17 @@ export default {
         closeModal() {
             this.displayMsgValidationCommande = false;
         }
+
+
     },
 
-    created() {
+    created() { //console.warn("HOOK CREATED", this.$route.params.validatedOrder); //TEST 
         if(this.$route.params.validatedOrder) {
             this.displayMsgValidationCommande = true;
         }
-    }
+    },
+
+    mounted() { this.clearSearch() }
 }
 </script>
 

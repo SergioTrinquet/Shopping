@@ -28,6 +28,7 @@
 <script>
 import uppercase from '@/filters/uppercase'
 import stopPropagation from '@/mixins/stopPropagation'
+import clearSearchEngine from '@/mixins/clearSearchEngine'
 
 import { mapState } from 'vuex'
 
@@ -36,7 +37,7 @@ export default {
 
     filters: { uppercase },
 
-    mixins: [ stopPropagation ],
+    mixins: [ stopPropagation, clearSearchEngine ],
 
     computed: {
         ...mapState({
@@ -60,6 +61,9 @@ export default {
         displayDataDepartment(dept) {
             // Redirection vers pg de présentation des produits si besoin            
             if(this.currentRouteName !== 'Shopping') this.$router.push({ name: 'Shopping' });
+            
+            // Retrait saisie ds champ de rech. et l'autocomplete si présent 
+            this.clearSearch();
 
             // Affectation 'selected_department' pour enregistrer le rayon sélectionné
             this.$store.commit('SET_SELECTED_DEPARTMENT', { id: dept._id, intitule: dept.intitule });
