@@ -30,7 +30,8 @@ export default new Vuex.Store({
     tri_query_string_parameters: "",
     filter_selection_to_remove: null,
     autocomplete_results: [],
-    search_products_type: {}
+    search_products_type: {},
+    display_icon_clear_search: false
   },
 
 
@@ -115,6 +116,9 @@ export default new Vuex.Store({
     },
     SET_TYPE_OF_SEARCH_PRODUCTS(state, payload) { 
       state.search_products_type = payload; 
+    },
+    SET_DISPLAY_ICON_SEARCH(state, payload) {
+      state.display_icon_clear_search = payload;
     }
 
   },
@@ -164,7 +168,7 @@ export default new Vuex.Store({
     async fetchProductFromAutocomplete(context, payload) {
       const path = `api/product/${payload}`;
       let data = await APIcall(context, path);
-      if(data) {
+      if(data) {  
         // Affectation 'selected_department' pour enregistrer le rayon sélectionné
         context.commit('SET_SELECTED_DEPARTMENT', 
         { 
