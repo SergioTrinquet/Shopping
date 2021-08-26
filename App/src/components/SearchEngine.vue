@@ -27,6 +27,8 @@
 <script>
 const Autocomplete = () => import(/* webpackChunkName: "SearchEngineAutocomplete" */ '@/components/SearchEngineAutocomplete')
 
+import clearSearchEngine from '@/mixins/clearSearchEngine'
+
 export default {
     name: 'SearchEngine',
 
@@ -34,12 +36,13 @@ export default {
         Autocomplete
     },
 
+    mixins: [ clearSearchEngine ],
+
     data() {
         return {
           old_saisie: "",
           timer: null,
-          displaySearchEngineResults: false,
-          displayIconClearSearch: false
+          displaySearchEngineResults: false
         }
     },
 
@@ -47,28 +50,23 @@ export default {
       autocompleteResults() {
         return this.$store.state.autocomplete_results;
       },
-      // Pour servir de flag pour vider champ de rech. et l'autocomplete si présent 
-      searchByDepartment() {
-        return typeof this.$store.state.search_products_type.rayon !== "undefined";
-      },
       // Pour servir de flag pour ajouter/retirer l'option 'pertinence' ds le select du tri
       searchBySearchString() {  
         return typeof this.$store.state.search_products_type.searchstring !== "undefined";
+      },
+      displayIconClearSearch() {
+        return this.$store.state.display_icon_clear_search;
       }
     },
 
     watch: {
       autocompleteResults(val) {
-        this.displaySearchEngineResults = val.length > 0 ? true : false;
-      },
-
-      // Qd recherche par rayon, on vide le champ de recherche et l'autocomplete si présent
-      searchByDepartment(val) {
-        if(val) { this.clearSearch() }
+        this.displaySearchEngineResults = val.length > 0;
       },
 
       // Qd recherche par moteur de rech., ajout/retrait ds liste déroulante 'Tri' d'une option 'pertinence'
-      searchBySearchString(val) { console.warn("WATCH searchBySearchString", val); //TEST
+      searchBySearchString(val) { 
+        //console.warn("WATCH searchBySearchString", val); //TEST
         this.$store.commit(val ? 'ADD_LISTE_TRI_OPTION' : 'REMOVE_LISTE_TRI_OPTION');
       }
     },
@@ -97,21 +95,11 @@ export default {
       },
 
 
-      clearSearch() {
-        const newValue = "";
-        document.querySelector('.mainInputSearch').value = newValue;
-        this.setDisplayIconClearSearch(newValue);
-        this.$store.commit('SET_AUTOCOMPLETE_RESULTS', []); // disparit° autocomplete en vidant son contenu
-      },
-
-      
-      setDisplayIconClearSearch(inputValue) {
-        this.displayIconClearSearch = inputValue.length > 0;
-      },
-
-
       // Qd validation ds moteur de recherche produit (clic sur icone Loupe OU press enter sur input)
       searchProducts() {
+        // Redirection vers pg de présentation des produits si besoin            
+        if(this.currentRouteName !== 'Shopping') this.$router.push({ name: 'Shopping' });
+
         this.displaySearchEngineResults = false; // disparit° autocomplete sans vider son contenu car correspond au texte de recherche que l'utilisateur vient de valider
         const searchString = document.querySelector('.mainInputSearch').value.trim();
         if(searchString !== "") {
