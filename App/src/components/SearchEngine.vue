@@ -98,7 +98,7 @@ export default {
       // Qd validation ds moteur de recherche produit (clic sur icone Loupe OU press enter sur input)
       searchProducts() {
         // Redirection vers pg de présentation des produits si besoin            
-        if(this.currentRouteName !== 'Shopping') this.$router.push({ name: 'Shopping' });
+        if(this.$route.name !== 'Shopping') this.$router.push({ name: 'Shopping' });
 
         this.displaySearchEngineResults = false; // disparit° autocomplete sans vider son contenu car correspond au texte de recherche que l'utilisateur vient de valider
         const searchString = document.querySelector('.mainInputSearch').value.trim();
