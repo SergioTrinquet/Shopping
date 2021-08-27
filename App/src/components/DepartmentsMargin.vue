@@ -44,10 +44,7 @@ export default {
             displayMarginDepartments: 'display_margin_departments',
             departments: 'departments',
             products: 'products'
-        }),
-        currentRouteName() {
-            return this.$route.name;
-        }
+        })
     },
 
     watch: {
@@ -60,7 +57,7 @@ export default {
     methods: {
         displayDataDepartment(dept) {
             // Redirection vers pg de présentation des produits si besoin            
-            if(this.currentRouteName !== 'Shopping') this.$router.push({ name: 'Shopping' });
+            if(this.$route.name !== 'Shopping') this.$router.push({ name: 'Shopping' });
             
             // Retrait saisie ds champ de rech. et l'autocomplete si présent 
             this.clearSearch();
