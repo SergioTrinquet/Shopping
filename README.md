@@ -94,8 +94,8 @@ Je vous invite à regarder l'excellent tutoriel de The Net Ninja (tuto #9 Node.j
 - une database avec comme nom 'db_shopping', 
 - des collections aux noms de 'departments' et 'products',
 - un user
-4. Alimenter les collections créées à l'étape précédente avec Mongo shell, ou bien si vous travaillez avec l'éditeur Visual Studio Code (comme beaucoup de gens :-)), téléchargez l'extension 'MongoDB for VS Code' (icone sur le bord gauche de l'éditeur pour accéder au marketplace), puis connectez-vous à votre cluster et executez le fichier 'Generation_db_shopping_collections.mongodb' dans le projet.  
-L'exécution de ce fichier va alimenter les collections 'departments' et 'products' que vous aurez créées au préalable.
+4. Alimenter les collections créées à l'étape précédente avec Mongo shell, ou bien si vous travaillez avec l'éditeur Visual Studio Code (comme beaucoup de gens :-)), téléchargez l'extension 'MongoDB for VS Code' (une icone apparaitra alors sur le bord gauche de l'éditeur pour accéder au marketplace), puis connectez-vous à votre cluster et executez le fichier 'Generation_db_shopping_collections.mongodb' dans le projet.  
+L'exécution de ce fichier va alimenter les collections 'departments' et 'products' que vous aurez créées dans mongoDB Atlas au préalable.
 
 
 **PS :Ne pas oublier de dire qu'il faut créer un fichier 'identifiants_mongoDB.js' dans le répertoire 'API/config' du style pour pouvoir accéder à sa collection dans mongoDB Atlas**
@@ -175,7 +175,6 @@ Cet index doit être créé sur la collection 'products'
 ```
 
 NOTE : Attention ! Les index seront supprimés lorsque vous alimentez la liste des articles via le fichier '.mongodb'
-
 
 
 
