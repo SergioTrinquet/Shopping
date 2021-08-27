@@ -39,13 +39,14 @@ export default {
       return this.$store.state.filters;
     },
     displayProductsInterface() {
-      const flagSearchProducts = Object.keys(this.$store.state.search_products_type).length > 0 ? true : false;
-      const productsFound = this.$store.state.products.length > 0 ? true : false;
+      const flagSearchProducts = Object.keys(this.$store.state.search_products_type).length > 0 || this.$route.params.fromSearchEngine;
+      const productsFound = this.$store.state.products.length > 0;
       return flagSearchProducts || productsFound;
     }
   },
 
-  mounted() {
+  mounted() { 
+    // Si pas de recherche de faite ou pas de produits trouvés: retour à la page d'accueil
     if(!this.displayProductsInterface)  this.$router.push({ name: 'Accueil' })
   }
 
