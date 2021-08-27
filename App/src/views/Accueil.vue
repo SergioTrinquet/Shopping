@@ -31,21 +31,35 @@ export default {
         }
     },
 
+    computed: {
+      // Flag qd validation commande
+      validationOrderCmd() {
+        return this.$store.state.validation_order_cmd;
+      }
+    },
+
+    watch: {
+      validationOrderCmd: { 
+        immediate: true,
+        handler(val) {
+          if(val) {
+            // Apparition modal de validation de commande
+            this.$store.commit('SET_VALIDATION_ORDER_CMD', false);
+            this.displayMsgValidationCommande = true;
+          }
+        }
+      }
+    },
+
     methods: {
         closeModal() {
             this.displayMsgValidationCommande = false;
         }
-
-
     },
 
-    created() { //console.warn("HOOK CREATED", this.$route.params.validatedOrder); //TEST 
-        if(this.$route.params.validatedOrder) {
-            this.displayMsgValidationCommande = true;
-        }
-    },
-
-    mounted() { this.clearSearch() }
+    mounted() { 
+      this.clearSearch(); 
+    }
 }
 </script>
 

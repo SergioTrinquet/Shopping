@@ -31,7 +31,8 @@ export default new Vuex.Store({
     filter_selection_to_remove: null,
     autocomplete_results: [],
     search_products_type: {},
-    display_icon_clear_search: false
+    display_icon_clear_search: false,
+    validation_order_cmd: false
   },
 
 
@@ -119,8 +120,10 @@ export default new Vuex.Store({
     },
     SET_DISPLAY_ICON_SEARCH(state, payload) {
       state.display_icon_clear_search = payload;
+    },
+    SET_VALIDATION_ORDER_CMD(state, payload) {
+      state.validation_order_cmd = payload;
     }
-
   },
 
 

@@ -102,8 +102,9 @@ export default {
                 this.$store.commit("REMOVE_BASKET");
                 // Fermeture marge panier
                 this.$store.commit("SET_DISPLAY_MARGIN_BASKET", false);
-                // Renvoi sur pg d'accueil avec paramètre pour apparition encart de confirmation de commande
-                this.$router.push({ name: 'Accueil', params: { validatedOrder: true } });
+                // Renvoi sur pg d'accueil avec modif propriété ds le state pour apparition encart de confirmation de commande
+                this.$store.commit('SET_VALIDATION_ORDER_CMD', true);
+                if(this.$route.name !== 'Accueil') this.$router.push({ name: 'Accueil'});
             }
         }
     }
