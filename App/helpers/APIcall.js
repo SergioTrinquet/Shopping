@@ -8,8 +8,7 @@ export default (context, path, withLoader = true) => {
             return res.data;
 
             //TEST
-            /* console.log(res);
-            throw new Error("FLUTE !!!"); */
+            //console.log(res); throw new Error("FLUTE !!!");
         })
         .catch(err => {
           console.error(err.response);
