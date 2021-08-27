@@ -96,12 +96,15 @@ export default {
   display: flex;
   align-items: center;
   font-size: 14px;
-  padding: 5px;
+  padding: 7px 5px;
   border-bottom: dotted 1px #254A7B;
   margin: 0 4px;
 }
 #proposals .lgnProduit:last-child {
   border-bottom-width: 0;
+}
+#proposals .lgnProduit:not(.legende) {
+  line-height: 15px;
 }
 #proposals .lgnProduit:not(.legende):hover {
   background-color: rgba(48,93,154, 0.05);
@@ -129,8 +132,8 @@ export default {
     text-decoration: dotted underline;
 }
 
-#proposals .lgnProduit:not(.legende) .intituleProduit {
-  line-height: 15px;
+#proposals .lgnProduit .intituleProduit {
+  margin-right: 8px;
 }
 
 #proposals:after {
