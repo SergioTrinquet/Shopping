@@ -13,7 +13,7 @@
             @click="displayProduct(result._id)"
         >
             <div class="intituleProduit" v-html="highlight(result, 'intitule')"></div>
-            <div class="marqueProduit" v-html="highlight(result, 'marque')"></div>{{result.score}}
+            <div class="marqueProduit" v-html="highlight(result, 'marque')"></div><!-- {{result.score}} -->
         </div>
         </div>
     </transition>
@@ -32,6 +32,9 @@ export default {
     methods: {
         // Qd click sur un produit ds l'autocomplete
         displayProduct(id) {
+            // Redirection vers pg de présentation des produits si besoin   
+            if(this.$route.name !== 'Shopping') this.$router.push({ name: 'Shopping', params: { fromSearchEngine: true } });
+
             this.reinitialisationFiltresEtTri();
             this.$store.dispatch('fetchProductFromAutocomplete', id);
         },
@@ -60,6 +63,7 @@ export default {
                 return txt;
             }
         }
+
     }
 
 }
@@ -84,12 +88,13 @@ export default {
   border-radius: 4px;
   margin: 30px 0 0 -8px;
   padding: 0;
-  box-shadow: 0 0 3px rgba(0,0,0,0.7);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.7);
   background-color: #fff;
 }
 
 #proposals .lgnProduit {
   display: flex;
+  align-items: center;
   font-size: 14px;
   padding: 5px;
   border-bottom: dotted 1px #254A7B;
@@ -118,9 +123,14 @@ export default {
 #proposals .lgnProduit i {
     font-style: normal;
     padding: 0 3px;
+    /* background-color: rgb(255, 255, 0); */
+    /* background-color: rgb(47, 92, 153, 0.1); */
+    font-weight: bold;
+    text-decoration: dotted underline;
+}
 
-    background-color: rgb(255, 255, 0);
-    /* background-color: pink; */
+#proposals .lgnProduit:not(.legende) .intituleProduit {
+  line-height: 15px;
 }
 
 #proposals:after {
