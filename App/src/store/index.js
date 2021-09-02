@@ -95,7 +95,7 @@ export default new Vuex.Store({
       state.filters = payload;
     },
     SET_SELECTED_DEPARTMENT(state, payload) {
-      state.selected_department = {id: payload.id, intitule: payload.intitule };
+      state.selected_department = payload !== null ? {id: payload.id, intitule: payload.intitule } : null;
     },
     SET_FILTERS_QUERY_STRING_PARAMETERS(state, payload) {
       state.filters_query_string_parameters = payload;
