@@ -5,7 +5,7 @@
 Le but de cette application était de tenter de reproduire un site de  course en ligne. Après avoir regardé ce qui existe, je me suis inspiré de certains d'entre eux pour ce qui est des fonctionnalités (moteur de recherche, classification des articles par rayons, présentation des produits,...).
 
 _Page d'accueil_
-![page d'accueil](\App\src\assets\imgs\README_screenshots\pg_accueil.png)
+![page d'accueil](App\src\assets\imgs\README_screenshots\pg_accueil.png)
 
 ### Trouver un article
 Il existe plusieurs moyens de trouver des articles pour constituer son panier :
@@ -14,7 +14,7 @@ Il existe plusieurs moyens de trouver des articles pour constituer son panier :
 Lorsque l'on clique sur l'un d'entre eux, les produits correspondants apparaissent.
 
 
-![page d'accueil](\App\src\assets\imgs\README_screenshots\marge_rayons.png)
+![page d'accueil](App\src\assets\imgs\README_screenshots\marge_rayons.png)
 
 
 - En utilisant la recherche principale, dans le bandeau en haut de l'écran.  
@@ -22,14 +22,14 @@ Un autocomplete apparait pour proposer des articles en fonction de la saisie de 
 L'utilisateur peut cliquer sur un des articles proposés, ou bien valider sa saisie dans le champ de recherche (bt entrée ou clic sur icone Loupe).
 
 _Liste de proposition d'articles lors de la recherche_
-![Autocomplete](\App\src\assets\imgs\README_screenshots\autocomplete.png)
+![Autocomplete](App\src\assets\imgs\README_screenshots\autocomplete.png)
 
 ### Les filtres
 De nombreux produits peuvent correspondre à la recherche.  
 Des filtres sont donc présents dans la marge pour trouver plus rapidement l'article recherché (cf. img ci-dessous).  
 
 _Marge filtres et liste des produits_
-![Autocomplete](\App\src\assets\imgs\README_screenshots\liste_produits.png)
+![Autocomplete](App\src\assets\imgs\README_screenshots\liste_produits.png)
 
 Vous pouvez filtrer :
 - Les articles en promotion,
@@ -47,13 +47,13 @@ Vous ajoutez vos articles en saisissant la quantité désirée (icone panier en 
 L'état de votre panier est consultable à tout moment en cliquant sur l'icone en haut à droite de l'écran en dessous de laquelle est visible la somme correspondant à ce panier.  
 
 _Liste de produits filtrés et panier_
-![Autocomplete](\App\src\assets\imgs\README_screenshots\liste_produits_filtrees.png)
+![Autocomplete](App\src\assets\imgs\README_screenshots\liste_produits_filtrees.png)
 
 
 Vos articles sélectionnés sont alors visibles dans la marge qui s'ouvre à droite de l'écran (cf. img ci-dessous).  
 
 _Marge panier_
-![Autocomplete](\App\src\assets\imgs\README_screenshots\marge_panier.png)
+![Autocomplete](App\src\assets\imgs\README_screenshots\marge_panier.png)
 
 
 A partir de là, vous pouvez y changer les quantités commandées, supprimer un article (en mettant la quantité à zéro, ou en cliquant sur l'icone poubelle en haut à droite du produit), ou enfin valider votre commande, ce qui videra votre panier et vous redirigera vers la page d'accueil.
@@ -113,7 +113,7 @@ Pour permettre au champ de recherche articles (en haut de page) de fonctionner, 
 https://developer.mongodb.com/how-to/build-movie-search-application/
 
 _interface mongoDB Atlas: page de création des indexs_
-![Autocomplete](\App\src\assets\imgs\README_screenshots\mongodb_index.png)
+![Autocomplete](App\src\assets\imgs\README_screenshots\mongodb_index.png)
 
 
 ## Moteur de recherche
@@ -176,7 +176,24 @@ Cet index doit être créé sur la collection 'products'
 
 NOTE : Attention ! Les index seront supprimés lorsque vous alimentez la liste des articles via le fichier '.mongodb'
 
+## Mise en production du projet
+Les étapes de mise en prod. diffèrent selon l'hébergeur.  
+Ici, j'ai choisi d'héberger le site sur Héroku. Il existe de multiples façon de mettre en production sur Heroku, voici les étapes pour l'une d'entre elles :
 
+NOTE: Il faut faire communiquer un rep. Git local contenant notre projet avec lun rep. Git distant sur Heroku. 
+
+### Sur le projet en lui-même
+
+1 - **Builder le projet Front** (dans le terminal taper 'npm run build'). Par défaut un répertoire 'dist' devrait être généré à la racine du projet Front (donc ici ds rep. App) mais le nom et l'endroit où vont être générés ce répertoire sont modifiés dans le fichier 'vue.config.js' (option 'outputDir'). Le répertoire contenant le js front buildé se nommera donc 'public' et sera situé dans la partie back (répertoire 'API');
+
+2- Dans le fichier 'index.js' coté back-end, **on ajoute du code interprété seulement en mode production**. Il déclare en assets les fichier du rep. Front buidé (rep. 'public') et affiche le fichier '/public/index.html' pour toute requete GET.
+
+### Concernant Heroku
+
+1 - Si cela n'est pas déjà fait, installez Heroku CLI. C'est ce qui va nous permettre d'interpréter le commandes passées via le terminal pour mettre en ligne le projet.  Pour vérifier qu'il est bien installé, taper 'heroku -v' pour connaitre la version (si ce n'est pas le cas vous aurez un message d'erreur)  
+2 - Se créer un compte sur le site de Heroku,  
+3 - Se loguer via la commande dans le terminal 'heroku login',  
+4 - Récupérer le code du projet (qui a préalablement été archivé sur git) : 
 
 
   ## Project setup
