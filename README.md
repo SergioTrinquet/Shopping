@@ -5,7 +5,7 @@
 Le but de cette application était de tenter de reproduire un site de  course en ligne. Après avoir regardé ce qui existe, je me suis inspiré de certains d'entre eux pour ce qui est des fonctionnalités (moteur de recherche, classification des articles par rayons, présentation des produits,...).
 
 _Page d'accueil_
-![page d'accueil](App\src\assets\imgs\README_screenshots\pg_accueil.png)
+![page d'accueil](App/src/assets/imgs/README_screenshots/pg_accueil.png)
 
 ### Trouver un article
 Il existe plusieurs moyens de trouver des articles pour constituer son panier :
@@ -184,7 +184,7 @@ NOTE: Il faut faire communiquer un rep. Git local contenant notre projet avec lu
 
 ### Sur le projet en lui-même
 
-1 - **Builder le projet Front** (dans le terminal taper 'npm run build'). Par défaut un répertoire 'dist' devrait être généré à la racine du projet Front (donc ici ds rep. App) mais le nom et l'endroit où vont être générés ce répertoire sont modifiés dans le fichier 'vue.config.js' (option 'outputDir'). Le répertoire contenant le js front buildé se nommera donc 'public' et sera situé dans la partie back (répertoire 'API');
+1 - **Builder le projet Front** (dans le terminal taper 'npm run build'). Par défaut un répertoire 'dist' devrait être généré à la racine du projet Front (donc ici ds rep. App) mais le nom et l'endroit où va être généré le répertoire en question ont été reparamétrés dans le fichier 'vue.config.js' (option 'outputDir'). Le répertoire contenant le js front buildé se nommera donc 'public' et sera situé dans la partie back (répertoire 'API');
 
 2- Dans le fichier 'index.js' coté back-end, **on ajoute du code interprété seulement en mode production**. Il déclare en assets les fichier du rep. Front buidé (rep. 'public') et affiche le fichier '/public/index.html' pour toute requete GET.
 
