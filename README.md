@@ -14,7 +14,7 @@ Il existe plusieurs moyens de trouver des articles pour constituer son panier :
 Lorsque l'on clique sur l'un d'entre eux, les produits correspondants apparaissent.
 
 
-![page d'accueil](App\src\assets\imgs\README_screenshots\marge_rayons.png)
+![page d'accueil](App/src/assets/imgs/README_screenshots/marge_rayons.png)
 
 
 - En utilisant la recherche principale, dans le bandeau en haut de l'écran.  
@@ -22,14 +22,14 @@ Un autocomplete apparait pour proposer des articles en fonction de la saisie de 
 L'utilisateur peut cliquer sur un des articles proposés, ou bien valider sa saisie dans le champ de recherche (bt entrée ou clic sur icone Loupe).
 
 _Liste de proposition d'articles lors de la recherche_
-![Autocomplete](App\src\assets\imgs\README_screenshots\autocomplete.png)
+![Autocomplete](App/src/assets/imgs/README_screenshots/autocomplete.png)
 
 ### Les filtres
 De nombreux produits peuvent correspondre à la recherche.  
 Des filtres sont donc présents dans la marge pour trouver plus rapidement l'article recherché (cf. img ci-dessous).  
 
 _Marge filtres et liste des produits_
-![Autocomplete](App\src\assets\imgs\README_screenshots\liste_produits.png)
+![Autocomplete](App/src/assets/imgs/README_screenshots/liste_produits.png)
 
 Vous pouvez filtrer :
 - Les articles en promotion,
@@ -47,13 +47,13 @@ Vous ajoutez vos articles en saisissant la quantité désirée (icone panier en 
 L'état de votre panier est consultable à tout moment en cliquant sur l'icone en haut à droite de l'écran en dessous de laquelle est visible la somme correspondant à ce panier.  
 
 _Liste de produits filtrés et panier_
-![Autocomplete](App\src\assets\imgs\README_screenshots\liste_produits_filtrees.png)
+![Autocomplete](App/src/assets/imgs/README_screenshots/liste_produits_filtrees.png)
 
 
 Vos articles sélectionnés sont alors visibles dans la marge qui s'ouvre à droite de l'écran (cf. img ci-dessous).  
 
 _Marge panier_
-![Autocomplete](App\src\assets\imgs\README_screenshots\marge_panier.png)
+![Autocomplete](App/src/assets/imgs/README_screenshots/marge_panier.png)
 
 
 A partir de là, vous pouvez y changer les quantités commandées, supprimer un article (en mettant la quantité à zéro, ou en cliquant sur l'icone poubelle en haut à droite du produit), ou enfin valider votre commande, ce qui videra votre panier et vous redirigera vers la page d'accueil.
@@ -113,7 +113,7 @@ Pour permettre au champ de recherche articles (en haut de page) de fonctionner, 
 https://developer.mongodb.com/how-to/build-movie-search-application/
 
 _interface mongoDB Atlas: page de création des indexs_
-![Autocomplete](App\src\assets\imgs\README_screenshots\mongodb_index.png)
+![Autocomplete](App/src/assets/imgs/README_screenshots/mongodb_index.png)
 
 
 ## Moteur de recherche
