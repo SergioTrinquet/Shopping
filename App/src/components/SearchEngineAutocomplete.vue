@@ -20,8 +20,12 @@
 </template>
 
 <script>
+import initFiltersAndSort from '@/mixins/initFiltersAndSort'
+
 export default {
     name: 'SearchEngineAutocomplete',
+
+    mixins: [ initFiltersAndSort ],
 
     computed: {
       autocompleteResults() {
@@ -34,17 +38,12 @@ export default {
         displayProduct(id) {
             // Redirection vers pg de présentation des produits si besoin   
             if(this.$route.name !== 'Shopping') this.$router.push({ name: 'Shopping', params: { fromSearchEngine: true } });
-
-            this.reinitialisationFiltresEtTri();
+            // Pour réinitialiser les filtres si l'utilisateur avait choisi au pralable de voir les produits d'un rayon, ainsi que les filtres et le tri qu'il a pu sélectionner
+            this.initFiltersAndSort();
+            // Recup infos du produit
             this.$store.dispatch('fetchProductFromAutocomplete', id);
         },
 
-        // Pour réinitialiser les filtres si l'utilisateur avait choisi au pralable de voir les produits d'un rayon, ainsi que les filtres et le tri qu'il a pu sélectionner
-        reinitialisationFiltresEtTri() {
-            this.$store.commit('SET_FILTERS', {});
-            this.$store.commit('SET_FILTERS_QUERY_STRING_PARAMETERS', "");
-            this.$store.commit('SET_TRI_QUERY_STRING_PARAMETERS', "");
-        },
 
         highlight(val, champ) {
             const goodPath = val.highlight.filter(p => p.path == champ)[0];
