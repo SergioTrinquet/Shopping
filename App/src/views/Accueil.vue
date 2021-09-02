@@ -17,13 +17,14 @@
 <script>
 const ValidationOrderModal = () => import(/* webpackChunkName: "ValidationOrderModal" */ '@/components/ValidationOrderModal');
 import clearSearchEngine from '@/mixins/clearSearchEngine'
+import initFiltersAndSort from '@/mixins/initFiltersAndSort'
 
 export default {
     components: {
         ValidationOrderModal
     },
 
-    mixins: [ clearSearchEngine ],
+    mixins: [ clearSearchEngine, initFiltersAndSort ],
 
     data() {
         return {
@@ -58,7 +59,14 @@ export default {
     },
 
     mounted() { 
+      // Réinitialisation chp de rech. + autocomplete
       this.clearSearch(); 
+
+      // Réinitialisation de la plupart des prop. du state : Pas obligatoire mais logique et meilleure visibilité dans Vue devTools
+      this.initFiltersAndSort(); // Réinitialisation var du state concernant Filtres et Tri
+      this.$store.commit('SET_PRODUCTS', []);
+      this.$store.commit('SET_TYPE_OF_SEARCH_PRODUCTS', {});
+      this.$store.commit('SET_SELECTED_DEPARTMENT', null);
     }
 }
 </script>
