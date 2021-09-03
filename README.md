@@ -2,7 +2,8 @@
 
 ## Documentation utilisateur
 
-Le but de cette application était de tenter de reproduire un site de  course en ligne. Après avoir regardé ce qui existe, je me suis inspiré de certains d'entre eux pour ce qui est des fonctionnalités (moteur de recherche, classification des articles par rayons, présentation des produits,...).
+Le but de cette application était de tenter de reproduire un site classique de course en ligne. Après avoir regardé ce qui existe, je me suis inspiré de certains d'entre eux pour ce qui est des fonctionnalités (moteur de recherche, classification des articles par rayons, présentation des produits,...).  
+[Cliquez ici](https://appshopping-st.herokuapp.com/) pour voir l'applicaton en ligne.
 
 _Page d'accueil_
 ![page d'accueil](App/src/assets/imgs/README_screenshots/pg_accueil.png)
@@ -178,9 +179,9 @@ NOTE : Attention ! Les index seront supprimés lorsque vous alimentez la liste d
 
 ## Mise en production du projet
 Les étapes de mise en prod. diffèrent selon l'hébergeur.  
-Ici, j'ai choisi d'héberger le site sur Héroku. Il existe de multiples façon de mettre en production sur Heroku, voici les étapes pour l'une d'entre elles :
-
-NOTE: Il faut faire communiquer un rep. Git local contenant notre projet avec lun rep. Git distant sur Heroku. 
+Ici, j'ai choisi d'héberger le site sur Héroku. Il existe de multiples façon de mettre en production sur Heroku.  
+J'ai choisi la methode avec Git : Il s'agit de faire communiquer son répertoire Git local dans lequel se trouve son projet, avec un répertoire Git distant sur le serveur Heroku. L'idée est de pousser le code de notre Git local au Git distant Heroku.
+Voici les étapes pour l'une d'entre elles :
 
 ### Sur le projet en lui-même
 
@@ -193,7 +194,13 @@ NOTE: Il faut faire communiquer un rep. Git local contenant notre projet avec lu
 1 - Si cela n'est pas déjà fait, installez Heroku CLI. C'est ce qui va nous permettre d'interpréter le commandes passées via le terminal pour mettre en ligne le projet.  Pour vérifier qu'il est bien installé, taper 'heroku -v' pour connaitre la version (si ce n'est pas le cas vous aurez un message d'erreur)  
 2 - Se créer un compte sur le site de Heroku,  
 3 - Se loguer via la commande dans le terminal 'heroku login',  
-4 - Récupérer le code du projet (qui a préalablement été archivé sur git) : 
+4 - Maintenant on va créer un repository Git de notre projet que l'on va formater dans le but de pousser le code vers Heroku. --- Clone du projet sur notre Git initial --- Créat° du Git dessus (avec git init)  ...Récupérer le code du projet (qui a préalablement été archivé sur git) :  
+5 - Créer un fichier que l'on nommera 'Procfile' qui va executer la commande pour lancer le site une fois sur le serveur de prod. 
+
+Contenu du fichier _Procfile_
+```
+web: node index.js
+```
 
 
   ## Project setup
