@@ -206,23 +206,21 @@ Heroku ne peut héberger que la partie back-end de notre app, celle faite avec N
     Je commit et je push ces modifs.
 
 
-6. **Créer son repository Git local** : Maintenant on va créer un repository Git de notre projet que l'on va préparer dans le but de pousser le code vers Heroku.  
-Mon code est déjà versionné avec Git, mais cela me sert à archiver mes projets sur mon Git distant. Il faut donc que je fasse une copie du projet et que je l'intègre à un nouveau repository Git qui sera dédié à la mise en prod.   
+6. **Créer son repository Git local** : Maintenant on va créer un repository Git de notre projet que l'on va préparer dans le but de pousser le code vers Heroku.    
 
   - Je fais donc une copie de mon projet dans un nouveau repertoire (en faisant un git clone de mon repository Git distant, ou bien en copiant/collant mon projet présent sur ma machine).
-  - Je supprime le répertoire '.git' dans cette copie s'il y en a un.
+  - Je supprime le répertoire '.git' dans cette copie s'il y en a un (pas sûr que cela soit obligatoire)
   - Je builde le code Front (dans le terminal taper '_npm run build_'). Par défaut un répertoire 'dist' devrait être généré à la racine de la partie Front du projet (repertoire 'App'), mais on reparamètre cela dans notre fichier 'vue.config.js' (option 'outputDir'): Le répertoire contenant le js front buildé se nommera alors 'public' et sera placé dans la partie back (répertoire 'API').
   - Je descends dans le répertoire 'API': C'est son contenu que je vais envoyer sur le serveur.
-  - Une fois dedans, j'initialise un nouveau Git repository sur le projet (cmd '_git init_').  
+  - Une fois dedans, à la racine, je créé un fichier 'Procfile' (sans extension), qui va executer la commande pour lancer l'application sur le serveur de prod.  
+  Contenu du fichier _Procfile_
+  ```
+  web: npm start
+  ```
+  - J'initialise un nouveau Git repository sur le projet (cmd '_git init_').  
   - J'ajoute mon code dans le repository ('_git add ._' puis '_git commit -m "mon commentaire"_').  
 
-7. **Créer un fichier que l'on nommera 'Procfile'**, toujours dans le répertoire 'API', qui va executer la commande pour lancer le site une fois sur le serveur de prod.  
-Contenu du fichier _Procfile_
-```
-web: node index.js
-```
-
-8. **Pousser le code vers le serveur Heroku**: Taper la commande '_git push heroku master_'. Cela signifie que l'on pousse le code de notre branche master de notre repository Git local, vers le Git distant nommé par défaut 'heroku'.
+7. **Pousser le code vers le serveur Heroku**: Taper la commande '_git push heroku master_'. Cela signifie que l'on pousse le code de la branche master de notre repository Git local, vers le Git distant nommé par défaut 'heroku'.
 
 
   ## Project setup
