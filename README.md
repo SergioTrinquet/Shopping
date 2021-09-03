@@ -203,7 +203,7 @@ Heroku ne peut héberger que la partie back-end de notre app, celle faite avec N
   ```
   - Dans le fichier 'package.json', section 'scripts', on ajoute '_"start": "node index"_'.  
 
-    Je commit et je push ces modifs.
+    On commit et on push ces modifs.
 
 
 6. **Créer son repository Git local** : Maintenant on va créer un repository Git de notre projet que l'on va préparer dans le but de pousser le code vers Heroku.    
@@ -220,7 +220,10 @@ Heroku ne peut héberger que la partie back-end de notre app, celle faite avec N
   - J'initialise un nouveau Git repository sur le projet (cmd '_git init_').  
   - J'ajoute mon code dans le repository ('_git add ._' puis '_git commit -m "mon commentaire"_').  
 
-7. **Pousser le code vers le serveur Heroku**: Taper la commande '_git push heroku master_'. Cela signifie que l'on pousse le code de la branche master de notre repository Git local, vers le Git distant nommé par défaut 'heroku'.
+7. **Pousser le code vers le serveur Heroku**: Taper la commande '_git push heroku master_'.  
+Cela signifie que l'on pousse le code de la branche master de notre repository Git local, vers le Git distant nommé par défaut 'heroku'.
+
+Et voilà!!
 
 
   ## Project setup
