@@ -83,23 +83,24 @@ Vue.js + Node.js + mongoDB
 
 ### Démarches pour MongoDB Atlas
 
-Les données de l'application propres aux rayons et aux articles sont stockées avec mongoDB Atlas qui est la version Cloud de ce système de gestion de bases de données NoSQL.  
-Mais avant de pouvoir l'exploiter, il va falloir faire quelques installations.  
+#### Inscription et connexion
+
+Les données des rayons et des articles sont stockées avec mongoDB Atlas qui est la version Cloud de ce système de gestion de bases de données NoSQL.  
+Mais avant de pouvoir l'utiliser, il va falloir faire quelques installations.  
 Je vous invite à regarder l'excellent tutoriel de The Net Ninja (tuto #9 Node.js Crash Course Tutorial) pour vous aider dans cette tache ([lien tuto]()) : 
 
-1. Aller sur le site "mongodb.com//atlas",
+1. Aller sur le site [https://www.mongodb.com/fr-fr/cloud/atlas](https://www.mongodb.com/fr-fr/cloud/atlas),
 2. Se créer un compte
 3. Créer :
-- un Project, 
-- un cluster, 
-- une database avec comme nom 'db_shopping', 
-- des collections aux noms de 'departments' et 'products',
-- un user
+  - un cluster, 
+  - une database avec comme nom 'db_shopping', 
+  - des collections aux noms de 'departments' et 'products',
+  - un user (Laisser les options 'read and write to any database' lors de cette étape),
 4. Alimenter les collections créées à l'étape précédente avec Mongo shell, ou bien si vous travaillez avec l'éditeur Visual Studio Code (comme beaucoup de gens :-)), téléchargez l'extension 'MongoDB for VS Code' (une icone apparaitra alors sur le bord gauche de l'éditeur pour accéder au marketplace), puis connectez-vous à votre cluster et executez le fichier 'Generation_db_shopping_collections.mongodb' dans le projet.  
-L'exécution de ce fichier va alimenter les collections 'departments' et 'products' que vous aurez créées dans mongoDB Atlas au préalable.
+L'exécution de ce fichier va alimenter les collections 'departments' et 'products' que vous aurez créées dans mongoDB Atlas au préalable;
+5. Aller dans le menu 'Cluster' et cliquez sur le bouton 'connect', puis dans la fenêtre qui apparait, cliquez sur 'Connect your application' : Vous verrez alors la chaine de connexion à copier/coller dans le projet du coté Node.js pour pouvoir échanger avec la base de données,  
+**IMPORTANT :** Au sein de cette chaine sont placés les login, mot de passe et nom de la base de données que l'on a créé plus haut. Pour éviter de les mettre en dur dans la chaine de caractères, nous les avons externalisés dans un fichier 'identifiants_mongoDB.js' (modèle ci-dessous) qu'il vous faudra créer, et que vous placerez dans 'API/config'.
 
-
-**PS :Ne pas oublier de dire qu'il faut créer un fichier 'identifiants_mongoDB.js' dans le répertoire 'API/config' du style pour pouvoir accéder à sa collection dans mongoDB Atlas**
 ```
 module.exports = {
     "username": "XXXXX",
@@ -109,25 +110,24 @@ module.exports = {
 ```
 
 
-### Démarches pour MongoDB Atlas Search
-Pour permettre au champ de recherche articles (en haut de page) de fonctionner, il faut d'abord créer des indexs dans mongoDB Atlas.
-https://developer.mongodb.com/how-to/build-movie-search-application/
-
-_interface mongoDB Atlas: page de création des indexs_
-![Autocomplete](App/src/assets/imgs/README_screenshots/mongodb_index.png)
-
-
-## Moteur de recherche
-La recherche sur les produits et marques est géré avec mongodb Atlas via l'interface.
-La recherche comprend:
+#### Moteur de recherche
+Un champ de recherche sur les produits et marques se trouve dans le header.
+Il fonctionne grace à des indexs que l'on doit créer avec Mongodb Atlas Search ([Voir le tuto ici](https://developer.mongodb.com/how-to/build-movie-search-application/)).  
+Grace à son index, le champ de recherche comprend:
 - Une autocompletion. Dès les premiers caractères saisis, des produits sont proposés pour aider l'utilisateur et lui éviter de devoir saisir le terme exact dans le moteur de recherche pour qu'il s'affiche,
 - Le surlignage des termes recherchés (ou highlight), 
 - Des résultats proposés avec une tolérence de variation de caractère (dont le nombre est à paramétrer, ici 1).
  Cela permet de trouver ce que l'on recherche malgré une erreur de frappe ou d'orthographe.
 
-Expliquer à quoi sert un index et comment on fait l'index pour l'autocompletion
 
-Index 'products_autocomplete' pour l'API alimentant l'autocompletion :
+Concrètement, un index permet de mettre en place des fonctionnalités avancées de recherche.
+Pour les créer dans l'interface mongoDB Atlas, placez-vous dans votre cluster et cliquez sur le menu horizontal 'Search'.
+
+_interface mongoDB Atlas: page de création des indexs_
+![Autocomplete](App/src/assets/imgs/README_screenshots/mongodb_index.png)
+
+En cliquant sur e bouton 'Create Index', copiez/collez le code ci-dessous en prenant soin de le nommer 'products_autocomplete'.  
+_Index 'products_autocomplete' pour l'API alimentant l'autocompletion :_
 
 ```
 {
