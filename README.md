@@ -3,7 +3,8 @@
 ## Documentation utilisateur
 
 Le but de cette application était de tenter de reproduire un site classique de course en ligne. Après avoir regardé ce qui existe, je me suis inspiré de certains d'entre eux pour ce qui est des fonctionnalités (moteur de recherche, classification des articles par rayons, présentation des produits,...).  
-[Cliquez ici](https://appshopping-st.herokuapp.com/) pour voir l'applicaton en ligne.
+
+**[Cliquez ici](https://appshopping-st.herokuapp.com/) pour voir l'application en ligne.**
 
 _Page d'accueil_
 ![page d'accueil](App/src/assets/imgs/README_screenshots/pg_accueil.png)
@@ -20,7 +21,7 @@ Lorsque l'on clique sur l'un d'entre eux, les produits correspondants apparaisse
 
 - En utilisant la recherche principale, dans le bandeau en haut de l'écran.  
 Un autocomplete apparait pour proposer des articles en fonction de la saisie de l'utilisateur (cf.img ci-dessous). La liste de l'autocomplete est mise à jour à chaque frappe dans le champ de recherche.  
-L'utilisateur peut cliquer sur un des articles proposés, ou bien valider sa saisie dans le champ de recherche (bt entrée ou clic sur icone Loupe).
+L'utilisateur peut cliquer sur un des articles proposés, ou bien valider sa saisie dans le champ de recherche.
 
 _Liste de proposition d'articles lors de la recherche_
 ![Autocomplete](App/src/assets/imgs/README_screenshots/autocomplete.png)
@@ -40,12 +41,12 @@ Vous pouvez filtrer :
 - Par label qualité  
 
 Ces filtres sont cumulables bien entendu.  
-A noter que vous pouvez filtrer sur les marques avec un champ de saise pour trouver facilement celle(s) qui vous intéresse
+A noter que vous pouvez filtrer sur les marques avec un champ de saisie pour trouver facilement celle(s) qui vous intéresse
 
 ### Panier
 
 Vous ajoutez vos articles en saisissant la quantité désirée (icone panier en bas à droite d'un encart article).  
-L'état de votre panier est consultable à tout moment en cliquant sur l'icone en haut à droite de l'écran en dessous de laquelle est visible la somme correspondant à ce panier.  
+L'état de votre panier est consultable à tout moment en cliquant sur l'icone en haut à droite de l'écran. Le montant du panier est affiché en dessous de l'icône.  
 
 _Liste de produits filtrés et panier_
 ![Autocomplete](App/src/assets/imgs/README_screenshots/liste_produits_filtrees.png)
@@ -57,11 +58,11 @@ _Marge panier_
 ![Autocomplete](App/src/assets/imgs/README_screenshots/marge_panier.png)
 
 
-A partir de là, vous pouvez y changer les quantités commandées, supprimer un article (en mettant la quantité à zéro, ou en cliquant sur l'icone poubelle en haut à droite du produit), ou enfin valider votre commande, ce qui videra votre panier et vous redirigera vers la page d'accueil.
+Vous pouvez y changer les quantités commandées, supprimer un article (en mettant la quantité à zéro, ou en cliquant sur l'icone poubelle en haut à droite du produit), ou enfin valider votre commande, ce qui videra votre panier et vous redirigera vers la page d'accueil.
 
 ### Promotions
 
-Le calcul du prix du panier tient compte bien sur des promotions sur les articles (s'il y en a).
+Le calcul du prix du panier tient compte des promotions sur les articles (s'il y en a).  
 Ces promos sont de 2 types:
 - Un pourcentage sur le prix,
 - Une réduction pour X articles commandés.
@@ -69,7 +70,7 @@ Ces promos sont de 2 types:
 
 ### Améliorations possibles
 
-Par manque de temps, je n'ai pas pu développertout ce que je voulais mettre en place. Il serait par exemple souhaitable de:
+Par manque de temps, je n'ai pas pu développer tout ce que je voulais mettre en place. Il serait par exemple souhaitable de:
 - Rendre l'application responsive, pour que l'affichage s'adapte aux petits écrans
 - Mettre en place un système d'authentification avec login/mot de passe. Cela permettrait à l'utilisateur:
   - d'enregistrer (dans mongoDB) ses courses et ainsi d'avoir son historique en page d'accueil,
@@ -98,7 +99,7 @@ Je vous invite à regarder l'excellent tutoriel de The Net Ninja (tuto #9 Node.j
   - Un user (laisser les options 'read and write to any database' lors de cette étape),
 4. Alimenter les collections créées à l'étape précédente avec Mongo shell, ou bien si vous travaillez avec l'éditeur Visual Studio Code (comme beaucoup de gens :-)), téléchargez l'extension '_MongoDB for VS Code_' (une icone apparaitra alors sur le bord gauche de l'éditeur pour accéder au marketplace), puis connectez-vous à votre cluster et executez le fichier '_Generation_db_shopping_collections.mongodb_' dans le projet.  
 L'exécution de ce fichier va alimenter les collections '_departments_' et '_products_'  
-5. Dans le menu 'Cluster', lorsque l'on clique sur le bouton '_connect_', une fenêtre apparait. En choisissant l'option '_Connect your application_', vous verrez alors la chaine de connexion qui va permettre de dialoguer avec la base de données.  
+5. Dans le menu '_Cluster_', lorsque l'on clique sur le bouton '_connect_', une fenêtre apparait. En choisissant l'option '_Connect your application_', vous verrez alors la chaine de connexion qui va permettre de dialoguer avec la base de données.  
 Cette chaine est déjà présente dans le projet (fichier '_/API/index.js_') mais si vous avez créé votre propre base de données et que vous voulez la connecter à l'application, il faudra la remplacer par la votre, en prenant soin de ne pas mettre les login, mot de passe et nom de la base de donnée en dur.  
 Ces paramètres sont dans des variables : Nous les avons externalisés dans un fichier '_identifiants_mongoDB.js_' (modèle ci-dessous) qu'il vous faudra créer, et que vous placerez dans '_/API/config_'.
 
@@ -117,9 +118,9 @@ Un champ de recherche sur les produits et marques se trouve dans le header de l'
 Il fonctionne grace à des indexs que l'on doit créer avec Mongodb Atlas Search ([Voir le tuto ici](https://developer.mongodb.com/how-to/build-movie-search-application/)).  
 Grace à son index, le champ de recherche comprend:
 - <ins>Une autocompletion</ins>. Dès les premiers caractères saisis, des produits sont proposés pour aider l'utilisateur et lui éviter de devoir saisir le terme exact dans le moteur de recherche pour qu'il s'affiche,
-- <ins>Le surlignage</ins> des termes recherchés (ou highlight), 
-- Des résultats proposés avec <ins>une tolérence de variation de caractère</ins> (dont le nombre est à paramétrer, ici 1).
- Cela permet de trouver ce que l'on recherche malgré une erreur de frappe ou d'orthographe.
+- Des résultats proposés avec <ins>une tolérence de variation de caractère</ins> (dont le nombre est à paramétrer, ici 1).  
+ Cela permet de trouver ce que l'on recherche malgré une erreur de frappe ou d'orthographe,
+- <ins>Le surlignage</ins> (highlight) des termes au plus proche de ce que l'utilisateur a recherchés.
 
 
 Concrètement, un index permet de mettre en place des fonctionnalités avancées de recherche.  
