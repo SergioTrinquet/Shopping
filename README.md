@@ -92,15 +92,17 @@ Je vous invite à regarder l'excellent tutoriel de The Net Ninja (tuto #9 Node.j
 1. Aller sur le site [https://www.mongodb.com/fr-fr/cloud/atlas](https://www.mongodb.com/fr-fr/cloud/atlas),
 2. Se créer un compte
 3. Créer :
-  - un cluster, 
-  - une database avec comme nom 'db_shopping', 
-  - des collections aux noms de 'departments' et 'products',
-  - un user (Laisser les options 'read and write to any database' lors de cette étape),
-4. Alimenter les collections créées à l'étape précédente avec Mongo shell, ou bien si vous travaillez avec l'éditeur Visual Studio Code (comme beaucoup de gens :-)), téléchargez l'extension 'MongoDB for VS Code' (une icone apparaitra alors sur le bord gauche de l'éditeur pour accéder au marketplace), puis connectez-vous à votre cluster et executez le fichier 'Generation_db_shopping_collections.mongodb' dans le projet.  
-L'exécution de ce fichier va alimenter les collections 'departments' et 'products' que vous aurez créées dans mongoDB Atlas au préalable;
-5. Aller dans le menu 'Cluster' et cliquez sur le bouton 'connect', puis dans la fenêtre qui apparait, cliquez sur 'Connect your application' : Vous verrez alors la chaine de connexion à copier/coller dans le projet du coté Node.js pour pouvoir échanger avec la base de données,  
-**IMPORTANT :** Au sein de cette chaine sont placés les login, mot de passe et nom de la base de données que l'on a créé plus haut. Pour éviter de les mettre en dur dans la chaine de caractères, nous les avons externalisés dans un fichier 'identifiants_mongoDB.js' (modèle ci-dessous) qu'il vous faudra créer, et que vous placerez dans 'API/config'.
+  - Un cluster, 
+  - Une database avec comme nom '_db_shopping_', 
+  - Des collections aux noms de '_departments_' et '_products_',
+  - Un user (laisser les options 'read and write to any database' lors de cette étape),
+4. Alimenter les collections créées à l'étape précédente avec Mongo shell, ou bien si vous travaillez avec l'éditeur Visual Studio Code (comme beaucoup de gens :-)), téléchargez l'extension '_MongoDB for VS Code_' (une icone apparaitra alors sur le bord gauche de l'éditeur pour accéder au marketplace), puis connectez-vous à votre cluster et executez le fichier '_Generation_db_shopping_collections.mongodb_' dans le projet.  
+L'exécution de ce fichier va alimenter les collections '_departments_' et '_products_'  
+5. Dans le menu 'Cluster', lorsque l'on clique sur le bouton '_connect_', une fenêtre apparait. En choisissant l'option '_Connect your application_', vous verrez alors la chaine de connexion qui va permettre de dialoguer avec la base de données.  
+Cette chaine est déjà présente dans le projet (fichier '_/API/index.js_') mais si vous avez créé votre propre base de données et que vous voulez la connecter à l'application, il faudra la remplacer par la votre, en prenant soin de ne pas mettre les login, mot de passe et nom de la base de donnée en dur.  
+Ces paramètres sont dans des variables : Nous les avons externalisés dans un fichier '_identifiants_mongoDB.js_' (modèle ci-dessous) qu'il vous faudra créer, et que vous placerez dans '_/API/config_'.
 
+_Structure du fichier 'identifiants_mongoDB.js': Remplacez la valeur des propriétés par celles que vous avez saisies lors de la création de votre bdd_
 ```
 module.exports = {
     "username": "XXXXX",
@@ -111,22 +113,23 @@ module.exports = {
 
 
 #### Moteur de recherche
-Un champ de recherche sur les produits et marques se trouve dans le header.
+Un champ de recherche sur les produits et marques se trouve dans le header de l'application.
 Il fonctionne grace à des indexs que l'on doit créer avec Mongodb Atlas Search ([Voir le tuto ici](https://developer.mongodb.com/how-to/build-movie-search-application/)).  
 Grace à son index, le champ de recherche comprend:
-- Une autocompletion. Dès les premiers caractères saisis, des produits sont proposés pour aider l'utilisateur et lui éviter de devoir saisir le terme exact dans le moteur de recherche pour qu'il s'affiche,
-- Le surlignage des termes recherchés (ou highlight), 
-- Des résultats proposés avec une tolérence de variation de caractère (dont le nombre est à paramétrer, ici 1).
+- <ins>Une autocompletion</ins>. Dès les premiers caractères saisis, des produits sont proposés pour aider l'utilisateur et lui éviter de devoir saisir le terme exact dans le moteur de recherche pour qu'il s'affiche,
+- <ins>Le surlignage</ins> des termes recherchés (ou highlight), 
+- Des résultats proposés avec <ins>une tolérence de variation de caractère</ins> (dont le nombre est à paramétrer, ici 1).
  Cela permet de trouver ce que l'on recherche malgré une erreur de frappe ou d'orthographe.
 
 
-Concrètement, un index permet de mettre en place des fonctionnalités avancées de recherche.
-Pour les créer dans l'interface mongoDB Atlas, placez-vous dans votre cluster et cliquez sur le menu horizontal 'Search'.
+Concrètement, un index permet de mettre en place des fonctionnalités avancées de recherche.  
+Pour créer ces indexs dans l'interface mongoDB Atlas, placez-vous dans votre cluster et cliquez sur le menu horizontal '_Search_'.
 
 _interface mongoDB Atlas: page de création des indexs_
 ![Autocomplete](App/src/assets/imgs/README_screenshots/mongodb_index.png)
 
-En cliquant sur e bouton 'Create Index', copiez/collez le code ci-dessous en prenant soin de le nommer 'products_autocomplete'.  
+En cliquant sur le bouton 'Create Index', copiez/collez le code ci-dessous en prenant soin de le nommer '_products_autocomplete_'.   
+
 _Index 'products_autocomplete' pour l'API alimentant l'autocompletion :_
 
 ```
@@ -161,11 +164,11 @@ _Index 'products_autocomplete' pour l'API alimentant l'autocompletion :_
 }
 ```
 
-Index 'products' utilisé dans les requetes suite à la validation sur le moteur de recherche de produits/marque:
+Faites de même pour l'index '_products_'. Il sera utilisé dans les requêtes appelées suite à la validation sur le moteur de recherche de produits/marque:
 - Pour rechercher des produits 
 - Pour récupérer les filtres sur ces produits
 
-Cet index doit être créé sur la collection 'products'
+Cet index doit être créé sur la collection '_products_'
 
 ```
 {
@@ -175,7 +178,7 @@ Cet index doit être créé sur la collection 'products'
 }
 ```
 
-NOTE : Attention ! Les index seront supprimés lorsque vous alimentez la liste des articles via le fichier '.mongodb'
+NOTE : Attention ! Les index seront supprimés lorsque vous alimentez la liste des articles via le fichier '_Generation_db_shopping_collections.mongodb_'
 
 ## Mise en production du projet
 Les étapes de mise en prod. diffèrent selon l'hébergeur.  
