@@ -4,6 +4,10 @@ body {
     padding: 0;
 }
 
+:root {
+    --widthMarginFilters: 250px;
+}
+
 #app {
     font-family: 'Baloo 2', cursive;
     /* font-family: 'Khula', sans-serif; */

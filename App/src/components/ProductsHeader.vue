@@ -2,7 +2,7 @@
   <div class="container">
 
     <div class="lgn">
-      <div>{{ nb_products }} résultat{{ nb_products > 1 ? "s" : "" }}</div>
+      <div class="nbResults tertiary-txt">{{ nb_products }} résultat{{ nb_products > 1 ? "s" : "" }}</div>
       <ProductsSelectOrder v-if="nb_products > 1" />
     </div>
 
@@ -49,10 +49,28 @@ export default {
 }
 .rayonProduits {
   font-size: 17px;
+  /* font-size: clamp(13px, 4vw, 17px); */ /* Version non IOS compatible */
+  font-size: max(13px, min(4vw, 17px)); /* Version IOS compatible */
 }
 .lgn {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.nbResults {
+  font-weight: bold;
+}
+
+#app[data-narrow-screen] .container {
+  padding: 10px 0;
+}
+#app[data-narrow-screen] .lgn {
+  flex-direction: column-reverse;
+}
+#app[data-narrow-screen] .nbResults {
+  margin-top: 6px;
+}
+#app[data-narrow-screen] .rayonProduits {
+  text-align: center;
 }
 </style>

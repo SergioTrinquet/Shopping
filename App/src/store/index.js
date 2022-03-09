@@ -32,7 +32,8 @@ export default new Vuex.Store({
     autocomplete_results: [],
     search_products_type: {},
     display_icon_clear_search: false,
-    validation_order_cmd: false
+    validation_order_cmd: false,
+    limit_narrow_screen: 480
   },
 
 

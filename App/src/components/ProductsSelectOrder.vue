@@ -62,6 +62,9 @@ export default {
 </script>
 
 <style scoped>
+div {
+    font-size: max(13px, min(4vw, 17px)); /* Version IOS compatible */
+}
 select {
     background-color: #F0F0F0;
     border-width: 0;

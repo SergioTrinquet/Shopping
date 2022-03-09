@@ -111,4 +111,8 @@ export default {
 .tagCloseIcon:hover {
     cursor: pointer;
 }
+
+#app[data-narrow-screen] div {
+    text-align: center;
+}
 </style>

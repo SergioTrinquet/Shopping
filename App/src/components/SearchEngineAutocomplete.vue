@@ -149,4 +149,10 @@ export default {
 	border-width: 10px;
 	margin-left: -10px;
 }
+
+#app[data-narrow-screen] #proposals {
+  position: fixed;
+  width: 90vw;
+  left: 5vw;
+}
 </style>

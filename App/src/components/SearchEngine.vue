@@ -196,4 +196,14 @@ export default {
 #iconSearch:hover {
   color: rgb(24, 136, 196);
 }
+
+#app[data-narrow-screen] #searchEngine {
+  width: 85%;
+}
+#app[data-narrow-screen] #iconBackspace {
+  margin: 2px 0 0px -30px;
+}
+#app[data-narrow-screen] #iconSearch {
+  margin: 0px 0 0px 7px;
+}
 </style>

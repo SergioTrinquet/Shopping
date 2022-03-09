@@ -1,5 +1,8 @@
 <template>
-  <div id="app">
+  <div 
+    id="app" 
+    :data-narrow-screen="narrowScreen"
+  >
 
     <AppLoader :loading="loading" v-if="loading" /><!-- Loader général -->
     <AppErrorMsg :message="dataError" v-if="dataError != null" /><!-- Encart msg d'erreur général -->
@@ -68,12 +71,19 @@
       BasketMargin
     },
 
+    data() {
+      return {
+        narrowScreen: false
+      }
+    },
+
     computed: {
       ...mapState({
         loading: state => state.loading > 0,
         dataError: 'data_error',
         displayMarginDepartments: 'display_margin_departments',
-        displayMarginBasket: 'display_margin_basket'
+        displayMarginBasket: 'display_margin_basket',
+        limitNarrowScreen: 'limit_narrow_screen'
       }),
       basketNbItems() {
         return this.$store.getters.getBasketNbItems;
@@ -87,7 +97,17 @@
       },
       marginBasket() {
         this.$store.commit("SET_DISPLAY_MARGIN_BASKET", !this.displayMarginBasket);
+      },
+      // Si largeur écran > 481px, fermeture marge Filtres + overlay qui va avec
+      setNarrowScreenDatavalue() {
+        this.narrowScreen = window.matchMedia(`(min-width: ${this.limitNarrowScreen + 1}px)`).matches ? false : true;
       }
+    },
+
+    mounted() {
+      // Exec fct° qd resize
+      window.addEventListener('resize', this.setNarrowScreenDatavalue);
+      this.setNarrowScreenDatavalue();
     }
   }
 </script>
@@ -165,6 +185,8 @@
     display: none !important;
   }
 }
+
+#app[data-narrow-screen] #nav .basketIcon { padding: 0; }
 
 #nav a.router-link-exact-active {
   color: #42b983;

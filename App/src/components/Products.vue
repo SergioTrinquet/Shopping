@@ -72,4 +72,12 @@ export default {
   line-height: 28px;
   color: #274d80;
 }
+
+#app[data-narrow-screen] .containerProductItems {
+  display: flex;
+  flex-direction: column;
+}
+#app[data-narrow-screen] .productItem { 
+  max-width: none;
+}
 </style>
