@@ -3,7 +3,7 @@
         <input 
             type="text" 
             class="mainInputSearch" 
-            placeholder="Rechercher un produit par son nom ou sa marque"
+            :placeholder="placeholderText"
             @keyup="searchProductsForAutocomplete"
             @keypress.enter="searchProducts"
         >
@@ -20,7 +20,6 @@
         />
 
         <Autocomplete v-if="displaySearchEngineResults" />
-
     </div>
 </template>
 
@@ -28,6 +27,8 @@
 const Autocomplete = () => import(/* webpackChunkName: "SearchEngineAutocomplete" */ '@/components/SearchEngineAutocomplete')
 
 import clearSearchEngine from '@/mixins/clearSearchEngine'
+
+import { mapState } from 'vuex'
 
 export default {
     name: 'SearchEngine',
@@ -42,21 +43,22 @@ export default {
         return {
           old_saisie: "",
           timer: null,
-          displaySearchEngineResults: false
+          displaySearchEngineResults: false,
+          placeholderText: ""
         }
     },
 
     computed: {
-      autocompleteResults() {
-        return this.$store.state.autocomplete_results;
-      },
       // Pour servir de flag pour ajouter/retirer l'option 'pertinence' ds le select du tri
       searchBySearchString() {  
         return typeof this.$store.state.search_products_type.searchstring !== "undefined";
       },
-      displayIconClearSearch() {
-        return this.$store.state.display_icon_clear_search;
-      }
+      ...mapState({
+        autocompleteResults: 'autocomplete_results',
+        displayIconClearSearch: 'display_icon_clear_search',
+        isNarrowScreen: 'is_narrow_screen'
+      })
+
     },
 
     watch: {
@@ -66,8 +68,15 @@ export default {
 
       // Qd recherche par moteur de rech., ajout/retrait ds liste déroulante 'Tri' d'une option 'pertinence'
       searchBySearchString(val) { 
-        //console.warn("WATCH searchBySearchString", val); //TEST
         this.$store.commit(val ? 'ADD_LISTE_TRI_OPTION' : 'REMOVE_LISTE_TRI_OPTION');
+      },
+
+      // Si largeur écran > 481px, fermeture marge Filtres + overlay qui va avec
+      isNarrowScreen: { 
+        immediate: true,
+        handler(val) {
+          this.placeholderText = val ? 'Recherche produit (nom/marque)' : 'Rechercher un produit par son nom ou sa marque';
+        }
       }
     },
 
@@ -145,6 +154,10 @@ export default {
 </script>
 
 <style scoped>
+::placeholder {
+  /* font-size: clamp(10px, 3vw, 14px); */ /* Version non IOS compatible */
+  font-size: max(10px, min(3vw, 14px)); /* Version IOS compatible */
+}
 #searchEngine {
   position: relative;
   display: inline-block;

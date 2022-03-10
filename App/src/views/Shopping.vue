@@ -1,10 +1,20 @@
 <template>
   <div>
 
-    <div class="grid-container">
-      <div class="block-filters" :class="displayMarginFilters ? '' : 'close'">
+    <div 
+      class="grid-container" 
+      :class="hiddenMarginFilters ? 'hideMarginFilters' : ''"
+    >
+      <div 
+        class="block-filters" 
+        :class="displayMarginFilters ? '' : 'closed'"
+      >
 
-        <div id="BtFilters" @click="toggleMarginFilters">
+        <div 
+          id="BtFilters" 
+          v-if="Object.keys(filters).length > 0" 
+          @click="toggleMarginFilters"
+        >
           <font-awesome-icon 
             :icon="filtersButton.icon" 
             :id="filtersButton.idIcon" 
@@ -54,23 +64,16 @@ export default {
 
   data() {
       return {
-        displayMarginFilters: false
+        displayMarginFilters: false,
+        hiddenMarginFilters: true //
       }
   },
 
   computed: {
-    /* filters() {
-      return this.$store.state.filters;
-    },
-    limitNarrowScreen() {
-      return this.$store.state.limit_narrow_screen;
-    }, */
-    ...mapState({
-      filters: 'filters',
-      limitNarrowScreen: 'limit_narrow_screen'
-    }),
-
-
+    ...mapState([
+      'filters',
+      'is_narrow_screen'
+    ]),
     displayProductsInterface() {
       const flagSearchProducts = Object.keys(this.$store.state.search_products_type).length > 0 || this.$route.params.fromSearchEngine;
       const productsFound = this.$store.state.products.length > 0;
@@ -86,13 +89,21 @@ export default {
       }
   },
 
-  methods: {
+  watch: {
     // Si largeur écran > 481px, fermeture marge Filtres + overlay qui va avec
-    resize() {
-      if(window.matchMedia(`(min-width: ${this.limitNarrowScreen + 1}px)`).matches) {
-        this.displayMarginFilters = false;
-      }
+    is_narrow_screen: { 
+        immediate: true,
+        handler(val) {
+          this.displayMarginFilters = false;
+          this.hiddenMarginFilters = (Object.keys(this.filters).length == 0 && val) ? true : false;
+        }
     },
+    filters(val) {
+        this.hiddenMarginFilters = (Object.keys(val).length == 0 && this.is_narrow_screen) ? true : false;
+    }
+  },
+
+  methods: {
     toggleMarginFilters() {
       this.displayMarginFilters = !this.displayMarginFilters;
     }
@@ -102,8 +113,6 @@ export default {
   mounted() { 
     // Si pas de recherche de faite ou pas de produits trouvés: retour à la page d'accueil
     if(!this.displayProductsInterface)  this.$router.push({ name: 'Accueil' });
-    // Exec fct° qd resize
-    window.addEventListener('resize', this.resize);
   }
 
 }
@@ -143,13 +152,20 @@ export default {
 #app[data-narrow-screen] .block-filters {
   border-right: solid 1px #2b558d;
 }
-#app[data-narrow-screen] .block-filters:not(.close) {
+#app[data-narrow-screen] .block-filters:not(.closed) {
   z-index: 1001;
 }
-#app[data-narrow-screen] .block-filters.close {
+#app[data-narrow-screen] .block-filters.closed {
   margin-left: calc((var(--widthMarginFilters) * -1) + 8px);
   z-index: 1;
 }
+#app[data-narrow-screen] .grid-container.hideMarginFilters {
+  grid-template-columns: 0 1fr;
+}
+#app[data-narrow-screen] .grid-container.hideMarginFilters .block-filters {
+  margin-left: calc((var(--widthMarginFilters) * -1));
+}
+
 #app[data-narrow-screen] #BtFilters {
   display: flex;
   flex-direction: column;
@@ -165,7 +181,7 @@ export default {
   margin-left: calc(var(--widthMarginFilters) - 12px);
   margin-top: 20px;
   cursor: pointer;
-  border-radius: 0px 10px 10px 0;
+  border-radius: 0px 8px 8px 0;
   transition: all 0.3s ease;
 }
 #app[data-narrow-screen] #BtFilters:hover {

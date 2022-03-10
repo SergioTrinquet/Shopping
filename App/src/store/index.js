@@ -33,7 +33,8 @@ export default new Vuex.Store({
     search_products_type: {},
     display_icon_clear_search: false,
     validation_order_cmd: false,
-    limit_narrow_screen: 480
+    limit_narrow_screen: 480,
+    is_narrow_screen: false
   },
 
 
@@ -124,6 +125,9 @@ export default new Vuex.Store({
     },
     SET_VALIDATION_ORDER_CMD(state, payload) {
       state.validation_order_cmd = payload;
+    },
+    SET_NARROW_SCREEN_FLAG(state, payload) {
+      state.is_narrow_screen = payload;
     }
   },
 
@@ -183,7 +187,7 @@ export default new Vuex.Store({
         context.commit('SET_PRODUCTS', data);
       }
     }
-    
+
   },
 
 

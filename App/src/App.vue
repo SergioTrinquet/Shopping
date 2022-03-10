@@ -83,13 +83,23 @@
         dataError: 'data_error',
         displayMarginDepartments: 'display_margin_departments',
         displayMarginBasket: 'display_margin_basket',
-        limitNarrowScreen: 'limit_narrow_screen'
+        limitNarrowScreen: 'limit_narrow_screen',
+        isNarrowScreen: 'is_narrow_screen'
       }),
       basketNbItems() {
         return this.$store.getters.getBasketNbItems;
       }
     },
 
+    watch: {
+      // Si largeur écran > 481px, fermeture marge Filtres + overlay qui va avec
+      isNarrowScreen: { 
+          immediate: true,
+          handler(val) {
+            this.narrowScreen = val;
+          }
+      }
+    },
 
     methods: {
       marginDepartments() {
@@ -98,16 +108,16 @@
       marginBasket() {
         this.$store.commit("SET_DISPLAY_MARGIN_BASKET", !this.displayMarginBasket);
       },
-      // Si largeur écran > 481px, fermeture marge Filtres + overlay qui va avec
-      setNarrowScreenDatavalue() {
-        this.narrowScreen = window.matchMedia(`(min-width: ${this.limitNarrowScreen + 1}px)`).matches ? false : true;
+      setNarrowScreenFlag() {
+        const isNarrow = window.matchMedia(`(min-width: ${this.limitNarrowScreen + 1}px)`).matches ? false : true;
+        this.$store.commit("SET_NARROW_SCREEN_FLAG", isNarrow);
       }
     },
 
     mounted() {
-      // Exec fct° qd resize
-      window.addEventListener('resize', this.setNarrowScreenDatavalue);
-      this.setNarrowScreenDatavalue();
+      // Pour savoir si/quand écran est étroit (>= à 480px)
+      window.addEventListener('resize', this.setNarrowScreenFlag);
+      this.setNarrowScreenFlag();
     }
   }
 </script>
