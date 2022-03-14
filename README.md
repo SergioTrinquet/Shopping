@@ -70,9 +70,7 @@ Ces promos sont de 2 types:
 
 ### Améliorations possibles
 
-Par manque de temps, je n'ai pas pu développer tout ce que je voulais mettre en place. Il serait par exemple souhaitable de:
-- Rendre l'application responsive, pour que l'affichage s'adapte aux petits écrans
-- Mettre en place un système d'authentification avec login/mot de passe. Cela permettrait à l'utilisateur:
+Par manque de temps, je n'ai pas pu développer tout ce que je voulais mettre en place. Il serait par exemple souhaitable de mettre en place un système d'authentification avec login/mot de passe. Cela permettrait à l'utilisateur:
   - d'enregistrer (dans mongoDB) ses courses et ainsi d'avoir son historique en page d'accueil,
   - de mettre en place une fonctionnalité de création de panier(s) type(s) en cochant les produits qui serai(en)t dans ce(s) panier(s) 
 
