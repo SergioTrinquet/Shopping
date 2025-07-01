@@ -267,8 +267,6 @@ module.exports = {
             aggregationPipelineStages.push({ $sort: stages.sort });
         }
 
-        console.log(aggregationPipelineStages); //TEST
-
         return Product.aggregate(aggregationPipelineStages);
     },
 
