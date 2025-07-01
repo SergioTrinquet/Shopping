@@ -6,8 +6,69 @@
 // Select the database to use.
 use('db_shopping');
 
+
+//////////////////// Pour collection 'departments' ///////////////////////
 // The drop() command destroys all data from a collection.
-// Make sure you run it against the correct database and collection.
+db.departments.drop();
+
+// Insert a few documents into the 'departments' collection.
+const insertedDepartments = db.departments.insertMany([
+    { 
+        "intitule":"fruits et légumes" 
+    },
+    { 
+        "intitule":"viandes et poissons" 
+    },
+    { 
+        "intitule":"pains et pâtisseries" 
+    },
+    { 
+        "intitule":"frais" 
+    },
+    { 
+        "intitule":"surgelés" 
+    },
+    { 
+        "intitule":"épicerie salée" 
+    },
+    { 
+        "intitule":"épicerie sucrée" 
+    },
+    { 
+        "intitule":"boissons" 
+    },
+    { 
+        "intitule":"bébé" 
+    },
+    { 
+        "intitule":"entretien et nettoyage" 
+    },
+    { 
+        "intitule":"animalerie" 
+    }
+]);
+
+// Run a find command
+db.departments.find();
+
+
+
+// Set ObjectIds into variables
+const idFruitsLegumes = insertedDepartments.insertedIds[0];
+const idViandesPoissons = insertedDepartments.insertedIds[1];
+const idPainsEtPatisseries = insertedDepartments.insertedIds[2];
+const idFrais = insertedDepartments.insertedIds[3];
+const idSurgeles = insertedDepartments.insertedIds[4];
+const idEpicerieSalee = insertedDepartments.insertedIds[5];
+const idEpicerieSucree = insertedDepartments.insertedIds[6];
+const idBoissons = insertedDepartments.insertedIds[7];
+const idBebe = insertedDepartments.insertedIds[8];
+const idEntretienNettoyage = insertedDepartments.insertedIds[9];
+const idAnimalerie = insertedDepartments.insertedIds[10];
+
+
+//////////////////// Pour collection 'products' ///////////////////////
+// The drop() command destroys all data from a collection.
 db.products.drop();
 
 // Insert a few documents into the 'products' collection.
@@ -21,7 +82,7 @@ db.products.insertMany([
         "prix": NumberDecimal("3.80"),
         "origine":"France",
         "nom_image":"bananes_1kg",
-        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "rayon": idFruitsLegumes,
         "nutriscore":{"_id":"n1","lettre":"A"},
         "label_qualite":[],
         "promotion":{
@@ -37,7 +98,7 @@ db.products.insertMany([
         "prix": NumberDecimal("2.20"),
         "origine":"Italie",
         "nom_image":"Pates-fusilli_BARILLA_500g",
-        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "rayon": idEpicerieSalee,
         "nutriscore":{"_id":"n1","lettre":"A"},
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
@@ -53,7 +114,7 @@ db.products.insertMany([
         "prix": NumberDecimal("9"),
         "origine":"Espagne",
         "nom_image":"oranges_2kg",
-        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "rayon": idFruitsLegumes,
         "nutriscore":{"_id":"n1","lettre":"A"},
         "label_qualite":[],
         "promotion":{
@@ -69,7 +130,7 @@ db.products.insertMany([
         "prix": NumberDecimal("0.99"),
         "origine":"Espagne",
         "nom_image":"citrons_500g",
-        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "rayon": idFruitsLegumes,
         "nutriscore":{"_id":"n2","lettre":"B"},
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
@@ -84,7 +145,7 @@ db.products.insertMany([
         "prix": NumberDecimal("0.40"),
         "origine":"Espagne",
         "nom_image":"citrons-verts-lime_piece",
-        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "rayon": idFruitsLegumes,
         "nutriscore":{"_id":"n3","lettre":"C"},
         "promotion":{
             //"pourcent": NumberInt("20"),
@@ -99,7 +160,7 @@ db.products.insertMany([
         "prix": NumberDecimal("3.49"),
         "origine":"france",
         "nom_image":"fraises-gariguette_barquette-250g",
-        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "rayon": idFruitsLegumes,
         "nutriscore":{"_id":"n1","lettre":"A"},
     },
     {
@@ -110,7 +171,7 @@ db.products.insertMany([
         "prix": NumberDecimal("1.89"),
         "origine":"costa rica",
         "nom_image":"ananas-extra-sweet_piece",
-        "rayon": ObjectId("60907d7d42b2205d269d7df8"),
+        "rayon": idFruitsLegumes,
         "nutriscore":{"_id":"n2","lettre":"B"},
     },
     {
@@ -122,14 +183,14 @@ db.products.insertMany([
         "prix": NumberDecimal("3.69"),
         "origine":"france",
         "nom_image":"jus-oranges_JARDIN_BIO_1l",
-        "rayon": ObjectId("6090868042b2205d269d7dff"),
+        "rayon": idBoissons,
         "nutriscore":{"_id":"n2","lettre":"B"},
         "label_qualite":[{"_id": "lb_1", "label": "Bio"}],
         "promotion":{
             "pourcent": 30
         }
     },
-        {
+    {
         "intitule":"Boisson Détox bio",
         "descriptif":"la bouteille de 50cL",
         "marque":"JARDIN BIO",
@@ -138,7 +199,7 @@ db.products.insertMany([
         "prix": NumberDecimal("3.66"),
         "origine":"france",
         "nom_image":"boisson-detox-bio_JARDIN_BIO_50cl",
-        "rayon": ObjectId("6090868042b2205d269d7dff"),
+        "rayon": idBoissons,
         "nutriscore":{"_id":"n3","lettre":"C"},
         "label_qualite":[{"_id": "lb_1", "label": "Bio"}]
     },
@@ -150,7 +211,7 @@ db.products.insertMany([
         "unite":"litre",
         "prix": NumberDecimal("4.95"),
         "nom_image":"jus-citron_SIRACUSE_1l",
-        "rayon": ObjectId("6090868042b2205d269d7dff"),
+        "rayon": idBoissons,
         "nutriscore":{"_id":"n1","lettre":"A"},
         "promotion":{
             "pourcent": 34
@@ -164,7 +225,7 @@ db.products.insertMany([
         "unite":"litre",
         "prix": NumberDecimal("3.55"),
         "nom_image":"jus-nectar-mangue_JARDIN-BIO_75cl",
-        "rayon": ObjectId("6090868042b2205d269d7dff"),
+        "rayon": idBoissons,
         "nutriscore":{"_id":"n5","lettre":"E"},
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
@@ -179,7 +240,7 @@ db.products.insertMany([
         "prix": NumberDecimal("4.95"),
         "origine":"france",
         "nom_image":"Porc-cotes-sans-os-a-griller_BONS-MORCEAUX",
-        "rayon": ObjectId("60907dbc42b2205d269d7df9"),
+        "rayon": idViandesPoissons,
         "label_qualite":[
             {"_id": "lb_3", "label": "Label Rouge"}
         ]
@@ -192,7 +253,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("1.80"),
         "nom_image":"pain-au-lait-bio_BRIOCHE-PASQUIER_280g",
-        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "rayon": idPainsEtPatisseries,
         "nutriscore":{"_id":"n4","lettre":"D"},
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
@@ -205,7 +266,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("3.00"),
         "nom_image":"baguettes-rustiques_lot-de-3",
-        "rayon": ObjectId("60907def42b2205d269d7dfa")
+        "rayon": idPainsEtPatisseries
     },
     {
         "intitule":"Mini beignets chocolat",
@@ -215,7 +276,7 @@ db.products.insertMany([
         "prix": NumberDecimal("2.80"),
         "origine":"france",
         "nom_image":"mini-beignets-chocolat_200g",
-        "rayon": ObjectId("60907def42b2205d269d7dfa")
+        "rayon": idPainsEtPatisseries
     },
     {
         "intitule":"Pains hamburger",
@@ -225,7 +286,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("1.11"),
         "nom_image":"pains-hamburger_JACQUET_330g",
-        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "rayon": idPainsEtPatisseries,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
     {
@@ -236,7 +297,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("1.35"),
         "nom_image":"muffins-nature_CARREFOUR_250g",
-        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "rayon": idPainsEtPatisseries,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
     {
@@ -246,7 +307,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("1.20"),
         "nom_image":"pain-complet_300g",
-        "rayon": ObjectId("60907def42b2205d269d7dfa")
+        "rayon": idPainsEtPatisseries
     },
     {
         "intitule":"Pain Pita à garnir",
@@ -256,7 +317,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("1.48"),
         "nom_image":"pain-pita-a-garnir_CARREFOUR_400g",
-        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "rayon": idPainsEtPatisseries,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
     {
@@ -267,7 +328,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("0.82"),
         "nom_image":"pain-de-mie-complet-maxi-tranches_CARREFOUR_550g",
-        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "rayon": idPainsEtPatisseries,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
     {
@@ -278,7 +339,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.65"),
         "nom_image":"brioche-pepites-chocolat-DooWap_HARRY_480g",
-        "rayon": ObjectId("60907def42b2205d269d7dfa"),
+        "rayon": idPainsEtPatisseries,
         "nutriscore":{"_id":"n3","lettre":"C"}
     },
     {
@@ -289,7 +350,7 @@ db.products.insertMany([
         "unite":"litre",
         "prix": NumberDecimal("7.40"),
         "nom_image":"gel-douche-bebe-2-en-1_MIXA-BEBE_750ml",
-        "rayon": ObjectId("609086a042b2205d269d7e00"),
+        "rayon": idBebe,
         "promotion":{
             "reduction": { "qte": 2, "somme": 2 }
         }
@@ -302,7 +363,7 @@ db.products.insertMany([
         "unite":"litre",
         "prix": NumberDecimal("3.42"),
         "nom_image":"gel-douche-bebe-huile-amandes-douce-bio_CADUM-BEBE_750ml",
-        "rayon": ObjectId("609086a042b2205d269d7e00"),
+        "rayon": idBebe,
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
         ]
@@ -315,7 +376,7 @@ db.products.insertMany([
         "unite":"litre",
         "prix": NumberDecimal("3.24"),
         "nom_image":"",
-        "rayon": ObjectId("609086a042b2205d269d7e00")
+        "rayon": idBebe
     },
     {
         "intitule":"Lingettes bébé ultra-douces au lait de toilette",
@@ -326,7 +387,7 @@ db.products.insertMany([
         "unite":"pièce",
         "prix": NumberDecimal("2.45"),
         "nom_image":"lingettes-bebe-ultra-douces-lait-de-toilette_MIXA-BEBE_paquet-72",
-        "rayon": ObjectId("609086a042b2205d269d7e00")
+        "rayon": idBebe
     },
     {
         "intitule":"Lingettes bébé Natural Caresse",
@@ -336,7 +397,7 @@ db.products.insertMany([
         "unite":"pièce",
         "prix": NumberDecimal("4.39"),
         "nom_image":"lingettes-bebe-natural-caresse_BEBE-CADUM_2-paquets-60",
-        "rayon": ObjectId("609086a042b2205d269d7e00")
+        "rayon": idBebe
     },
     {
         "intitule":"Couches taille 3 : 6-10kg",
@@ -346,7 +407,7 @@ db.products.insertMany([
         "unite":"pièce",
         "prix": NumberDecimal("26.25"),
         "nom_image":"couches-taille-3-6a10kg_PAMPERS_paquet-74",
-        "rayon": ObjectId("609086a042b2205d269d7e00")
+        "rayon": idBebe
     },
     {
         "intitule":"Croquettes pour chat stérilisés Senior poulet",
@@ -356,7 +417,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("4.75"),
         "nom_image":"croquettes-chat-sterilises-Senior-poulet_PERFECT-FIT_sac-1kg4",
-        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "rayon": idAnimalerie,
         "promotion":{
             "pourcent": 20
         }
@@ -369,7 +430,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("6.03"),
         "nom_image":"croquettes-chien-au-bœuf_NOOD_sac-1kg4",
-        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "rayon": idAnimalerie,
         "promotion":{
             "pourcent": 20
         }
@@ -382,7 +443,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("33.00"),
         "nom_image":"sticks-pour-chats-saumon_CARREFOUR_6x5g",
-        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "rayon": idAnimalerie,
         "promotion":{
             "pourcent": 10
         }
@@ -395,7 +456,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("33.00"),
         "nom_image":"sticks-pour-chats-boeuf_CARREFOUR_6x5g",
-        "rayon": ObjectId("609087dc42b2205d269d7e02")
+        "rayon": idAnimalerie
     }, 
     {
         "intitule":"Sticks pour chats poulet",
@@ -405,7 +466,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("33.00"),
         "nom_image":"sticks-pour-chats-poulet_CARREFOUR_6x5g",
-        "rayon": ObjectId("609087dc42b2205d269d7e02")
+        "rayon": idAnimalerie
     },
     {
         "intitule":"Pâtée pour chats au saumon Bio",
@@ -415,7 +476,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("5.80"),
         "nom_image":"patee-chats-saumon-Bio_CARREFOUR_bte-100g",
-        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "rayon": idAnimalerie,
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
         ],
@@ -431,7 +492,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("1.94"),
         "nom_image":"boules-graisse-oiseaux-de-la-nature_CARREFOUR_10x90g",
-        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "rayon": idAnimalerie,
         "promotion":{
             "reduction": { "qte": 3, "somme": 1 }
         }
@@ -444,7 +505,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("26.50"),
         "nom_image":"friandises-chat-au-poulet_CATISFACTIONS_sachet-60g",
-        "rayon": ObjectId("609087dc42b2205d269d7e02")
+        "rayon": idAnimalerie
     },
     {
         "intitule":"Friandises pour chat au saumon",
@@ -454,7 +515,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("21.67"),
         "nom_image":"friandises-chat-au-saumon_CATISFACTIONS_sachet-60g",
-        "rayon": ObjectId("609087dc42b2205d269d7e02")
+        "rayon": idAnimalerie
     },
     {
         "intitule":"Friandises pour chat au fromage",
@@ -464,9 +525,8 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("21.67"),
         "nom_image":"friandises-chat-au-fromage_CATISFACTIONS_sachet-60g",
-        "rayon": ObjectId("609087dc42b2205d269d7e02")
+        "rayon": idAnimalerie
     },
-
     {
         "intitule":"Friandise pour chats au saumon Les Irrésistibles",
         "descriptif":"la boite de 60g",
@@ -475,7 +535,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("15.83"),
         "nom_image":"friandise-chats-au-saumon-Les-Irrésistibles_WHISKAS_bte60g",
-        "rayon": ObjectId("609087dc42b2205d269d7e02"),
+        "rayon": idAnimalerie,
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
         ],
@@ -491,10 +551,8 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.28"),
         "nom_image":"croquettes-chats-poulet-caille-legumes_BREKKIES_sachet-1kg5",
-        "rayon": ObjectId("609087dc42b2205d269d7e02")
+        "rayon": idAnimalerie
     },
-
-
     {
         "intitule":"Essuie-tout Ultra Absorbant",
         "descriptif":"les 6 rouleaux",
@@ -504,7 +562,7 @@ db.products.insertMany([
         "unite":"Pièce",
         "prix": NumberDecimal("3.17"),
         "nom_image":"essuie-tout-Ultra-Absorbant_CARREFOUR_6-rouleaux",
-        "rayon": ObjectId("609087c942b2205d269d7e01"),
+        "rayon": idEntretienNettoyage,
         "label_qualite":[
             {"_id": "lb_2", "label": "ecolabel"}
         ],
@@ -520,7 +578,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("13.83"),
         "nom_image":"lessive-capsule-alpine-all-in-1_ARIEL_bte-27-cap",
-        "rayon": ObjectId("609087c942b2205d269d7e01"),
+        "rayon": idEntretienNettoyage,
         "promotion":{
             "reduction": { "qte": 2, "somme": 5 }
         }
@@ -533,7 +591,7 @@ db.products.insertMany([
         "unite":"Pièce",
         "prix": NumberDecimal("7.40"),
         "nom_image":"lingettes-linge-Decolor-Stop_EAU-ECARLATE_bte50",
-        "rayon": ObjectId("609087c942b2205d269d7e01"),
+        "rayon": idEntretienNettoyage,
         "promotion":{
             "reduction": { "qte": 3, "somme": 7.40 }
         }
@@ -546,7 +604,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("8.69"),
         "nom_image":"tablettes-Classic_FINISH_paquet60",
-        "rayon": ObjectId("609087c942b2205d269d7e01")
+        "rayon": idEntretienNettoyage
     },
     {
         "intitule":"Lingettes antibactériennes",
@@ -556,9 +614,8 @@ db.products.insertMany([
         "unite":"pièce",
         "prix": NumberDecimal("1.55"),
         "nom_image":"lingettes-antibacteriennes_ST-MARC_paquet40",
-        "rayon": ObjectId("609087c942b2205d269d7e01")
-    },
-    
+        "rayon": idEntretienNettoyage
+    }, 
     {
         "intitule":"Œufs Bio de Plein Air Calibre Moyen",
         "descriptif":"la boite de 6",
@@ -568,7 +625,7 @@ db.products.insertMany([
         "unite":"pièce",
         "prix": NumberDecimal("2.02"),
         "nom_image":"oeufs-Bio-Plein-Air-Calibre-Moyen_CARREFOUR_boite6",
-        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "rayon": idFrais,
         "nutriscore":{"_id":"n1","lettre":"A"},
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
@@ -585,7 +642,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("3.32"),
         "nom_image":"fromage-rape-emmental_CARREFOUR_sachet500g",
-        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "rayon": idFrais,
         "nutriscore":{"_id":"n4","lettre":"D"}
     },
     {
@@ -597,7 +654,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("4.59"),
         "nom_image":"jambon-cuit-torchon-avec-couenne_CARREFOUR_4tranches",
-        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "rayon": idFrais,
         "nutriscore":{"_id":"n3","lettre":"C"},
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"},
@@ -613,7 +670,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.00"),
         "nom_image":"beurre-doux-60pc-matiere-grasse_ELLE&VIRE_plaquette250g",
-        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "rayon": idFrais,
         "nutriscore":{"_id":"n4","lettre":"D"},
         "promotion":{
             "pourcent": 10
@@ -628,7 +685,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("5.24"),
         "nom_image":"beurre-demi-sel-moule_PAYSAN-BRETON_plaquette500g",
-        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "rayon": idFrais,
         "nutriscore":{"_id":"n5","lettre":"E"}
     },
     {
@@ -639,7 +696,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("0.95"),
         "nom_image":"yaourt-nature_DANONE_4pots125g",
-        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "rayon": idFrais,
         "nutriscore":{"_id":"n1","lettre":"A"},
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
@@ -653,13 +710,12 @@ db.products.insertMany([
         "unite":"litre",
         "prix": NumberDecimal("5.82"),
         "nom_image":"lait-demi-ecreme_CANDIA_6x1L",
-        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "rayon": idFrais,
         "nutriscore":{"_id":"n1","lettre":"A"},
         "promotion":{
             "pourcent": 15
         }
     },
-
     {
         "intitule":"Glace bâtonnet double chocolat noisette",
         "descriptif":"la boite de 292g",
@@ -668,7 +724,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("3.90"),
         "nom_image":"glace-batonnet-double-choco-noisette_MAGNUM_bte292g",
-        "rayon": ObjectId("609080bf42b2205d269d7dfc"),
+        "rayon": idSurgeles,
         "nutriscore":{"_id":"n5","lettre":"E"}
     },
     {
@@ -679,7 +735,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("3.50"),
         "nom_image":"glace-citron_CARTE-DOR_bac585g",
-        "rayon": ObjectId("609080bf42b2205d269d7dfc"),
+        "rayon": idSurgeles,
         "nutriscore":{"_id":"n3","lettre":"C"},
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
@@ -696,7 +752,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.83"),
         "nom_image":"pizza-bolognaise_BUITONI_bte345g",
-        "rayon": ObjectId("609080bf42b2205d269d7dfc"),
+        "rayon": idSurgeles,
         "nutriscore":{"_id":"n2","lettre":"B"}
     },
     {
@@ -707,7 +763,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("1.94"),
         "nom_image":"tarte-aux-poireaux_CARREFOUR_bte400g",
-        "rayon": ObjectId("609080bf42b2205d269d7dfc"),
+        "rayon": idSurgeles,
         "nutriscore":{"_id":"n3","lettre":"C"},
         "promotion":{
             "reduction": { "qte": 3, "somme": 2 }
@@ -721,13 +777,12 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("5.70"),
         "nom_image":"lasagne-legumes-provençale-Bio_MARIE_850g",
-        "rayon": ObjectId("609080bf42b2205d269d7dfc"),
+        "rayon": idSurgeles,
         "nutriscore":{"_id":"n2","lettre":"B"},
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
         ]
     },
-
     {
         "intitule":"Merguez bœuf et mouton",
         "descriptif":"la barquette de 6 - 330g",
@@ -737,7 +792,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("3.30"),
         "nom_image":"merguez-boeuf-et-mouton_CARREFOUR_barquette6",
-        "rayon": ObjectId("60907dbc42b2205d269d7df9"),
+        "rayon": idViandesPoissons,
         "nutriscore":{"_id":"n5","lettre":"E"},
         "label_qualite":[
             {"_id": "lb_3", "label": "Label Rouge"}
@@ -752,7 +807,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("5.80"),
         "nom_image":"paves-de-boeuf-marines-3-poivre_CHARAL_2x130g",
-        "rayon": ObjectId("60907dbc42b2205d269d7df9"),
+        "rayon": idViandesPoissons,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
     {
@@ -763,7 +818,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("3.67"),
         "nom_image":"aiguillettes-poulet-jaune_LE-GAULOIS_barquette210g",
-        "rayon": ObjectId("60907dbc42b2205d269d7df9"),
+        "rayon": idViandesPoissons,
         "nutriscore":{"_id":"n1","lettre":"A"},
         "promotion":{
             "pourcent": 20
@@ -777,10 +832,9 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("9.05"),
         "nom_image":"escalopes-de-dinde_LE-GAULOIS_6x720g",
-        "rayon": ObjectId("60907dbc42b2205d269d7df9"),
+        "rayon": idViandesPoissons,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
-
     {
         "intitule":"Petits pois carottes bio en rondelles",
         "descriptif":"le bocal de 420g net égoutté",
@@ -789,7 +843,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.79"),
         "nom_image":"petits-pois-carottes-bio_CARREFOUR_bocal420g",
-        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "rayon": idEpicerieSalee,
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
         ],
@@ -805,7 +859,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("0.62"),
         "nom_image":"sel-fin-iode_CEREBOS_bte500g",
-        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "rayon": idEpicerieSalee,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
     {
@@ -816,7 +870,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("1.78"),
         "nom_image":"chips-tortilla-nacho-cheese_DORITOS_sachet170g",
-        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "rayon": idEpicerieSalee,
         "nutriscore":{"_id":"n3","lettre":"C"},
         "promotion":{
             "reduction": { "qte": 3, "somme": 1 }
@@ -830,7 +884,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("0.94"),
         "nom_image":"pates-farfalle_BARILLA_bte500g",
-        "rayon": ObjectId("6090865442b2205d269d7dfd")
+        "rayon": idEpicerieSalee
     },
     {
         "intitule":"Pâtes les crozets au sarrasin",
@@ -841,7 +895,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("3.55"),
         "nom_image":"pates-crozets-au-sarrasin_ALPINA-SAVOIR_bte400g",
-        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "rayon": idEpicerieSalee,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
     {
@@ -852,7 +906,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("4.16"),
         "nom_image":"puree-flocons-nature_MOUSLINE_8x130g",
-        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "rayon": idEpicerieSalee,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
     {
@@ -863,7 +917,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.81"),
         "nom_image":"couscous-moyen_FERRERO_paquet1kg",
-        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "rayon": idEpicerieSalee,
         "nutriscore":{"_id":"n1","lettre":"A"},
         "promotion":{
             "reduction": { "qte": 3, "somme": 1 }
@@ -877,7 +931,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("0.83"),
         "nom_image":"pates-macaroni_PANZANI_paquet500g",
-        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "rayon": idEpicerieSalee,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
     {
@@ -888,13 +942,9 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("0.82"),
         "nom_image":"pates-coquillettes_PANZANI_paquet500g",
-        "rayon": ObjectId("6090865442b2205d269d7dfd"),
+        "rayon": idEpicerieSalee,
         "nutriscore":{"_id":"n1","lettre":"A"}
     },
-
-
-
-
     {
         "intitule":"Café bio équilibré",
         "descriptif":"le paquet de 250g",
@@ -903,7 +953,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("3.22"),
         "nom_image":"cafe-bio-equilibre_CARREFOUR_paquet250g",
-        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "rayon": idEpicerieSucree,
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"},
             {"_id": "lb_4", "label": "Commerce Equitable"}
@@ -920,7 +970,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("10.92"),
         "nom_image":"cafe-capsules-espresso-forte_CAFE-ROYAL_32x171g",
-        "rayon": ObjectId("6090866c42b2205d269d7dfe")
+        "rayon": idEpicerieSucree
     },
     {
         "intitule":"Glaces chocolat & vanille",
@@ -930,7 +980,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("3.79"),
         "nom_image":"glaces-chocolat-vanille_MILKA_4x71g",
-        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "rayon": idEpicerieSucree,
         "nutriscore":{"_id":"n5","lettre":"E"}
     },
     {
@@ -941,7 +991,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.36"),
         "nom_image":"glace-vanille-fraise_CARREFOUR_bte6",
-        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "rayon": idEpicerieSucree,
         "nutriscore":{"_id":"n4","lettre":"D"}
     },
     {
@@ -952,7 +1002,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.99"),
         "nom_image":"the-bio-vert-citron_CLIPPER_bte20",
-        "rayon": ObjectId("6090866c42b2205d269d7dfe")
+        "rayon": idEpicerieSucree
     },
     {
         "intitule":"Madeleines",
@@ -963,7 +1013,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.66"),
         "nom_image":"madeleines_ST-MICHEL_sachet500g",
-        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "rayon": idEpicerieSucree,
         "nutriscore":{"_id":"n4","lettre":"D"},
         "label_qualite":[
             {"_id": "lb_1", "label": "Bio"}
@@ -978,7 +1028,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("3.70"),
         "nom_image":"quatre-quarts-beurre-frais_BONNE-MAMAN_500g",
-        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "rayon": idEpicerieSucree,
         "nutriscore":{"_id":"n5","lettre":"E"}
     },
     {
@@ -989,7 +1039,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.54"),
         "nom_image":"pain-depices-au-miel_BROSSARD_paquet350g",
-        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "rayon": idEpicerieSucree,
         "nutriscore":{"_id":"n3","lettre":"C"},
         "promotion":{
             "reduction": { "qte": 2, "somme": 2 }
@@ -1003,7 +1053,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("2.53"),
         "nom_image":"barres-choco-creme-et-miel-amandes_BALISTO_10x18p5g",
-        "rayon": ObjectId("6090866c42b2205d269d7dfe"),
+        "rayon": idEpicerieSucree,
         "nutriscore":{"_id":"n5","lettre":"E"},
         "promotion":{
             "reduction": { "qte": 3, "somme": 1.5 }
@@ -1018,7 +1068,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("5.28"),
         "nom_image":"comte-au-lait-cru-AOP_CARREFOUR_sachet450g",
-        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "rayon": idFrais,
         "nutriscore":{"_id":"n4","lettre":"D"},
         "label_qualite":[
             {"_id": "lb_5", "label": "Appellation d'origine protégée"}
@@ -1036,7 +1086,7 @@ db.products.insertMany([
         "unite":"kg",
         "prix": NumberDecimal("4.50"),
         "nom_image":"fromage-fourme-dAmbert_185g",
-        "rayon": ObjectId("609080aa42b2205d269d7dfb"),
+        "rayon": idFrais,
         "nutriscore":{"_id":"n5","lettre":"E"},
         "label_qualite":[
             {"_id": "lb_5", "label": "Appellation d'origine protégée"}
@@ -1093,53 +1143,6 @@ db.products.find().forEach(function(doc) {
         )
    }
 });
-
-
-
-
-//////////////////// Pour collection 'departments' ///////////////////////
-//use('db_shopping');
-db.departments.drop();
-
-// Insert a few documents into the 'departments' collection.
-db.departments.insertMany([
-    { 
-        "intitule":"fruits et légumes" 
-    },
-    { 
-        "intitule":"viandes et poissons" 
-    },
-    { 
-        "intitule":"pains et pâtisseries" 
-    },
-    { 
-        "intitule":"frais" 
-    },
-    { 
-        "intitule":"surgelés" 
-    },
-    { 
-        "intitule":"épicerie salée" 
-    },
-    { 
-        "intitule":"épicerie sucrée" 
-    },
-    { 
-        "intitule":"boissons" 
-    },
-    { 
-        "intitule":"bébé" 
-    },
-    { 
-        "intitule":"entretien et nettoyage" 
-    },
-    { 
-        "intitule":"animalerie" 
-    }
-]);
-
-// Run a find command
-db.departments.find();
 
 
 //////////////////// Pour collection 'labelqualites' ///////////////////////
