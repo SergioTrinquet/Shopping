@@ -179,9 +179,33 @@ Cet index doit être créé sur la collection '_products_'
 
 NOTE : Attention ! Les index seront supprimés lorsque vous alimentez la liste des articles via le fichier '_Generation_db_shopping_collections.mongodb_'
 
+
+
+## Pour que le projet tourne localement (phase de dev.)
+### Installation du projet
+Pour faire tourner le projet localement, aller dans les répertoires App et API et, et à chaque fois lancez la commande pour installer les packages du front (App) et du back (API):
+```
+npm install
+```
+
+### Compilation et hot-reloads
+Même chose que pour npm install : Aller à la racine de chaque répertoire (App et API). Pour App, lancez
+```
+npm run serve
+```
+...Et pour API, lancez
+```
+npm run dev
+```
+<!-- ### Compiles and minifies for production
+```
+npm run build
+``` -->
+
+
 ## Mise en production du projet
 Les étapes de mise en prod. diffèrent selon l'hébergeur.  
-Ici, j'ai choisi d'héberger l'application sur Héroku. Il existe de multiples façons de mettre en production sur cet hébergeur.  
+Ici, j'ai choisi d'héberger l'application sur Héroku. Il existe plusieurs façons de mettre en production sur cet hébergeur.  
 J'ai choisi la methode avec Git : Il s'agit d'associer son répertoire Git local dans lequel se trouve son projet, avec un répertoire Git distant sur le serveur Heroku. L'idée est de pousser le code de notre Git local vers le Git Heroku.  
 Voici comment j'ai procédé:
 
@@ -194,7 +218,7 @@ Le nom de l'app est facultatif. S'il n'est pas spécifié, Heroku va s'en charge
 Heroku ne peut héberger que la partie back-end de notre app, celle faite avec Node.js. On va donc préparer notre projet car ce qui va être mis en prod. ne sera que le contenu du répertoire 'API', et non le répertoire 'App' qui correspond au code Front.
 
 5. **Ajouter du code du coté back-end du projet**: 
-  - Dans le fichier de démarrage/d'initialisation 'index.js', on ajoute du code interprété seulement en mode production. Il déclare en assets les fichiers du repertoire Front buildé (répertoire 'public') que l'on va générer plus bas, et affiche le fichier '/public/index.html' pour toute requete.  
+  - Dans le fichier de démarrage/d'initialisation 'index.js', on a ajouté du code interprété seulement en mode production. Il déclare en assets les fichiers du repertoire Front buildé (répertoire 'public') que l'on va générer plus bas, et affiche le fichier '/public/index.html' pour toute requete.  
   ```
   if(process.env.NODE_ENV === 'production') {
     // La partie Front faite avec Vue.js est buildée dans le rep. 'public' qui est déclaré comme static
@@ -203,9 +227,7 @@ Heroku ne peut héberger que la partie back-end de notre app, celle faite avec N
     app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'))
 }
   ```
-  - Dans le fichier 'package.json', section 'scripts', on ajoute '_"start": "node index"_'.  
-
-    On commit et on push ces modifs.
+  - Dans le fichier 'package.json', section 'scripts', on a ajouté '_"start": "node index"_'.
 
 
 6. **Créer son repository Git local** : Maintenant on va créer un repository Git de notre projet que l'on va préparer dans le but de pousser le code vers Heroku.    
@@ -228,26 +250,6 @@ Cela signifie que l'on pousse le code de la branche master de notre repository G
 
 Et voilà!!
 
-
-  ## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
