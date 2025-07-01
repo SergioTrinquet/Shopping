@@ -23,8 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Chaine de connexion à MongoDB
-//console.log(config.username + " " + config.password + " " + config.db); //TEST
-const dbURI = `mongodb+srv://${config.username}:${config.password}@clustershopping.z06ey.mongodb.net/${config.db}?retryWrites=true&w=majority`;
+const dbURI = `mongodb+srv://${config.username}:${config.password}@clustershopping.wzr6r8e.mongodb.net/${config.db}?retryWrites=true&w=majority&appName=${config.clustername}`;
 // Connection à mongoDB avec la surcouche mangoose
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => {
