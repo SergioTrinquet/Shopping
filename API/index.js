@@ -4,7 +4,12 @@ const port = process.env.PORT || 3080;
 
 const erreur = require('./app_modules/erreur');
 
-const config = require("./config/identifiants_mongoDB.js");
+// const config = require("./config/identifiants_mongoDB.js");
+require('dotenv').config();
+const mongoDBUsername = process.env.MONGODB_URL_CONNEXION_USERNAME;
+const mongoDBPassword = process.env.MONGODB_URL_CONNEXION_PASSWORD;
+const mongoDBDatabase = process.env.MONGODB_URL_CONNEXION_DB;
+const mongoDBClusterName = process.env.MONGODB_URL_CONNEXION_CLUSTERNAME;
 const mongoose = require('mongoose');
 
 
@@ -23,7 +28,8 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Chaine de connexion à MongoDB
-const dbURI = `mongodb+srv://${config.username}:${config.password}@clustershopping.wzr6r8e.mongodb.net/${config.db}?retryWrites=true&w=majority&appName=${config.clustername}`;
+// const dbURI = `mongodb+srv://${config.username}:${config.password}@clustershopping.wzr6r8e.mongodb.net/${config.db}?retryWrites=true&w=majority&appName=${config.clustername}`;
+const dbURI = `mongodb+srv://${mongoDBUsername}:${mongoDBPassword}@clustershopping.wzr6r8e.mongodb.net/${mongoDBDatabase}?retryWrites=true&w=majority&appName=${mongoDBClusterName}`;
 // Connection à mongoDB avec la surcouche mangoose
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => {
