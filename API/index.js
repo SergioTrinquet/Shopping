@@ -53,12 +53,12 @@ app.use('/api', api);
 // Quand site tourne en production
 if(process.env.NODE_ENV === 'production') {
     // La partie Front faite avec Vue.js est buildée dans le rep. 'public' qui est déclaré comme static
-    //app.use(express.static(__dirname + '/public/'));
-    app.use(express.static(path.join(__dirname, "../App/public/")));
+    app.use(express.static(__dirname + '/public/'));
+    //app.use(express.static(path.join(__dirname, "../App/public/")));
 
     // Pour ttes requetes 'get', affichage de la page 'index.html' du code Front buildé dans rep. 'public'
-    // app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'))
-    app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, "../App/public/index.html")))
+     app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'))
+    //app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, "../App/public/index.html")))
 }
 
 
