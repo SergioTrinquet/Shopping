@@ -219,7 +219,6 @@ export default new Vuex.Store({
     getBasketSortedByDepartment(state) {
       let tempoSortedItems = [];
       for(let item of Object.values(state.basket)) {    
-          //console.log('dept', item.rayon.intitule, 'prod', item); //TEST
           tempoSortedItems.push({dept: item.rayon.intitule, prod: item});
       }
       tempoSortedItems.sort((a, b) => (a.prod.intitule > b.prod.intitule) ? 1 : ((a.prod.intitule < b.prod.intitule) ? -1 : 0)); // Pour classer par 'intitule'...
@@ -255,7 +254,7 @@ export default new Vuex.Store({
       const selectedOrder = !!state.tri_query_string_parameters; 
       if(selectedOrder) { searchParams.append("tri", state.tri_query_string_parameters) }
 
-      console.log("Appel getter 'getQueryStringParametersToFetchProducts'", searchParams.toString()); //TEST
+      // console.log("Appel getter 'getQueryStringParametersToFetchProducts'", searchParams.toString()); //TEST
 
       return searchParams.toString();
     },
