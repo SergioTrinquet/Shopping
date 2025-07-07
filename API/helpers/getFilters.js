@@ -51,13 +51,9 @@ module.exports = (stage) => {
     .then(values => {
         let filters = {};
         for(const result of values) {
-            //for(const [key, value] of Object.entries(result)) {
-            //    console.log("result =>", key, value); //TEST
-            //}
             const [key, value] = Object.entries(result)[0];
             filters[key] = value;
         }
-        //console.log("filters >>>>>", filters); //TEST
         return filters;
     })
     .catch(error => {

@@ -47,8 +47,8 @@ module.exports = (query, sortStageArgument) => {
         }
     }
 
-    console.log("matchStageArguments", matchStageArguments); //TEST
-    console.log("sortStageArgument", sortStageArgument); //TEST
+    // console.log("matchStageArguments", matchStageArguments); //TEST
+    // console.log("sortStageArgument", sortStageArgument); //TEST
 
     return { 
         "matchStage": matchStageArguments, 

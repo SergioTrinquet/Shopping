@@ -6,9 +6,6 @@ export default (context, path, withLoader = true) => {
     return axios.get(path)
         .then(res => {
             return res.data;
-
-            //TEST
-            //console.log(res); throw new Error("FLUTE !!!");
         })
         .catch(err => {
           console.error(err.response);
