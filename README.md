@@ -4,7 +4,7 @@
 
 Le but de cette application était de tenter de reproduire un site classique de course en ligne. Après avoir regardé ce qui existe, je me suis inspiré de certains d'entre eux pour ce qui est des fonctionnalités (moteur de recherche, classification des articles par rayons, présentation des produits,...).  
 
-**[Cliquez ici](https://appshopping-st.herokuapp.com/) pour voir l'application en ligne.**
+**[Cliquez ici](https://shoppingapp-backend-6wfv.onrender.com/) pour voir l'application en ligne.**
 
 _Page d'accueil_
 ![page d'accueil](App/src/assets/imgs/README_screenshots/pg_accueil.png)
