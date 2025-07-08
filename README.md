@@ -99,15 +99,14 @@ Je vous invite à regarder l'excellent tutoriel de The Net Ninja (tuto #9 Node.j
 L'exécution de ce fichier va alimenter les collections '_departments_' et '_products_'  
 5. Dans le menu '_Cluster_', lorsque l'on clique sur le bouton '_connect_', une fenêtre apparait. En choisissant l'option '_Connect your application_', vous verrez alors la chaine de connexion qui va permettre de dialoguer avec la base de données.  
 Cette chaine est déjà présente dans le projet (fichier '_/API/index.js_') mais si vous avez créé votre propre base de données et que vous voulez la connecter à l'application, il faudra la remplacer par la votre, en prenant soin de ne pas mettre les login, mot de passe et nom de la base de donnée en dur.  
-Ces paramètres sont dans des variables : Nous les avons externalisés dans un fichier '_identifiants_mongoDB.js_' (modèle ci-dessous) qu'il vous faudra créer, et que vous placerez dans '_/API/config_'.
+Ces paramètres sont dans des variables : Nous les avons externalisées dans un fichier _'.env'_ (modèle ci-dessous) qu'il vous faudra créer à la racine du projet.
 
-_Structure du fichier 'identifiants_mongoDB.js': Remplacez la valeur des propriétés par celles que vous avez saisies lors de la création de votre bdd_
+_Fichier '.env': Remplacez la valeur des variables par celles que vous avez saisies lors de la création de votre bdd_
 ```
-module.exports = {
-    "username": "XXXXX",
-    "password": "XXXXX",
-    "db": "XXXXX"
-}
+MONGODB_URL_CONNEXION_USERNAME = "XXXXX"
+MONGODB_URL_CONNEXION_PASSWORD = "XXXXX"
+MONGODB_URL_CONNEXION_DB = "XXXXX"
+MONGODB_URL_CONNEXION_CLUSTERNAME = "XXXXX"
 ```
 
 
@@ -177,80 +176,61 @@ Cet index doit être créé sur la collection '_products_'
 }
 ```
 
-NOTE : Attention ! Les index seront supprimés lorsque vous alimentez la liste des articles via le fichier '_Generation_db_shopping_collections.mongodb_'
+_NOTE : Attention ! Les index seront supprimés lorsque vous alimentez la liste des articles via le fichier '_Generation_db_shopping_collections.mongodb_'_
 
 
 
 ## Pour que le projet tourne localement (phase de dev.)
 ### Installation du projet
-Pour faire tourner le projet localement, aller dans les répertoires App et API et, et à chaque fois lancez la commande pour installer les packages du front (App) et du back (API):
+Pour faire tourner le projet localement, allez à la racine du projet et lancez la commande:
 ```
-npm install
+npm run build
 ```
+Cette commande execute le script suivant:
+```
+npm install && npm install --prefix App && npm run build --prefix App
+```
+Elle va installer les packages du back (code dans _'API'_) à la racine, et ceux du front dans le répertoire _'App'_. Elle va aussi builder la partie front en générant le répertoire _'public'_ dans _'API'_ (ceci est paramétré dans le fichier [vue.config.js](https://cli.vuejs.org/config/)).  
+
+_NOTE: '--prefix App' signifie 'exécute la commande écrite précédamment dans le répertoire App'_
+
+_NOTE: On aurait aussi pu générer le répertoire de build 'public' dans 'App', et dans 'API/index.js' pour le mode 'production', modifier les path des fichiers static et de la méthode GET pour qu'ils pointent dans ce répertoire 'App/public'_
 
 ### Compilation et hot-reloads
-Même chose que pour npm install : Aller à la racine de chaque répertoire (App et API). Pour App, lancez
-```
-npm run serve
-```
-...Et pour API, lancez
+Allez à la racine du projet.  
+Pour démarrer la partie back-end (répertoire API), lancez:
 ```
 npm run dev
 ```
-<!-- ### Compiles and minifies for production
+...Et pour la partie front-end (répertoire App), dans un autre terminal, lancez:
 ```
-npm run build
-``` -->
+npm run dev:frontend
+```
+_NOTE: Il faut 2 terminaux dfférents pour démarrer le back et le front._
 
 
 ## Mise en production du projet
 Les étapes de mise en prod. diffèrent selon l'hébergeur.  
-Ici, j'ai choisi d'héberger l'application sur Héroku. Il existe plusieurs façons de mettre en production sur cet hébergeur.  
-J'ai choisi la methode avec Git : Il s'agit d'associer son répertoire Git local dans lequel se trouve son projet, avec un répertoire Git distant sur le serveur Heroku. L'idée est de pousser le code de notre Git local vers le Git Heroku.  
+Ici, j'ai choisi d'héberger l'application sur 'Render' car il peut héberger des web services (ce que Vercel ne peut pas par ex.). Cela est nécessaire pour faire tourner la partie back-end de notre projet.  
+Le projet est structuré avec les package.json/package-lock.json et donc le répertoire node_modules, le fichier .env, pour la partie back-end, à la racine du projet.  
+Je me suis inspiré de ce tutoriel vidéo (https://www.youtube.com/watch?v=5x5c487s1UQ&t=609s) mais il y a d'autres façons d'organiser son projet MERN.  
+
 Voici comment j'ai procédé:
+1. On s'inscrit sur [Render.com](https://dashboard.render.com/),
+2. On y créé un Web service,  
+3. On sélectionne son projet sur Github dans la partie _'Git Provider'_,  
+4. On rempli le formulaire en sélectionnant notamment comme language 'node', la branche du projet sur Github que l'on veut déployer, la build command (ici _'npm run build'_) et la start command (_'npm run start'_).  
+Enfin on ajoute les variables d'environnements qui se trouvent dans le fichier _'.env'_ à la racine du projet, et qui servent à la connexion de la bdd mongoDB.  
 
-1. Si cela n'est pas déjà fait, **installez Heroku CLI**. C'est ce qui va nous permettre d'interpréter les commandes passées via le terminal pour mettre en ligne le projet.  Pour vérifier qu'il est bien installé, taper '_heroku -v_' pour connaitre la version (si ce n'est pas le cas vous aurez un message d'erreur)  
-2. **Se créer un compte** sur le site de Heroku,  
-3. **Se loguer** via la commande dans le terminal '_heroku login_',  
-4. **Créer son repository Git distant** : Commande '_Heroku create <ins>nom-de-l'app</ins>_'.  
-Le nom de l'app est facultatif. S'il n'est pas spécifié, Heroku va s'en charger et lui attribuer un nom au hasard. Sachant que ce nom va se retrouver dans l'URL pour accéder au projet une fois hébergé (_https://<ins>nom-de-l'app</ins>.herokuapp.com/_), il est préférable de le faire.
 
-Heroku ne peut héberger que la partie back-end de notre app, celle faite avec Node.js. On va donc préparer notre projet car ce qui va être mis en prod. ne sera que le contenu du répertoire 'API', et non le répertoire 'App' qui correspond au code Front.
-
-5. **Ajouter du code du coté back-end du projet**: 
-  - Dans le fichier de démarrage/d'initialisation 'index.js', on a ajouté du code interprété seulement en mode production. Il déclare en assets les fichiers du repertoire Front buildé (répertoire 'public') que l'on va générer plus bas, et affiche le fichier '/public/index.html' pour toute requete.  
-  ```
-  if(process.env.NODE_ENV === 'production') {
-    // La partie Front faite avec Vue.js est buildée dans le rep. 'public' qui est déclaré comme static
-    app.use(express.static(__dirname + '/public/'));
-    // Pour ttes requetes 'get', affichage de la page 'index.html' du code Front buildé dans rep. 'public'
-    app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'))
+**Explication sur la liaison entre le back et le front en mode Production**:  
+Du coté back-end du projet, dans le fichier de démarrage/d'initialisation _'index.js'_, on a ajouté du code interprété seulement en mode production. Il déclare en assets les fichiers du repertoire Front buildé (répertoire _'public'_) que l'on va générer plus bas, et affiche le fichier _'/public/index.html'_ pour toute requete.  
+```
+if(process.env.NODE_ENV === 'production') {
+  // La partie front faite avec Vue.js est buildée dans le rep. 'public' qui est déclaré comme static
+  app.use(express.static(__dirname + '/public/'));
+  // Pour ttes requetes 'get', affichage de la page 'index.html' du code front buildé dans rep. 'public'
+  app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'))
 }
-  ```
-  - Dans le fichier 'package.json', section 'scripts', on a ajouté '_"start": "node index"_'.
-
-
-6. **Créer son repository Git local** : Maintenant on va créer un repository Git de notre projet que l'on va préparer dans le but de pousser le code vers Heroku.    
-
-  - Je fais donc une copie de mon projet dans un nouveau repertoire (en faisant un git clone de mon repository Git distant sans oublier d'y ajouter le fichier 'config/identifiants_mongoDB.js', ou bien en copiant/collant mon projet présent sur ma machine).
-  - Je supprime le répertoire '.git' dans cette copie s'il y en a un (pas sûr que cela soit obligatoire)
-  - Je builde le code Front (dans le terminal taper '_npm run build_'). Par défaut un répertoire 'dist' devrait être généré à la racine de la partie Front du projet (repertoire 'App'), mais on reparamètre cela dans notre fichier 'vue.config.js' (option 'outputDir'): Le répertoire contenant le js front buildé se nommera alors 'public' et sera placé dans la partie back (répertoire 'API').
-  - Je descends dans le répertoire 'API': C'est son contenu que je vais envoyer sur le serveur.
-  - Une fois dedans, à la racine, je créé un fichier 'Procfile' (sans extension), qui va executer la commande pour lancer l'application sur le serveur de prod.  
-  Contenu du fichier _Procfile_
-  ```
-  web: npm start
-  ```
-  - Je modifie le fichier '.gitignore' en supprimant 'config/identifiants_mongoDB.js' car on veut l'envoyer sur le Git distant avec le reste du code.
-  - J'initialise un nouveau Git repository sur le projet (cmd '_git init_').  
-  - J'ajoute mon code dans le repository ('_git add ._' puis '_git commit -m "mon commentaire"_').  
-
-7. **Pousser le code vers le serveur Heroku**: Taper la commande '_git push heroku master_'.  
-Cela signifie que l'on pousse le code de la branche master de notre repository Git local, vers le Git distant nommé par défaut 'heroku'.
-
-Et voilà!!
-
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+```
 
